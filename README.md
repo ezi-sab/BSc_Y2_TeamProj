@@ -82,3 +82,37 @@ Team Roles
 - Audio (Iniyan Kanmani)
 
 Prototype demo plan
+
+Game Level Components:
+
+The Game logic is developed as each individual entity and integrated and tested as separate java classes.
+
+The Initial Entities we are considering are: -
+
+Bullet
+Game
+Map
+Tank 
+Wall
+Score Keeper and etc.
+
+As we are considering the game should extend and support the multiplayer at the local host environment. 
+
+A separate package will be coded where the Key Events from clients are handled. We name package as EventHandlers 
+
+Eventually, we have two players controlling the tanks on the same keyboard.
+
+Event Press Handler:
+
+ - Triggers the user events from Keyboard and determines the Tank position on the Map.
+ - The player has the ability to move top,right,left and bottom.
+ - The player could shoot the bullet that traverses the map and executes ray casting.
+ - When each key pressed the locomotions are set to true in the Game environment.
+
+
+Event Release Handler:
+
+ - Triggers the user events from Keyboard and stops the Tank position on the Map.
+ - The player has the ability to move top,right,left and bottom.
+ - When each key pressed the locomotions are set to false in result the Tank stops it’s movement.
+
