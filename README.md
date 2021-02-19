@@ -1,26 +1,96 @@
+Progress Check Week 3
+(STARCRAFT)
+
 Game Idea
 
 Game outline - 1 player placed in a random corner of a maze with a AI bot placed in the opposite corner. The objective of the game is to destroy the other spaceship to gain a point. Spaceship shoots lasers which can rebound twice off walls.
 
-Graphics
-display a maze on top of a background
-Display the player and the AI bot in the current position
-display score in top right corner
-One big health bar split in the middle (red represents player/black represents AI)
-Panel bar at top includes:
-Pause button
-Exit button
-Various power ups displayed around the maze every 10 seconds. (represented by symbols)
+Requirements
 
-UI design (main menu)
-System will display name of game at the top centre of the screen
-System will display 5 buttons along the side
-Play (go to player select screen then to maze to play the game)
-Help (provide the user with the rules and give power ups definition)
-Settings (Give user the option to edit audio settings (volume/sfx/music)/key bindings/resolution)
-Credits (displays each member of the team and their roles in the implementation of the game).
-Exit (exit the game)
+1. Competitive and/or co-operative play
 
+Subject
+Must (MVP)
+Additional
+Competitive and/or co-operative play
+
+-Player must compete against at least 1 AI starship
+-may include other modes E.g
+2 Players on same local computer (no AI)
+1 player against multiple AI starships
+
+Artificial Intelligence
+
+- AI starship must try to kill the player starship
+
+- AI must have same capabilities as the player (i.e  no extra advantages)
+
+- AI must not be unbeatable but be competitive
+
+-AI must be convincing as if playing against another human
+-AI may have more than one difficulty to compensate for players at different levels
+User Interface
+
+-Game must have a main menu
+Main menu includes name of the game and various icons 
+-Main menu must allow player to navigate to other subscenes including:
+Play (play the game)
+Help (game instructions/controls)
+Settings (adjust game settings including key bindings and sound settings)
+Exit (closes application)
+ 
+-The interface when playing the game must display:
+Maze 
+Two starships within the maze (1 represents player and other the AI)
+2 health bars corresponding to each ships current health
+Nametag for each ship
+Current score
+Buttons to pause/exit the game at anytime
+
+-Main menu may include further subscenes such as scores/credits
+- Play button may lead to options to change levels if decide to implement various difficulties
+
+- Icons/symbols for additional power/health packs if decide to implement them
+Audio
+
+-game must play background music track in a loop at all times
+
+-game must play a ‘pew’ sound effect when laser is fired
+
+-game must display breaking like sound when a laser is absorbed by a ship
+
+-game must play explosion sound effect when a ship dies
+
+-must have option in settings to change/ mute all sounds
+-game may provide additional sounds when a player wins/loses if decide to implement an overall winning condition rather than continuing indefinitely
+
+
+Current Implementation
+
+UI
+-Have completed code for a main menu and uploaded to gitlab
+
+Game Logic
+-Currently working on base classes representing in game entities using OO programming:
+Bullet
+Map
+Tank 
+Wall
+
+These classes shall integrate together within the game class.
+
+AI
+-have good idea as to the behaviour of the AI and have made various behaviour trees/machine state diagrams.
+
+-The AI ship should have a list of behaviours it can perform and every update it iterates through these until it finds one for which the conditions are met.
+4 unique behaviours in order:
+1) IDLE- bot waits a few seconds after game starts to simulate player reaction time
+2) Shoot - bot shoots if there is a valid shot in a 200 degree arc in front of him anticipating 2 bounces (maybe 20 raycasts with difference of 10 degree difference)
+Doesn’t shoot instantly and waits before being able to fire again (to not make it too difficult)
+
+3) Dodge- if bot detects an incoming laser it will move out of the way
+
+4) Path to player - AI uses optimal A* pathfinding algorithm to reach a point where a direct shot can be established
 
 Game Logic (player control)
 
@@ -37,44 +107,20 @@ One shot kill
 Shield (10 seconds cannot take damage)
 Homing missile (follows enemy directly for 5 seconds using optimal path finding)
 Health pack (restores player to full health despite what health they are currently on)
+A separate package will be coded where the Key Events from clients are handled. We name package as EventHandlers 
 
+Event Press Handler:
 
+Triggers the user events from Keyboard and determines the Tank position on the Map.
+The player has the ability to move top,right,left and bottom.
+The player could shoot the bullet that traverses the map.
+When each key pressed the locomotions are set to true in the Game environment.
 
+Event Release Handler:
 
-
-
-
-
-
-
-
-
-
-
-
-
-Competitive play- 1 player vs 1 AI bot (at least for now)
-
-Artificial Intelligence 
-
-The AI ship should have a list of behaviours it can perform and every update it iterates through these until it finds one for which the conditions are met.
-6 unique behaviours in order:
-1) IDLE- bot waits a few seconds after game starts to simulate player reaction time
-2) Shoot - bot shoots if there is a valid shot in a 200 degree arc in front of him anticipating 2 bounces (maybe 20 raycasts with difference of 10 degree difference)
-Doesn’t shoot instantly and waits before being able to fire again (to not make it too difficult)
-3) Dodge
-4) Path to player
-			 
-
-User Interface-
-
-Audio 
-play background music
-‘Pew’ sound effect when laser is fired 
-Explosion sound effect when player dies
-Sound effect when player absorbs laser
-Sound effect when laser bounces off wall
-
+Triggers the user events from Keyboard and stops the Tank position on the Map.
+The player has the ability to move top,right,left and bottom.
+When each key pressed the locomotions are set to false in result the Tank stops it’s movement.
 
 Team Roles 
 - Artificial Intelligence/Character Class (Reuben and Eunji)
@@ -83,36 +129,23 @@ Team Roles
 
 Prototype demo plan
 
-Game Level Components:
+-The Game logic is developed as each individual entity and will be integrated and tested regularly as separate java classes.
+-Each sub team will work on their individual areas in the coming weeks
+- we aim to have meetings bi weekly to discuss and make sure everybody is on the same page and also to integrate code
+-every area will be covered by week 7 and we will present however far we have got
 
-The Game logic is developed as each individual entity and integrated and tested as separate java classes.
+Aim:- UI should be almost complete (main menu/game interface should 	contain all required features by this point) however the map may   
+not be fully installed if the AI bot is having difficulty with wall interaction
 
-The Initial Entities we are considering are: -
-
-Bullet
-Game
-Map
-Tank 
-Wall
-Score Keeper and etc.
-
-As we are considering the game should extend and support the multiplayer at the local host environment. 
-
-A separate package will be coded where the Key Events from clients are handled. We name package as EventHandlers 
-
-Eventually, we have two players controlling the tanks on the same keyboard.
-
-Event Press Handler:
-
- - Triggers the user events from Keyboard and determines the Tank position on the Map.
- - The player has the ability to move top,right,left and bottom.
- - The player could shoot the bullet that traverses the map and executes ray casting.
- - When each key pressed the locomotions are set to true in the Game environment.
+Enemy ship should display a good sense of AI and the pathfinding algorithm should be implemented as a minimum.
 
 
-Event Release Handler:
+Background music should be implemented (sound effects will depend on the rest of the development)
 
- - Triggers the user events from Keyboard and stops the Tank position on the Map.
- - The player has the ability to move top,right,left and bottom.
- - When each key pressed the locomotions are set to false in result the Tank stops it’s movement.
+
+
+
+
+
+
 
