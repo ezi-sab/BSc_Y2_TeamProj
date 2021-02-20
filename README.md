@@ -7,62 +7,51 @@ Game outline - 1 player placed in a random corner of a maze with a AI bot placed
 
 ## Requirements
 
-1. Competitive and/or co-operative play
+## 1. Competitive and/or co-operative play
+- Must (MVP) ::
+    Player must compete against at least 1 AI starship
+- Additional ::
+    may include other modes E.g
+    2 Players on same local computer (no AI)
+    1 player against multiple AI starships
 
-Subject
-Must (MVP)
-Additional
-Competitive and/or co-operative play
-
--Player must compete against at least 1 AI starship
--may include other modes E.g
-2 Players on same local computer (no AI)
-1 player against multiple AI starships
-
-## Artificial Intelligence
-
-- AI starship must try to kill the player starship
-
-- AI must have same capabilities as the player (i.e  no extra advantages)
-
-- AI must not be unbeatable but be competitive
-
--AI must be convincing as if playing against another human
--AI may have more than one difficulty to compensate for players at different levels
-User Interface
-
--Game must have a main menu
-Main menu includes name of the game and various icons 
--Main menu must allow player to navigate to other subscenes including:
-Play (play the game)
-Help (game instructions/controls)
-Settings (adjust game settings including key bindings and sound settings)
-Exit (closes application)
- 
--The interface when playing the game must display:
-Maze 
-Two starships within the maze (1 represents player and other the AI)
-2 health bars corresponding to each ships current health
-Nametag for each ship
-Current score
-Buttons to pause/exit the game at anytime
-
--Main menu may include further subscenes such as scores/credits
-- Play button may lead to options to change levels if decide to implement various difficulties
-
-- Icons/symbols for additional power/health packs if decide to implement them
-Audio
-
--game must play background music track in a loop at all times
-
--game must play a ‘pew’ sound effect when laser is fired
-
--game must display breaking like sound when a laser is absorbed by a ship
-
--game must play explosion sound effect when a ship dies
-
--must have option in settings to change/ mute all sounds
--game may provide additional sounds when a player wins/loses if decide to implement an overall winning condition rather than continuing indefinitely
+## 2. Artificial Intelligence
+- Must (MVP) ::
+    AI starship must try to kill the player starship
+    AI must have same capabilities as the player (i.e  no extra advantages)
+    AI must not be unbeatable but be competitive
+    AI must be convincing as if playing against another human
+- Additional ::
+    AI may have more than one difficulty to compensate for players at different levels
+## 3. User Interface
+- Must (MVP) ::
+    Game must have a main menu
+    Main menu includes name of the game and various icons 
+    Main menu must allow player to navigate to other subscenes including:
+        Play (play the game)
+        Help (game instructions/controls)
+        Settings (adjust game settings including key bindings and sound settings)
+        Exit (closes application)
+    The interface when playing the game must display:
+        Maze 
+        Two starships within the maze (1 represents player and other the AI)
+        2 health bars corresponding to each ships current health
+        Nametag for each ship
+        Current score
+        Buttons to pause/exit the game at anytime
+- Additional ::
+    Main menu may include further subscenes such as scores/credits
+    Play button may lead to options to change levels if decide to implement various difficulties
+    Icons/symbols for additional power/health packs if decide to implement them
+## 4. Audio
+- Must (MVP) ::
+    game must play background music track in a loop at all times
+    game must play a ‘pew’ sound effect when laser is fired
+    game must display breaking like sound when a laser is absorbed by a ship
+    game must play explosion sound effect when a ship dies
+    must have option in settings to change/ mute all sounds
+- Additional ::
+    game may provide additional sounds when a player wins/loses if decide to implement an overall winning condition rather than continuing indefinitely
 
 
 ## Current Implementation
