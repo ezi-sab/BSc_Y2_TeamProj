@@ -1,4 +1,4 @@
-AI(Draft)
+(Draft)AI
 ============
 * Have good idea as the behaviour of the AI and have made various bahaviour trees/machine state diagrams
 * The AI ship should have a list of behaviours it can perform and every update it iterates through these until it finds one for which the conditions are met.
