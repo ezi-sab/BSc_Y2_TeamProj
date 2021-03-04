@@ -194,6 +194,22 @@ public class ViewManager {
 	}
 
 
+	private void createHelpButton() {
+		buttons helpButton = new buttons("HELP");
+		addMenuButton(helpButton);
+		
+		helpButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showSubScene(helpSubScene);
+			}
+			
+			
+		});
+	}
+
+
 
 
 	
