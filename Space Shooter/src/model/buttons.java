@@ -47,4 +47,42 @@ public class buttons extends Button {
         setPrefHeight(49);
         setLayoutY(getLayoutY() - 4);
     }
+
+    private void buttonListeners() {
+        setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    setButtonPressedStyle();
+                }
+            }
+        });
+
+        setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    setButtonReleasedStyle();
+                }
+            }
+        });
+
+        setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                setEffect(new DropShadow());
+            }
+        });
+
+        setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                setEffect(null);
+
+            }
+        });
+
+    }
+
+}
 	
