@@ -81,5 +81,15 @@ public class Controller implements EventHandler<KeyEvent> {
     }
 
 
+    public double getBoardWidth() {
+        return GameView.CELL_WIDTH * this.gameView.getColumnCount();
+    }
+    
+
+    public double getBoardHeight() {
+        return GameView.CELL_WIDTH * this.gameView.getRowCount();
+    }
+
+
     
 
