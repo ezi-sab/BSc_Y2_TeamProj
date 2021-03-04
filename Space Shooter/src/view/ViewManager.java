@@ -240,6 +240,21 @@ public class ViewManager {
 	}
 
 
+	private void createExitButton() {
+		buttons exitButton = new buttons("EXIT");
+		addMenuButton(exitButton);
+		
+		exitButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				mainStage.close();				
+			}
+			
+		});
+	}
+
+
 
 	
 
