@@ -101,6 +101,34 @@ public class ViewManager {
 		
 	}
 
+
+
+	private buttons createButtonToStart() {
+		buttons startButton = new buttons("START");
+		startButton.setLayoutX(200);
+		startButton.setLayoutY(300);
+		
+		startButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (chosenShip != null) {
+					GameView gameManager = new GameView();
+					try {
+						gameManager.createNewGame(mainStage, chosenShip);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+			
+		});
+	
+		return startButton;
+	}
+
 	
 
 
