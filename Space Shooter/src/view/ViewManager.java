@@ -261,6 +261,40 @@ public class ViewManager {
 	}
 
 
+	private void createLogo() {
+		ImageView logo = new ImageView("view/resources/StarShooter.png");
+		logo.setLayoutX(138);
+		logo.setLayoutY(50);
+		
+		logo.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				logo.setEffect(new DropShadow());
+			}
+		});
+		
+		logo.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				logo.setEffect(null);
+			}
+				
+		});
+		
+		mainPane.getChildren().add(logo);
+
+	}
+
+
+
+}
+	
+
+
+
+
 
 	
 
