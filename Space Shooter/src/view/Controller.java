@@ -76,5 +76,10 @@ public class Controller implements EventHandler<KeyEvent> {
         }
     }
 
+    public void pause() {
+        this.timer.cancel();
+    }
+
+
     
 
