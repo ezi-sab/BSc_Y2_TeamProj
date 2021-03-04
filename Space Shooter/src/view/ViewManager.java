@@ -69,3 +69,19 @@ public class ViewManager {
 		subScene.moveSubScene();
 		sceneToHide= subScene;
 	}
+
+	private void createSubScene() {
+		
+		settingsSubScene = new menuSubScene();
+		mainPane.getChildren().add(settingsSubScene);
+		
+		helpSubScene = new menuSubScene();
+		mainPane.getChildren().add(helpSubScene);
+		
+		creditsSubScene = new menuSubScene();
+		mainPane.getChildren().add(creditsSubScene);
+		
+		createShipSelectSubScene();
+		
+		
+	}
