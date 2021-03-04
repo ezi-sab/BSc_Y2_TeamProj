@@ -49,14 +49,32 @@ public class Controller implements EventHandler<KeyEvent> {
         this.gameView.update(shipModel);
     }
 
+
+    @Override
+    public void handle(KeyEvent keyEvent) {
+        boolean keyRecognized = true;
+        KeyCode code = keyEvent.getCode();
+        ShipModel.Direction direction = ShipModel.Direction.NONE;
+        if (code == KeyCode.LEFT) {
+            direction = ShipModel.Direction.LEFT;
+        } else if (code == KeyCode.RIGHT) {
+            direction = ShipModel.Direction.RIGHT;
+        } else if (code == KeyCode.UP) {
+            direction = ShipModel.Direction.UP;
+        } else if (code == KeyCode.DOWN) {
+            direction = ShipModel.Direction.DOWN;
+        } else if (code == KeyCode.G) {
+            pause();
+            this.shipModel.startNewGame();
+            this.startTimer();
+        } else {
+            keyRecognized = false;
+        }
+        if (keyRecognized) {
+            keyEvent.consume();
+            shipModel.setCurrentDirection(direction);
+        }
+    }
+
     
 
-
-
-
-
-
-
-
-
-    
