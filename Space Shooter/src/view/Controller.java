@@ -90,6 +90,11 @@ public class Controller implements EventHandler<KeyEvent> {
         return GameView.CELL_WIDTH * this.gameView.getRowCount();
     }
 
+    public static String getLevelFile(int x) {
+        return levelFiles[x];
+    }
+    
+}
 
     
 
