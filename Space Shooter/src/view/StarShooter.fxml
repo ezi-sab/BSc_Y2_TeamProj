@@ -1,9 +1,0 @@
-<?import view.GameView?>
-<?import javafx.scene.layout.BorderPane?>
-<BorderPane fx:controller="view.Controller" style="-fx-background-color: black;" xmlns:fx="http://javafx.com/fxml">
-    <center>
-        <GameView fx:id="gameView"/>
-    </center>
-</BorderPane>
-
-<!--change background to star sky image -->
