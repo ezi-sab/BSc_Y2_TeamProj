@@ -176,6 +176,26 @@ public class ViewManager {
 		createCreditsButton();
 		createExitButton();
 	}
+
+
+
+	private void createStartButton() {
+		buttons startButton = new buttons("PLAY");
+		addMenuButton(startButton);
+		
+		startButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showSubScene(shipSelectSubScene);
+			}
+			
+		});
+	}
+
+
+
+
 	
 
 	
