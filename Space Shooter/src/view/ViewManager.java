@@ -129,6 +129,36 @@ public class ViewManager {
 		return startButton;
 	}
 
+
+
+	private HBox createShipsToChoose() {
+		HBox box = new HBox();
+		box.setSpacing(20);
+		shipsList = new ArrayList<>();
+		for (Ship ship : Ship.values()) {
+			ShipPicker shipToPick = new ShipPicker(ship);
+			shipsList.add(shipToPick);
+			box.getChildren().add(shipToPick);
+			shipToPick.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					for (ShipPicker ship:shipsList) {
+						ship.setIsCircleChosen(false);
+					}
+					shipToPick.setIsCircleChosen(true);
+					chosenShip = shipToPick.getShip();
+				}
+				
+			});
+		}
+		box.setLayoutX(300-(118*2));
+		box.setLayoutY(100);
+		return box;
+		
+	}
+	
+
 	
 
 
