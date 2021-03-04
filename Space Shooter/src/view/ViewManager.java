@@ -209,6 +209,35 @@ public class ViewManager {
 		});
 	}
 
+	private void createSettingsButton() {
+		buttons settingsButton = new buttons("SETTINGS");
+		addMenuButton(settingsButton);
+		
+		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showSubScene(settingsSubScene);
+			}
+			
+			
+		});
+	}
+
+	private void createCreditsButton() {
+		buttons creditsButton = new buttons("CREDITS");
+		addMenuButton(creditsButton);
+		
+		creditsButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showSubScene(creditsSubScene);
+			}
+			
+			
+		});
+	}
 
 
 
