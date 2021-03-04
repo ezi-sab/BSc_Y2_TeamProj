@@ -168,6 +168,14 @@ public class ViewManager {
 		menuButtons.add(button);
 		mainPane.getChildren().add(button);
 	}
+
+	private void createButtons() {
+		createStartButton();
+		createHelpButton();
+		createSettingsButton();
+		createCreditsButton();
+		createExitButton();
+	}
 	
 
 	
