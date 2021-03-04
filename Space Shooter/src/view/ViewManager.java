@@ -59,3 +59,13 @@ public class ViewManager {
 		
 
 	}
+
+
+	private void showSubScene(menuSubScene subScene) {
+		if(sceneToHide != null) {
+			sceneToHide.moveSubScene();
+		}
+		
+		subScene.moveSubScene();
+		sceneToHide= subScene;
+	}
