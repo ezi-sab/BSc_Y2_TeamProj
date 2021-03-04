@@ -254,6 +254,12 @@ public class ViewManager {
 		});
 	}
 
+	private void createBackground() {
+		Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
+		BackgroundImage background = new BackgroundImage(backgroundImage,BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
+		mainPane.setBackground(new Background(background));
+	}
+
 
 
 	
