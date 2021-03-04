@@ -157,6 +157,17 @@ public class ViewManager {
 		return box;
 		
 	}
+
+	public Stage getMainStage() {
+		return mainStage;
+	}
+	
+	private void addMenuButton(buttons button) {
+		button.setLayoutX(MENU_BUTTON_STARTX);
+		button.setLayoutY(MENU_BUTTON_STARTY + menuButtons.size() * 100);
+		menuButtons.add(button);
+		mainPane.getChildren().add(button);
+	}
 	
 
 	
