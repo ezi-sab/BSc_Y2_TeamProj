@@ -26,3 +26,25 @@ public class buttons extends Button {
     	buttonListeners();
     	
     }
+
+
+	private void setButtonFont() {
+        try {
+            setFont(Font.loadFont(new FileInputStream(FONT_PATH), 23));
+        } catch (FileNotFoundException e) {
+            setFont(Font.font("Verdana", 23));
+        }
+    }
+
+    private void setButtonPressedStyle() {
+        setStyle(BUTTON_PRESSED_STYLE);
+        setPrefHeight(45);
+        setLayoutY(getLayoutY() + 4);
+    }
+
+    private void setButtonReleasedStyle() {
+        setStyle(BUTTON_UNPRESSED_STYLE);
+        setPrefHeight(49);
+        setLayoutY(getLayoutY() - 4);
+    }
+	
