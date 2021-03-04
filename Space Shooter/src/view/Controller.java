@@ -44,4 +44,19 @@ public class Controller implements EventHandler<KeyEvent> {
     }
 
 
+     private void update(ShipModel.Direction direction) {
+        this.shipModel.step(direction);
+        this.gameView.update(shipModel);
+    }
+
+    
+
+
+
+
+
+
+
+
+
     
