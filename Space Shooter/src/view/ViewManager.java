@@ -86,6 +86,21 @@ public class ViewManager {
 		sceneToHide= subScene;
 	}
 
+
+
+	private void createShipSelectSubScene() {
+		shipSelectSubScene = new menuSubScene();
+		mainPane.getChildren().add(shipSelectSubScene);
+		
+		InfoLabel chooseShipLabel = new InfoLabel("CHOOSE YOUR SHIP");
+		chooseShipLabel.setLayoutX(110);
+		chooseShipLabel.setLayoutY(25);
+		shipSelectSubScene.getPane().getChildren().add(chooseShipLabel);
+		shipSelectSubScene.getPane().getChildren().add(createShipsToChoose());
+		shipSelectSubScene.getPane().getChildren().add(createButtonToStart());
+		
+	}
+
 	
 
 
