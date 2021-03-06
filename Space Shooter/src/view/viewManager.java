@@ -16,6 +16,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +104,8 @@ public class viewManager {
 		createCreditsButton();
 		createExitButton();
 	}
+
+
 	
 	private void createStartButton() {
 		buttons startButton = new buttons("PLAY");
