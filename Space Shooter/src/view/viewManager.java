@@ -105,6 +105,20 @@ public class viewManager {
 		createExitButton();
 	}
 
+	MediaPlayer mediaPlayer;
+
+	public void playSound(String soundPath) {
+		String src = soundPath;
+		Media tapped = new Media(Paths.get(src).toUri().toString());
+		mediaPlayer = new MediaPlayer(tapped);
+		mediaPlayer.setCycleCount(1);
+		mediaPlayer.play();
+
+	//		AudioClip tapped = new AudioClip(this.getClass().getResource("view/resources/fastinvader1.wav").toString());
+	//		tapped.play();
+
+	}
+
 
 	
 	private void createStartButton() {
