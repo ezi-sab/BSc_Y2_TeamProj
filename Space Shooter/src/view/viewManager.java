@@ -129,6 +129,8 @@ public class viewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(shipSelectSubScene);
 			}
 			
@@ -143,6 +145,8 @@ public class viewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(settingsSubScene);
 			}
 			
@@ -158,6 +162,8 @@ public class viewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(helpSubScene);
 			}
 			
@@ -173,6 +179,8 @@ public class viewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(creditsSubScene);
 			}
 			
@@ -188,6 +196,8 @@ public class viewManager {
 
 			@Override
 			public void handle(ActionEvent arg0) {
+
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				mainStage.close();				
 			}
 			
