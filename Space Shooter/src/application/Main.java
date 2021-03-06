@@ -9,6 +9,9 @@ import view.viewManager;
 
 
 public class Main extends Application {
+
+	ViewManager viewManager = new ViewManager();
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
