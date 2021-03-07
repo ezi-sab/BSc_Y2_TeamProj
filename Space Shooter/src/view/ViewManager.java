@@ -177,6 +177,20 @@ public class ViewManager {
 		createExitButton();
 	}
 
+	MediaPlayer mediaPlayer;
+
+	public void playSound(String soundPath) {
+		String src = soundPath;
+		Media tapped = new Media(Paths.get(src).toUri().toString());
+		mediaPlayer = new MediaPlayer(tapped);
+		mediaPlayer.setCycleCount(1);
+		mediaPlayer.play();
+
+	//		AudioClip tapped = new AudioClip(this.getClass().getResource("view/resources/fastinvader1.wav").toString());
+	//		tapped.play();
+
+	}
+
 
 
 	private void createStartButton() {
@@ -187,6 +201,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(shipSelectSubScene);
 			}
 			
@@ -202,6 +217,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(helpSubScene);
 			}
 			
@@ -217,6 +233,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(settingsSubScene);
 			}
 			
@@ -232,6 +249,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(creditsSubScene);
 			}
 			
@@ -248,6 +266,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent arg0) {
+				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				mainStage.close();				
 			}
 			
