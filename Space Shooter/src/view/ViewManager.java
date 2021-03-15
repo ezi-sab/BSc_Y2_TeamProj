@@ -42,6 +42,7 @@ public class ViewManager {
 	private menuSubScene settingsSubScene;
 	private menuSubScene helpSubScene;
 	private menuSubScene creditsSubScene;
+	private menuSubScene musicControls;
 	
 	private menuSubScene sceneToHide;
 
