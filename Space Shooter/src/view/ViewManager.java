@@ -286,30 +286,13 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playButtonSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(shipSelectSubScene);
 			}
 			
 		});
 	}
-
-
-	private void createHelpButton() {
-		buttons helpButton = new buttons("HELP");
-		addMenuButton(helpButton);
-		
-		helpButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
-				showSubScene(helpSubScene);
-			}
-			
-			
-		});
-	}
-
+	
 	private void createSettingsButton() {
 		buttons settingsButton = new buttons("SETTINGS");
 		addMenuButton(settingsButton);
@@ -318,14 +301,30 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playButtonSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(musicControls);
 			}
 			
 			
 		});
 	}
+	
+	private void createHelpButton() {
+		buttons helpButton = new buttons("HELP");
+		addMenuButton(helpButton);
+		
+		helpButton.setOnAction(new EventHandler<ActionEvent>() {
 
+			@Override
+			public void handle(ActionEvent event) {
+				playButtonSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				showSubScene(helpSubScene);
+			}
+			
+			
+		});
+	}
+	
 	private void createCreditsButton() {
 		buttons creditsButton = new buttons("CREDITS");
 		addMenuButton(creditsButton);
@@ -334,15 +333,14 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playButtonSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(creditsSubScene);
 			}
 			
 			
 		});
 	}
-
-
+	
 	private void createExitButton() {
 		buttons exitButton = new buttons("EXIT");
 		addMenuButton(exitButton);
@@ -351,7 +349,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playButtonSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				mainStage.close();				
 			}
 			
