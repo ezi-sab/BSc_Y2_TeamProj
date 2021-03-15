@@ -239,7 +239,7 @@ public class ViewManager {
 			@Override
 			public void handle(ActionEvent event) {
 				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
-				showSubScene(settingsSubScene);
+				showSubScene(musicControls);
 			}
 			
 			
