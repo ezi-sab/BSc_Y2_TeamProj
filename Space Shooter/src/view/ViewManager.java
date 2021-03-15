@@ -76,6 +76,8 @@ public class ViewManager {
 		mainPane.getChildren().add(creditsSubScene);
 		
 		createShipSelectSubScene();
+
+		createToggleButtons();
 		
 		
 	}
