@@ -263,7 +263,10 @@ public class ViewManager {
 
 	MediaPlayer mediaPlayer;
 
-	public void playSound(String soundPath) {
+	public void playButtonSound(String soundPath) {
+
+		MediaPlayer mediaPlayer;
+
 		String src = soundPath;
 		Media tapped = new Media(Paths.get(src).toUri().toString());
 		mediaPlayer = new MediaPlayer(tapped);
