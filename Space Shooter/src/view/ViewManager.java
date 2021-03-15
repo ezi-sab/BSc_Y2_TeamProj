@@ -163,6 +163,21 @@ public class ViewManager {
 		
 	}
 
+	private void createToggleButtons() {
+		musicControls = new menuSubScene();
+		mainPane.getChildren().add(musicControls);
+
+		InfoLabel chooseMusicOption = new InfoLabel("MUSIC");
+		chooseMusicOption.setLayoutX(110);
+		chooseMusicOption.setLayoutY(25);
+		musicControls.getPane().getChildren().add(chooseMusicOption);
+		musicControls.getPane().getChildren().add(musicToggleButton());
+
+	}
+
+
+//	boolean getSelectedOption;
+
 	public Stage getMainStage() {
 		return mainStage;
 	}
