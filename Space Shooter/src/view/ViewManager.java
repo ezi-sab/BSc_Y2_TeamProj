@@ -261,7 +261,6 @@ public class ViewManager {
 		createExitButton();
 	}
 
-	MediaPlayer mediaPlayer;
 
 	public void playButtonSound(String soundPath) {
 
