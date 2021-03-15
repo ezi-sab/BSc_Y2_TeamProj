@@ -175,6 +175,71 @@ public class ViewManager {
 
 	}
 
+	private VBox musicToggleButton() {
+		VBox box = new VBox();
+		box.setSpacing(40);
+		Button musicOn, musicOff;
+
+		musicOn = new Button("ON");
+		musicOn.setLayoutX(100);
+		musicOn.setLayoutY(220);
+		musicOff = new Button("OFF");
+		musicOff.setLayoutX(100);
+		musicOff.setLayoutY(220);
+
+		box.getChildren().addAll(musicOn,musicOff);
+
+		MediaPlayer mediaPlayer;
+
+		String src = "Space Shooter/src/view/resources/sounds/spaceinvaders1.mp3";
+		Media tapped = new Media(Paths.get(src).toUri().toString());
+		mediaPlayer = new MediaPlayer(tapped);
+
+		musicOn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+				mediaPlayer.play();
+				mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+				//TODO : If the background sound is trimmed the above line parametrised with "Mediaplayer.INFINITY / 1".
+			}
+		});
+
+		musicOff.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+
+				mediaPlayer.stop();
+				//TODO : If the background sound is trimmed the above line parametrised with "Mediaplayer.INFINITY / 1".
+
+			}
+		});
+
+
+//		VBox box = new VBox();
+//		box.setSpacing(40);
+//		ToggleButton toggleButton1 = new ToggleButton("ON");
+//		ToggleButton toggleButton2 = new ToggleButton("OFF");
+
+//		ToggleGroup toggleGroup = new ToggleGroup();
+//
+//		toggleButton1.setToggleGroup(toggleGroup);
+//		toggleButton2.setToggleGroup(toggleGroup);
+
+//		box.getChildren().addAll(toggleButton1,toggleButton2);
+//
+//
+//			toggleButton1.setSelected(true);
+//			toggleButton2.setSelected(false);
+//
+//		isOnSelected = toggleButton1.isSelected();
+//		isOffSelected = toggleButton2.isSelected();
+
+		box.setLayoutX(300-(118*2));
+		box.setLayoutY(100);
+
+		return box;
+	}
+
 
 //	boolean getSelectedOption;
 
