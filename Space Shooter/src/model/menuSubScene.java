@@ -1,6 +1,7 @@
 package model;
 
 import javafx.animation.TranslateTransition;
+
 //import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.image.Image;
@@ -53,6 +54,10 @@ public class menuSubScene extends SubScene {
 		}
 		
 		transition.play();
+	}
+
+	public AnchorPane getPane() {
+		return (AnchorPane) this.getRoot();
 	}
 
 }
