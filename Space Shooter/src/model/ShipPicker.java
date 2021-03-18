@@ -19,7 +19,7 @@ public class ShipPicker extends VBox {
 	
 	public ShipPicker(Ship ship) {
 		circleImage = new ImageView(circleNotChosen);
-		shipImage = new ImageView(ship.getUrl());
+		shipImage = new ImageView(ship.getUpUrl());
 		this.ship = ship;
 		isCircleChosen = false;
 		this.setAlignment(Pos.CENTER);
