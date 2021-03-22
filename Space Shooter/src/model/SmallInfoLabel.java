@@ -15,6 +15,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.text.Font;
 
 public class SmallInfoLabel extends Label {
+<<<<<<< HEAD
 
     private final static String FONT_PATH ="src/model/resources/kenvector_future.ttf";
 
@@ -37,5 +38,29 @@ public class SmallInfoLabel extends Label {
             setFont(Font.font("Verdana",15));
         }
     }
+=======
+	
+	private final static String FONT_PATH ="src/model/resources/kenvector_future.ttf";
+	
+	public SmallInfoLabel(String text) {
+		setPrefWidth(130);
+		setPrefHeight(50);
+		BackgroundImage backgroundImg = new BackgroundImage(new Image("/res/buttonBlue.png", 130,50,false,true), BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
+		setBackground(new Background(backgroundImg));
+		setAlignment(Pos.CENTER_LEFT);
+		setPadding(new Insets(10,10,10,10));
+		setText(text);
+	}
+	
+	private void setLabelFont() {
+		
+		try {
+			setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 15));
+		} catch (FileNotFoundException e) {
+			setFont(Font.font("Verdana",15));
+		}
+	}
+>>>>>>> master
 
 }

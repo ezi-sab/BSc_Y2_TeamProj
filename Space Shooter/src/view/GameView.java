@@ -22,6 +22,7 @@ import model.SmallInfoLabel;
 import view.ShipModel.CellValue;
 
 public class GameView extends Group {
+<<<<<<< HEAD
     private AnchorPane gamePane;
     private Scene gameScene;
     private Stage gameStage;
@@ -31,11 +32,26 @@ public class GameView extends Group {
 
     private Stage menuStage;
     private ImageView ship;
+=======
+	 private AnchorPane gamePane;
+	 private Scene gameScene;
+	 private Stage gameStage;
+
+	 //private static final int GAME_WIDTH = 2000;//changed from 600
+	 //private static final int GAME_HEIGHT = 800;
+	    
+	 private Stage menuStage;
+	 private ImageView ship;
+>>>>>>> master
 
     @FXML private int rowCount;
     @FXML private int columnCount;
     private ImageView[][] cellViews;
+<<<<<<< HEAD
 
+=======
+   
+>>>>>>> master
     /*private final Image shipRightImage = new Image(getClass().getResourceAsStream("/res/playerShip3_right.png"));
     private final Image shipUpImage = new Image(getClass().getResourceAsStream("/res/playerShip3_up.png"));
     private final Image shipDownImage = new Image(getClass().getResourceAsStream("/res/playerShip3_down.png"));
@@ -47,13 +63,28 @@ public class GameView extends Group {
     private static Image shipDownImage;
     private static Image shipLeftImage;
     private static Image shipRightImage;
+<<<<<<< HEAD
 
     private final Image enemy1Image = new Image(getClass().getResourceAsStream("/res/spaceShips_004.png"));
     private final Image enemy2Image = new Image(getClass().getResourceAsStream("/res/spaceShips_009.png"));
 
 
 
+=======
+    
+    private final Image enemy1Image = new Image(getClass().getResourceAsStream("/res/spaceShips_004.png"));
+    private final Image enemy2Image = new Image(getClass().getResourceAsStream("/res/spaceShips_009.png"));
+
+    private final Image bulletImage = new Image(getClass().getResourceAsStream("/res/laserRed15.png"));
+    
+    
+>>>>>>> master
     public final static double CELL_WIDTH = 30.0;
+    
+    private SmallInfoLabel pointsLabel;
+    private ImageView[] playerLifes;
+    private int playerLife;
+    private int points;
 
     private SmallInfoLabel pointsLabel;
     private ImageView[] playerLifes;
@@ -65,18 +96,33 @@ public class GameView extends Group {
     }
 
     private void initializeStage() {
+<<<<<<< HEAD
         gamePane = new AnchorPane();
         //gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
         gameStage = new Stage();
         gameStage.setScene(gameScene);
+=======
+    	gamePane = new AnchorPane();
+    	//gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
+    	gameStage = new Stage();
+    	gameStage.setScene(gameScene);
+>>>>>>> master
     }
 
     public void createNewGame(Stage menuStage, Ship chosenShip) throws Exception {
+<<<<<<< HEAD
         this.menuStage = menuStage;
         this.menuStage.hide();
 
         createGameElements(chosenShip);
         //this.shipImage = new Image(getClass().getResourceAsStream(chosenShip.getUrl()));
+=======
+    	this.menuStage = menuStage;
+    	this.menuStage.hide();
+    	
+    	createGameElements(chosenShip);
+    	//this.shipImage = new Image(getClass().getResourceAsStream(chosenShip.getUrl()));
+>>>>>>> master
     	/*this.gamePane = new AnchorPane();
     	Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
 		BackgroundImage background = new BackgroundImage(backgroundImage,BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
@@ -84,13 +130,14 @@ public class GameView extends Group {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StarShooter.fxml"));
         Parent root = loader.load();
         gameStage.setTitle("Space Shooter");
-        Controller controller = loader.getController();
+        Controller controller = loader.getController(); 
         root.setOnKeyPressed(controller);
         double sceneWidth = controller.getBoardWidth();
         double sceneHeight = controller.getBoardHeight();
         gameStage.setScene(new Scene(root, sceneWidth, sceneHeight));
         gameStage.show();
         root.requestFocus();{
+<<<<<<< HEAD
             //gameStage.show();
         }
     }
@@ -112,6 +159,29 @@ public class GameView extends Group {
 
     }
 
+=======
+    	//gameStage.show();
+        }
+    }
+    
+    private void createGameElements(Ship chosenShip) {
+    	playerLife = 2;
+    	pointsLabel = new SmallInfoLabel("POINTS : 00");
+    	pointsLabel.setLayoutX(460);
+    	pointsLabel.setLayoutY(20);
+    	gamePane.getChildren().add(pointsLabel);
+    	playerLifes = new ImageView[3];
+    	
+    	for (int i = 0; i < playerLifes.length; i++) {
+    		playerLifes[i] = new ImageView(chosenShip.getLifeUrl());
+    		playerLifes[i].setLayoutX(455 + (i*50));
+    		playerLifes[i].setLayoutY(80);
+    		gamePane.getChildren().add(playerLifes[i]);	
+    	}
+    	
+    }
+        
+>>>>>>> master
 
     // make new empty grid of cells
     private void initializeGrid() {
@@ -133,7 +203,11 @@ public class GameView extends Group {
 
     // update based off of model of grid
     public void update(ShipModel model) {
+<<<<<<< HEAD
         assert model.getRowCount() == this.rowCount && model.getColumnCount() == this.columnCount;
+=======
+    	assert model.getRowCount() == this.rowCount && model.getColumnCount() == this.columnCount;
+>>>>>>> master
         if (model.getRowCount() != this.rowCount || model.getColumnCount() != this.columnCount) {
             this.rowCount = model.getRowCount();
             this.columnCount = model.getColumnCount();
@@ -174,6 +248,11 @@ public class GameView extends Group {
     public int getRowCount() {
         return this.rowCount;
     }
+    
+    public void setRowCount(int rowCount) {
+        this.rowCount = rowCount;
+        this.initializeGrid();
+    }
 
     public void setRowCount(int rowCount) {
         this.rowCount = rowCount;
@@ -182,6 +261,18 @@ public class GameView extends Group {
 
     public int getColumnCount() {
         return this.columnCount;
+    }
+    
+    public void setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
+        this.initializeGrid();
+    }
+    
+    public void setShipImage(Ship chosenShip) {
+    	shipUpImage = new Image(getClass().getResourceAsStream(chosenShip.getUpUrl()));
+    	shipDownImage = new Image(getClass().getResourceAsStream(chosenShip.getDownUrl()));
+    	shipLeftImage = new Image(getClass().getResourceAsStream(chosenShip.getLeftUrl()));
+    	shipRightImage = new Image(getClass().getResourceAsStream(chosenShip.getRightUrl()));
     }
 
     public void setColumnCount(int columnCount) {
