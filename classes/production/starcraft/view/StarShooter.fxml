@@ -1,0 +1,37 @@
+<!--  
+<?import view.GameView?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane fx:controller="view.Controller" style="-fx-background-image: url(view/resources/space2.png)" xmlns:fx="http://javafx.com/fxml">
+    <center>
+        <GameView fx:id="gameView"/>
+    </center>
+</BorderPane>
+-->
+<!--change background to star sky image -->
+
+
+<?import javafx.scene.layout.AnchorPane?><?import view.GameView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane fx:controller="view.Controller" style="-fx-background-image: url(view/resources/space.png)" xmlns:fx="http://javafx.com/fxml">
+    <top>
+        <BorderPane prefHeight="35" style="-fx-background-color: #0B5091; -fx-padding: 10px, 5px, 10px, 5px" >
+            <left><Label fx:id="scoreLabel" style="-fx-font-size: 150%; -fx-text-fill: white" /></left>
+            <center><Label fx:id="gameOverLabel" style="-fx-font-size: 150%; -fx-text-fill: white" /></center>
+            <right><Label fx:id="levelLabel" style="-fx-font-size: 150%; -fx-text-fill: white"/></right>
+        </BorderPane>
+    </top>
+
+    <center>
+        <GameView fx:id="gameView" rowCount="21" columnCount="19"/> <!--rowCount="21" columnCount="19"  />-->
+    </center>
+
+    <bottom>
+        <HBox prefHeight="35" style="-fx-padding: 10px, 5px, 10px, 5px; -fx-background-color: #F3B61D">
+            <Label style="-fx-font-size: 140%; -fx-text-fill: white"
+                   text="Move: arrow keys/WSDA Shoot: spacebar / New game: G" />
+        </HBox>
+    </bottom>
+</BorderPane>
