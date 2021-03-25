@@ -29,8 +29,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -39,6 +37,7 @@ import model.Ship;
 import model.ShipPicker;
 import model.buttons;
 import model.menuSubScene;
+import sound.SoundManager;
 
 public class ViewManager {
 	
@@ -59,6 +58,9 @@ public class ViewManager {
 	private menuSubScene musicControls;
 	
 	private menuSubScene sceneToHide;
+	
+	private SoundManager soundManager;
+	private Boolean inGameMusic;
 
 	List<buttons> menuButtons;
 	
@@ -66,26 +68,31 @@ public class ViewManager {
 	private Ship chosenShip; 
 	
 	public ViewManager() {
+		
 		menuButtons = new ArrayList<>();
 		mainPane = new AnchorPane();
 		mainScene = new Scene(mainPane, width, height);
 		mainStage = new Stage();
 		mainStage.setScene(mainScene);
+		soundManager = new SoundManager();
+		soundManager.playBackGroundMusic(true);
+		inGameMusic = true;
 		createSubScene();
 		createButtons();
 		createBackground();
 		createLogo();
 		
-		
 	}
 	
 	private void showSubScene(menuSubScene subScene) {
+		
 		if(sceneToHide != null) {
 			sceneToHide.moveSubScene();
 		}
 		
 		subScene.moveSubScene();
 		sceneToHide= subScene;
+		
 	}
 	
 	private void createSubScene() {
@@ -113,12 +120,12 @@ public class ViewManager {
 		
 		createHelpSubScene();
 		
-		createToggleButtons();
-		
+		createMusicButtons();
 		
 	}
 	
 	private void createShipSelectSubScene() {
+		
 		shipSelectSubScene = new menuSubScene();
 		mainPane.getChildren().add(shipSelectSubScene);
 		
@@ -132,6 +139,7 @@ public class ViewManager {
 	}
 	
 	private void createScoreSubScene() {
+		
 		scoreSubScene = new menuSubScene();
 		mainPane.getChildren().add(scoreSubScene);
 		InfoLabel score = new InfoLabel("SCORES");
@@ -158,6 +166,7 @@ public class ViewManager {
 	}
 	
 	private void createCreditsSubScene() {
+		
 		creditsSubScene = new menuSubScene();
 		mainPane.getChildren().add(creditsSubScene);
 		
@@ -168,7 +177,7 @@ public class ViewManager {
 		Label credit0 = new Label("Reuben Sidhu: UI/Game Logic");
 		Label credit1 = new Label("Bharath Raj: UI/Level Design");
 		Label credit2 = new Label("Eunji Kwak: Artificial Intelligence");
-		Label credit3 = new Label("Iniyan: Sound Design");
+		Label credit3 = new Label("Iniyan Kanmani: Sound Design");
 		Label credit4 = new Label("Alfred: ");
 		Label credit5 = new Label("Matthew: ");
 		Label credit6 = new Label("Xiaoliang Pu: ");
@@ -191,6 +200,7 @@ public class ViewManager {
 	}
 	
 	private void createHelpSubScene() {
+		
 		helpSubScene = new menuSubScene();
 		mainPane.getChildren().add(helpSubScene);
 		InfoLabel help = new InfoLabel("HELP");
@@ -249,6 +259,7 @@ public class ViewManager {
 	
 	
 	private HBox createShipsToChoose() {
+		
 		HBox box = new HBox();
 		box.setSpacing(20);
 		shipsList = new ArrayList<>();
@@ -276,6 +287,7 @@ public class ViewManager {
 	}
 	
 	private buttons createButtonToStart() {
+		
 		buttons startButton = new buttons("START");
 		startButton.setLayoutX(200);
 		startButton.setLayoutY(300);
@@ -300,20 +312,119 @@ public class ViewManager {
 		});
 	
 		return startButton;
+		
 	}
 	
-	private void createToggleButtons() {
+	private void createMusicButtons() {
+		
 		musicControls = new menuSubScene();
 		mainPane.getChildren().add(musicControls);
 
-		InfoLabel chooseMusicOption = new InfoLabel("MUSIC");
-		chooseMusicOption.setLayoutX(110);
-		chooseMusicOption.setLayoutY(25);
-		musicControls.getPane().getChildren().add(chooseMusicOption);
-		musicControls.getPane().getChildren().add(musicToggleButton());
+		InfoLabel chooseBGMusicOption = new InfoLabel("BACKGROUND MUSIC");
+		chooseBGMusicOption.setLayoutX(125);
+		chooseBGMusicOption.setLayoutY(25);
+		musicControls.getPane().getChildren().add(chooseBGMusicOption);
+		musicControls.getPane().getChildren().add(bgmOnButton());
+		musicControls.getPane().getChildren().add(bgmOffButton());
+		
+		InfoLabel chooseIGMusicOption = new InfoLabel("IN-GAME MUSIC");
+		chooseIGMusicOption.setLayoutX(125);
+		chooseIGMusicOption.setLayoutY(200);
+		musicControls.getPane().getChildren().add(chooseIGMusicOption);
+		musicControls.getPane().getChildren().add(igmOnButton());
+		musicControls.getPane().getChildren().add(igmOffButton());
 
 	}
+	
+	private buttons bgmOnButton() {
+		
+		buttons musicOn = new buttons("ON");
+		musicOn.setLayoutX(100);
+		musicOn.setLayoutY(100);
+		
+		musicOn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+				
+				if(soundManager.isBackGroundMusic() == false) {
+					soundManager.playBackGroundMusic(true);
+				}
+			}
+		});
+		
+		return musicOn;
+		
+	}
 
+	private buttons bgmOffButton() {
+	
+		buttons musicOff = new buttons("OFF");
+		musicOff.setLayoutX(300);
+		musicOff.setLayoutY(100);
+	
+		musicOff.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+
+				if(soundManager.isBackGroundMusic() == true) {
+					soundManager.playBackGroundMusic(false);
+				}
+
+			}
+		});
+	
+		return musicOff;
+		
+	}
+	
+	private buttons igmOnButton() {
+		
+		buttons musicOn = new buttons("ON");
+		musicOn.setLayoutX(100);
+		musicOn.setLayoutY(275);
+		
+		musicOn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+				
+				if(isInGameMusic() == false) {
+					inGameMusic = true;
+				}
+			}
+		});
+		
+		return musicOn;
+		
+	}
+	
+	private buttons igmOffButton() {
+		
+		buttons musicOff = new buttons("OFF");
+		musicOff.setLayoutX(300);
+		musicOff.setLayoutY(275);
+	
+		musicOff.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+
+				if(isInGameMusic() == true) {
+					inGameMusic = false;
+				}
+
+			}
+		});
+	
+		return musicOff;
+		
+	}
+	
+	private boolean isInGameMusic() {
+		
+		return inGameMusic;
+		
+	}
+
+	/*
 	private VBox musicToggleButton() {
 		VBox box = new VBox();
 		box.setSpacing(40);
@@ -330,7 +441,7 @@ public class ViewManager {
 
 		MediaPlayer mediaPlayer;
 
-		String src = "Space Shooter/src/view/resources/sounds/spaceinvaders1.mp3";
+		String src = "src/view/resources/sounds/spaceinvaders1.mp3";
 		Media tapped = new Media(Paths.get(src).toUri().toString());
 		mediaPlayer = new MediaPlayer(tapped);
 
@@ -378,30 +489,35 @@ public class ViewManager {
 
 		return box;
 	}
-
-
-
+*/
 	
 	public Stage getMainStage() {
+		
 		return mainStage;
+		
 	}
 	
 	private void addMenuButton(buttons button) {
+		
 		button.setLayoutX(MENU_BUTTON_STARTX);
 		button.setLayoutY(MENU_BUTTON_STARTY + menuButtons.size() * 100);
 		menuButtons.add(button);
 		mainPane.getChildren().add(button);
+		
 	}
 
 	private void createButtons() {
+		
 		createStartButton();
 		createScoresButton();
 		createHelpButton();
 		createSettingsButton();
 		createCreditsButton();
 		createExitButton();
+		
 	}
 	
+/*	
 	public void playButtonSound(String soundPath) {
 
 		MediaPlayer mediaPlayer;
@@ -416,10 +532,10 @@ public class ViewManager {
 	//		tapped.play();
 
 	}
+*/
 
-
-	
 	private void createStartButton() {
+		
 		buttons startButton = new buttons("PLAY");
 		addMenuButton(startButton);
 		
@@ -427,28 +543,34 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(shipSelectSubScene);
+				SoundManager sound = new SoundManager();
+				sound.playMenuOpenMusic();
 			}
 			
 		});
+		
 	}
 	
 	private void createScoresButton() {
+		
 		buttons scoresButton = new buttons("SCORES");
 		addMenuButton(scoresButton);
 		scoresButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(scoreSubScene);
+				SoundManager sound = new SoundManager();
+				sound.playMenuOpenMusic();
 			}
 			
 		});
+		
 	}
 	
 	private void createSettingsButton() {
+		
 		buttons settingsButton = new buttons("SETTINGS");
 		addMenuButton(settingsButton);
 		
@@ -456,15 +578,18 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(musicControls);
+				SoundManager sound = new SoundManager();
+				sound.playMenuOpenMusic();
 			}
 			
 			
 		});
+		
 	}
 	
 	private void createHelpButton() {
+		
 		buttons helpButton = new buttons("HELP");
 		addMenuButton(helpButton);
 		
@@ -472,15 +597,18 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(helpSubScene);
+				SoundManager sound = new SoundManager();
+				sound.playMenuOpenMusic();
 			}
 			
 			
 		});
+		
 	}
 	
 	private void createCreditsButton() {
+		
 		buttons creditsButton = new buttons("CREDITS");
 		addMenuButton(creditsButton);
 		
@@ -488,15 +616,18 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(creditsSubScene);
+				SoundManager sound = new SoundManager();
+				sound.playMenuOpenMusic();
 			}
 			
 			
 		});
+		
 	}
 	
 	private void createExitButton() {
+		
 		buttons exitButton = new buttons("EXIT");
 		addMenuButton(exitButton);
 		
@@ -504,20 +635,25 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				SoundManager sound = new SoundManager();
+				sound.playMenuOpenMusic();
 				mainStage.close();				
 			}
 			
 		});
+		
 	}
 	
 	private void createBackground() {
+		
 		Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
 		BackgroundImage background = new BackgroundImage(backgroundImage,BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
 		mainPane.setBackground(new Background(background));
+		
 	}
 	
 	private void createLogo() {
+		
 		ImageView logo = new ImageView("view/resources/StarShooter.png");
 		logo.setLayoutX(138);
 		logo.setLayoutY(50);
@@ -540,28 +676,7 @@ public class ViewManager {
 		});
 		
 		mainPane.getChildren().add(logo);
+		
 	}
 	
-	MediaPlayer mediaPlayer;
-
-	public void playSound(String soundPath) {
-		String src = soundPath;
-		Media tapped = new Media(Paths.get(src).toUri().toString());
-		mediaPlayer = new MediaPlayer(tapped);
-		mediaPlayer.setCycleCount(1);
-		mediaPlayer.play();
-
-	//		AudioClip tapped = new AudioClip(this.getClass().getResource("view/resources/fastinvader1.wav").toString());
-	//		tapped.play();
-
-	} 
-
-	
-	
 }
-	
-
-	
-
-
-
