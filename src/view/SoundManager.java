@@ -7,7 +7,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class SoundManager {
 	
-	Media bgm = new Media(Paths.get("src/sound/resources/spaceinvaders1.mp3").toUri().toString());
+	Media bgm = new Media(Paths.get("src/view/resources/sounds/spaceinvaders1.mp3").toUri().toString());
 	
 	MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
 	MediaPlayer mediaPlayerMenu;
@@ -38,7 +38,7 @@ public class SoundManager {
 	
 	public void playMenuOpenMusic() {
 		
-		Media menuMusic = new Media(Paths.get("src/sound/resources/fastinvader1.mp3").toUri().toString());
+		Media menuMusic = new Media(Paths.get("src/view/resources/sounds/fastinvader1.mp3").toUri().toString());
 		MediaPlayer mediaPlayerMenu = new MediaPlayer(menuMusic);
 		mediaPlayerMenu.setAutoPlay(true);
 		
@@ -46,7 +46,7 @@ public class SoundManager {
 	
 	public void playCoinCollectMusic() {
 		
-		Media coin = new Media(Paths.get("src/sound/resources/Pokemon-(Button).mp3").toUri().toString());
+		Media coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-(Button).mp3").toUri().toString());
 		MediaPlayer mediaPlayerCoin = new MediaPlayer(coin);
 		mediaPlayerCoin.setAutoPlay(true);
 		
@@ -54,7 +54,7 @@ public class SoundManager {
 	
 	public void playEnemyDeadMusic() {
 		
-		Media enemyDead = new Media(Paths.get("src/sound/resources/Roblox-death-sound.mp3").toUri().toString());
+		Media enemyDead = new Media(Paths.get("src/view/resources/sounds/Roblox-death-sound.mp3").toUri().toString());
 		MediaPlayer mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
 		mediaPlayerEnemyDead.play();
 		
@@ -62,7 +62,7 @@ public class SoundManager {
 	
 	public void playExplosionMusic() {
 		
-		Media explosion = new Media(Paths.get("src/sound/resources/explosion.mp3").toUri().toString());
+		Media explosion = new Media(Paths.get("src/view/resources/sounds/explosion.mp3").toUri().toString());
 		MediaPlayer mediaPlayerExplosion = new MediaPlayer(explosion);
 		mediaPlayerExplosion.play();
 		
