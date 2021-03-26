@@ -1,19 +1,14 @@
 package view;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import java.util.List;
 
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -37,7 +32,6 @@ import model.Ship;
 import model.ShipPicker;
 import model.buttons;
 import model.menuSubScene;
-import sound.SoundManager;
 
 public class ViewManager {
 	
@@ -302,7 +296,6 @@ public class ViewManager {
 					try {
 						gameManager.createNewGame(mainStage, chosenShip);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -423,73 +416,6 @@ public class ViewManager {
 		return inGameMusic;
 		
 	}
-
-	/*
-	private VBox musicToggleButton() {
-		VBox box = new VBox();
-		box.setSpacing(40);
-		Button musicOn, musicOff;
-
-		musicOn = new Button("ON");
-		musicOn.setLayoutX(100);
-		musicOn.setLayoutY(220);
-		musicOff = new Button("OFF");
-		musicOff.setLayoutX(100);
-		musicOff.setLayoutY(220);
-
-		box.getChildren().addAll(musicOn,musicOff);
-
-		MediaPlayer mediaPlayer;
-
-		String src = "src/view/resources/sounds/spaceinvaders1.mp3";
-		Media tapped = new Media(Paths.get(src).toUri().toString());
-		mediaPlayer = new MediaPlayer(tapped);
-
-		musicOn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				mediaPlayer.play();
-				mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-				//TODO : If the background sound is trimmed the above line parametrised with "Mediaplayer.INFINITY / 1".
-			}
-		});
-
-		musicOff.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-
-				mediaPlayer.stop();
-				//TODO : If the background sound is trimmed the above line parametrised with "Mediaplayer.INFINITY / 1".
-
-			}
-		});
-
-
-//		VBox box = new VBox();
-//		box.setSpacing(40);
-//		ToggleButton toggleButton1 = new ToggleButton("ON");
-//		ToggleButton toggleButton2 = new ToggleButton("OFF");
-
-//		ToggleGroup toggleGroup = new ToggleGroup();
-//
-//		toggleButton1.setToggleGroup(toggleGroup);
-//		toggleButton2.setToggleGroup(toggleGroup);
-
-//		box.getChildren().addAll(toggleButton1,toggleButton2);
-//
-//
-//			toggleButton1.setSelected(true);
-//			toggleButton2.setSelected(false);
-//
-//		isOnSelected = toggleButton1.isSelected();
-//		isOffSelected = toggleButton2.isSelected();
-
-		box.setLayoutX(300-(118*2));
-		box.setLayoutY(100);
-
-		return box;
-	}
-*/
 	
 	public Stage getMainStage() {
 		
@@ -517,23 +443,6 @@ public class ViewManager {
 		
 	}
 	
-/*	
-	public void playButtonSound(String soundPath) {
-
-		MediaPlayer mediaPlayer;
-
-		String src = soundPath;
-		Media tapped = new Media(Paths.get(src).toUri().toString());
-		mediaPlayer = new MediaPlayer(tapped);
-		mediaPlayer.setCycleCount(1);
-		mediaPlayer.play();
-
-	//		AudioClip tapped = new AudioClip(this.getClass().getResource("view/resources/fastinvader1.wav").toString());
-	//		tapped.play();
-
-	}
-*/
-
 	private void createStartButton() {
 		
 		buttons startButton = new buttons("PLAY");

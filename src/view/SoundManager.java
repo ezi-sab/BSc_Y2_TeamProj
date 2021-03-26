@@ -1,4 +1,4 @@
-package sound;
+package view;
 
 import java.nio.file.Paths;
 

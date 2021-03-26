@@ -15,7 +15,7 @@ public class Controller implements EventHandler<KeyEvent> {
 
 
     private ShipModel shipModel;
-    private static final String[] levelFiles = {"Space Shooter/src/levels/level1.txt", "Space Shooter/src/levels/level2.txt", "Space Shooter/src/levels/level3.txt"};
+    private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
     final private static double FPS = 5.0;
     
     private Timer timer;
