@@ -35,8 +35,8 @@ public class ShipModel {
     private Point2D enemy2Velocity;
     private static Direction lastDirection;
     private static Direction currentDirection;
-    
-    
+
+
     private int score;
     private int level;
     private int flagCount;
@@ -58,7 +58,7 @@ public class ShipModel {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             @SuppressWarnings("resource")
-			Scanner lineScanner = new Scanner(line);
+            Scanner lineScanner = new Scanner(line);
             while (lineScanner.hasNext()) {
                 lineScanner.next();
                 columnCount++;
@@ -73,7 +73,7 @@ public class ShipModel {
             e.printStackTrace();
         }
         grid = new CellValue[rowCount][columnCount];
-        
+
         int row = 0;
         int shipRow = 0;
         int shipColumn = 0;
@@ -81,12 +81,12 @@ public class ShipModel {
         int enemy1Column = 0;
         int enemy2Row = 0;
         int enemy2Column = 0;
-        
+
         while (scanner2.hasNextLine()) {
             int column = 0;
             String line = scanner2.nextLine();
             @SuppressWarnings("resource")
-			Scanner lineScanner = new Scanner(line);
+            Scanner lineScanner = new Scanner(line);
             while (lineScanner.hasNext()) {
                 String value = lineScanner.next();
                 CellValue thisValue;
@@ -103,21 +103,23 @@ public class ShipModel {
                         thisValue = CellValue.ENEMY1STARTINGPOINT;
                         enemy1Row = row;
                         enemy1Column = column;
+                        break;
                     }
                     case "2":
                     {
                         thisValue = CellValue.ENEMY2STARTINGPOINT;
                         enemy2Row = row;
                         enemy2Column = column;
+                        break;
                     }
                     case "B":
-                    	thisValue = CellValue.BLOCK;
-                    	break;
+                        thisValue = CellValue.BLOCK;
+                        break;
                     case "F":
-                    	thisValue = CellValue.FLAG;
-                    	break;
+                        thisValue = CellValue.FLAG;
+                        break;
                     default:
-                    	thisValue = CellValue.EMPTY;
+                        thisValue = CellValue.EMPTY;
                 }
                 grid[row][column] = thisValue;
                 column++;
@@ -129,9 +131,11 @@ public class ShipModel {
         currentDirection = Direction.NONE;
         lastDirection = Direction.NONE;
         enemy1Location = new Point2D(enemy1Row,enemy1Column);
-        enemy1Velocity = new Point2D(-1, 0);
+        enemy1Velocity = new Point2D(-1, 0); //changed from -1,0
+//        enemy1Velocity = new Point2D(0, 0); //changed from -1,0
         enemy2Location = new Point2D(enemy2Row,enemy2Column);
-        enemy2Velocity = new Point2D(-1, 0);
+        enemy2Velocity = new Point2D(-1, 0); //changed from -1,0
+//        enemy2Velocity = new Point2D(0, 0); //changed from -1,0
     }
 
     public void startNewGame(){
@@ -150,12 +154,12 @@ public class ShipModel {
         Point2D predictedShipLocation = shipLocation.add(predictedShipVelocity);
         predictedShipLocation = setOffScreenLocation(predictedShipLocation);
         if (direction.equals(lastDirection)) {
-        	if (grid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
+            if (grid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
                 shipVelocity = changeVelocity(Direction.NONE);
-        } else {
-        	shipVelocity = predictedShipVelocity;
-            shipLocation = predictedShipLocation;
-            setLastDirection(direction);
+            } else {
+                shipVelocity = predictedShipVelocity;
+                shipLocation = predictedShipLocation;
+                setLastDirection(direction);
             }
         }
         else {
@@ -175,10 +179,10 @@ public class ShipModel {
             }
         }
     }
-    
-    public Point2D[] moveEnemy(Point2D velocity, Point2D location){
+
+    public Point2D[] enemyAI(Point2D velocity, Point2D location){
         Random generator = new Random();
-        
+
         if (location.getY() == shipLocation.getY()) {
             if (location.getX() > shipLocation.getX()) {
                 velocity = changeVelocity(Direction.UP);
@@ -190,7 +194,7 @@ public class ShipModel {
             predictedLocation = setOffScreenLocation(predictedLocation);
             //generate new random directions until ghost can move without hitting a wall
             while (grid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
-            	Direction direction = randomDirectionGenerator();
+                Direction direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
                 predictedLocation = location.add(velocity);
             }
@@ -203,32 +207,42 @@ public class ShipModel {
             } else {
                 velocity = changeVelocity(Direction.RIGHT);
             }
-            Point2D potentialLocation = location.add(velocity);
-            potentialLocation = setOffScreenLocation(potentialLocation);
-            while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.BLOCK) {
-            	Direction direction = randomDirectionGenerator();
+            Point2D predictedLocation = location.add(velocity);
+            predictedLocation = setOffScreenLocation(predictedLocation);
+            while (grid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
+                Direction direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
-                potentialLocation = location.add(velocity);
+                predictedLocation = location.add(velocity);
             }
-            location = potentialLocation;
+            location = predictedLocation;
         }
         //move in a consistent random direction until it hits a wall, then choose a new random direction
         else{
-            Point2D potentialLocation = location.add(velocity);
-            potentialLocation = setOffScreenLocation(potentialLocation);
-            while(grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.BLOCK){
+            Point2D predictedLocation = location.add(velocity);
+            predictedLocation = setOffScreenLocation(predictedLocation);
+            while(grid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK){
                 Direction direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
-                potentialLocation = location.add(velocity);
+                predictedLocation = location.add(velocity);
             }
-            location = potentialLocation;
+            location = predictedLocation;
         }
-        
+
         Point2D[] data = {velocity, location};
         return data;
-        
+
     }
-    
+
+    public void moveEnemy() {
+        Point2D[] ghost1Data = enemyAI(enemy1Velocity, enemy1Location);
+        Point2D[] ghost2Data = enemyAI(enemy2Velocity, enemy2Location);
+        enemy1Velocity = ghost1Data[0];
+        enemy1Location = ghost1Data[1];
+        enemy2Velocity = ghost2Data[0];
+        enemy2Location = ghost2Data[1];
+
+    }
+
     public Point2D setOffScreenLocation(Point2D objectLocation) {
         if (objectLocation.getY() >= columnCount) {
             objectLocation = new Point2D(objectLocation.getX(), 0);
@@ -236,7 +250,7 @@ public class ShipModel {
         if (objectLocation.getY() < 0) {
             objectLocation = new Point2D(objectLocation.getX(), columnCount - 1);
         }
-        
+
         if (objectLocation.getX() >= rowCount) {
             objectLocation = new Point2D(0, objectLocation.getY());
         }
@@ -245,10 +259,10 @@ public class ShipModel {
         }
         return objectLocation;
     }
-    
+
     public Direction randomDirectionGenerator(){
-    	Random generator = new Random();
-    	int randInt = generator.nextInt(4);
+        Random generator = new Random();
+        int randInt = generator.nextInt(4);
         if (randInt == 0){
             return Direction.LEFT;
         }
@@ -267,8 +281,10 @@ public class ShipModel {
     public void step(Direction direction) {
         this.moveShip(direction);
         CellValue shipLocationCellValue = grid[(int) shipLocation.getX()][(int) shipLocation.getY()];
-        if (shipLocationCellValue == CellValue.COIN) {
+        if (shipLocationCellValue == CellValue.FLAG) {
             grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
+            flagCount--;
+            score += 10;
         }
         if (shipLocation.equals(enemy1Location)) {
             gameOver = true;
@@ -278,6 +294,21 @@ public class ShipModel {
             gameOver = true;
             shipVelocity = new Point2D(0,0);
         }
+        this.moveEnemy();
+        if (shipLocation.equals(enemy1Location)) {
+            gameOver = true;
+            shipVelocity = new Point2D(0,0);
+        }
+        if (shipLocation.equals(enemy2Location)) {
+            gameOver = true;
+            shipVelocity = new Point2D(0,0);
+        }
+
+        //start a new level if level is complete
+        /*if (this.isLevelComplete()) {
+            shipVelocity = new Point2D(0,0);
+            startNextLevel();
+        }*/
     }
 
     public Point2D changeVelocity(Direction direction) {
@@ -326,7 +357,7 @@ public class ShipModel {
     public Point2D getShipLocation() {
         return shipLocation;
     }
-    
+
     public int getScore() {
         return score;
     }
@@ -334,7 +365,7 @@ public class ShipModel {
     public void setScore(int score) {
         this.score = score;
     }
-    
+
     public int getLevel() {
         return level;
     }
@@ -342,15 +373,15 @@ public class ShipModel {
     public void setLevel(int level) {
         this.level = level;
     }
-    
+
     public static boolean isGameOver() {
         return gameOver;
     }
-    
+
     public static boolean isYouWon() {
         return youWon;
     }
-    
+
     public Point2D getEnemy1Location() {
         return enemy1Location;
     }
@@ -366,7 +397,7 @@ public class ShipModel {
     public void setEnemy2Location(Point2D enemy2Location) {
         this.enemy2Location = enemy2Location;
     }
-    
+
     public Point2D getEnemy1Velocity() {
         return enemy1Velocity;
     }

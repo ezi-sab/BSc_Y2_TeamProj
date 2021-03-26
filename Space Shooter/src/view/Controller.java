@@ -17,21 +17,21 @@ public class Controller implements EventHandler<KeyEvent> {
     private ShipModel shipModel;
     private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
     final private static double FPS = 5.0;
-    
+
     private Timer timer;
     private boolean paused;
-    
+
     @FXML private Label levelLabel;
     @FXML private Label scoreLabel;
     @FXML private Label gameOverLabel;
     @FXML private GameView gameView;
 
     public Controller() {
-    	this.paused = false;
+        this.paused = false;
     }
 
     public void initialize() {
-    	String file = this.getCurrentLevel(0);
+        String file = this.getCurrentLevel(0);
         this.shipModel = new ShipModel();
         this.update(ShipModel.Direction.NONE);
         this.startTimer();
@@ -106,8 +106,10 @@ public class Controller implements EventHandler<KeyEvent> {
     public static String getCurrentLevel(int x) {
         return levelFiles[x];
     }
-    
+
     public boolean getPaused() {
         return paused;
     }
 }
+
+
