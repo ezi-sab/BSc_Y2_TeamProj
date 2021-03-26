@@ -169,7 +169,7 @@ public class ViewManager {
 		Label credit1 = new Label("Bharath Raj: UI/Level Design");
 		Label credit2 = new Label("Eunji Kwak: Artificial Intelligence");
 		Label credit3 = new Label("Iniyan: Sound Design");
-		Label credit4 = new Label("Alfred: ");
+		Label credit4 = new Label("Alfred: UI");
 		Label credit5 = new Label("Matthew: ");
 		Label credit6 = new Label("Xiaoliang Pu: ");
 		
@@ -285,10 +285,10 @@ public class ViewManager {
 			@Override
 			public void handle(ActionEvent event) {
 				if (chosenShip != null) {
-					GameView gameManager = new GameView();
-					gameManager.setShipImage(chosenShip);
+					GameView gameViewManager = new GameView();
+					gameViewManager.setShipImage(chosenShip);
 					try {
-						gameManager.createNewGame(mainStage, chosenShip);
+						gameViewManager.createNewGame(mainStage, chosenShip);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -330,7 +330,7 @@ public class ViewManager {
 
 		MediaPlayer mediaPlayer;
 
-		String src = "Space Shooter/src/view/resources/sounds/spaceinvaders1.mp3";
+		String src = "src/view/resources/sounds/spaceinvaders1.mp3";
 		Media tapped = new Media(Paths.get(src).toUri().toString());
 		mediaPlayer = new MediaPlayer(tapped);
 
@@ -427,7 +427,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playSound("src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(shipSelectSubScene);
 			}
 			
@@ -441,7 +441,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playSound("src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(scoreSubScene);
 			}
 			
@@ -456,7 +456,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playSound("src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(musicControls);
 			}
 			
@@ -472,7 +472,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playSound("src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(helpSubScene);
 			}
 			
@@ -488,7 +488,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playSound("src/view/resources/sounds/fastinvader1.mp3");
 				showSubScene(creditsSubScene);
 			}
 			
@@ -504,7 +504,7 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				playSound("Space Shooter/src/view/resources/sounds/fastinvader1.mp3");
+				playSound("src/view/resources/sounds/fastinvader1.mp3");
 				mainStage.close();				
 			}
 			

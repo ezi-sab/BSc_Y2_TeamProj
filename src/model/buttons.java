@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 
 public class buttons extends Button {
 	
-	private final String FONT_PATH = "Space Shooter/src/model/resources/kenvector_future.ttf";
+	private final String FONT_PATH = "src/model/resources/kenvector_future.ttf";
 	private final String BUTTON_PRESSED_STYLE = "-fx-background-color: transparent; -fx-background-image: url('/model/resources/blue_button04.png');";
     private final String BUTTON_UNPRESSED_STYLE = "-fx-background-color: transparent; -fx-background-image: url('/model/resources/blue_button05.png');";
 
