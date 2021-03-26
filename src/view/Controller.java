@@ -23,6 +23,7 @@ public class Controller implements EventHandler<KeyEvent> {
 
     private PlayerModel player;
     private List<EnemyAIModel> enemies;
+
     private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
     final private static double FPS = 5.0;
     
