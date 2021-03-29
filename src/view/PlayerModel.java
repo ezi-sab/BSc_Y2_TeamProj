@@ -6,8 +6,8 @@ import view.ShipModel.Direction;
 
 public class PlayerModel extends ShipModel{
 	
-	public PlayerModel(CellValue[][] gameGrid, int rowCount, int columnCount) {
-		super(gameGrid, columnCount, columnCount);
+	public PlayerModel(CellValue[][] gameGrid) {
+		super(gameGrid);
 	}
 
 	public void moveShip(Direction direction) {
@@ -15,6 +15,8 @@ public class PlayerModel extends ShipModel{
         
         Point2D predictedShipLocation = shipLocation.add(predictedShipVelocity);
         predictedShipLocation = setOffScreenLocation(predictedShipLocation);
+        
+        
         if (direction.equals(lastDirection)) {
 
         	if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {

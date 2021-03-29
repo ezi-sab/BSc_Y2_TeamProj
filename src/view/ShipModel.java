@@ -28,10 +28,10 @@ public class ShipModel {
     protected int columnCount, rowCount;
 
 
-    public ShipModel(CellValue[][] grid, int rowCount, int columnCount) {
+    public ShipModel(CellValue[][] grid) {
         gameGrid = grid;
-        this.rowCount = rowCount;
-        this.columnCount = columnCount;
+        this.rowCount = grid.length;
+        this.columnCount = grid[0].length;
     }
 
 
@@ -51,6 +51,7 @@ public class ShipModel {
     }
 
     public Point2D setOffScreenLocation(Point2D objectLocation) {
+    	
         if (objectLocation.getY() >= columnCount) {
             objectLocation = new Point2D(objectLocation.getX(), 0);
         }

@@ -8,8 +8,8 @@ import view.ShipModel.Direction;
 
 public class EnemyAIModel extends ShipModel{
     
-	public EnemyAIModel(CellValue[][] gameGrid, int rowCount, int columnCount) {
-		super(gameGrid, columnCount, columnCount);
+	public EnemyAIModel(CellValue[][] gameGrid) {
+		super(gameGrid);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -32,61 +32,61 @@ public class EnemyAIModel extends ShipModel{
     }
 
 	
-    public Point2D[] enemyAI(Point2D velocity, Point2D location){
+    public Point2D[] enemyAI(Point2D velocity, Point2D playerLocation){
         Random generator = new Random();
         
-        if (location.getY() == shipLocation.getY()) {
-            if (location.getX() > shipLocation.getX()) {
+        if (shipLocation.getY() == playerLocation.getY()) {
+            if (shipLocation.getX() > playerLocation.getX()) {
                 velocity = changeVelocity(Direction.UP);
             } else {
                 velocity = changeVelocity(Direction.DOWN);
             }
-            Point2D predictedLocation = location.add(velocity);
+            Point2D predictedLocation = shipLocation.add(velocity);
             //if the ghost would go offscreen, wrap around
             predictedLocation = setOffScreenLocation(predictedLocation);
             //generate new random directions until ghost can move without hitting a wall
             while (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
             	Direction direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
-                predictedLocation = location.add(velocity);
+                predictedLocation = shipLocation.add(velocity);
             }
-            location = predictedLocation;
+            shipLocation = predictedLocation;
         }
         //check if ghost is in PacMan's row and move towards him
-        else if (location.getX() == shipLocation.getX()) {
-            if (location.getY() > shipLocation.getY()) {
+        else if (shipLocation.getX() == playerLocation.getX()) {
+            if (shipLocation.getY() > playerLocation.getY()) {
                 velocity = changeVelocity(Direction.LEFT);
             } else {
                 velocity = changeVelocity(Direction.RIGHT);
             }
-            Point2D predictedLocation = location.add(velocity);
+            Point2D predictedLocation = shipLocation.add(velocity);
             predictedLocation = setOffScreenLocation(predictedLocation);
             while (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
             	Direction direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
-                predictedLocation = location.add(velocity);
+                predictedLocation = shipLocation.add(velocity);
             }
-            location = predictedLocation;
+            shipLocation = predictedLocation;
         }
         //move in a consistent random direction until it hits a wall, then choose a new random direction
         else{
-            Point2D predictedLocation = location.add(velocity);
+            Point2D predictedLocation = shipLocation.add(velocity);
             predictedLocation = setOffScreenLocation(predictedLocation);
             while(gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK){
                 Direction direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
-                predictedLocation = location.add(velocity);
+                predictedLocation = shipLocation.add(velocity);
             }
-            location = predictedLocation;
+            shipLocation = predictedLocation;
         }
         
-        Point2D[] data = {velocity, location};
+        Point2D[] data = {velocity, shipLocation};
         return data;
         
     }
     
-    public void moveEnemy() {
-        Point2D[] enemyData = enemyAI(shipVelocity, shipLocation);
+    public void moveEnemy(Point2D playerLocation) {
+        Point2D[] enemyData = enemyAI(shipVelocity, playerLocation);
         shipVelocity = enemyData[0];
         shipLocation = enemyData[1];
 

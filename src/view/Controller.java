@@ -83,17 +83,19 @@ public class Controller implements EventHandler<KeyEvent> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             @SuppressWarnings("resource")
 			Scanner lineScanner = new Scanner(line);
+            
+            columnCount = 0;
             while (lineScanner.hasNext()) {
                 lineScanner.next();
                 columnCount++;
             }
             rowCount++;
         }
-        columnCount = columnCount / rowCount;
         Scanner scanner2 = null;
         try {
             scanner2 = new Scanner(file);
@@ -102,12 +104,18 @@ public class Controller implements EventHandler<KeyEvent> {
         }
         grid = new CellValue[rowCount][columnCount];
         
-		this.player = new PlayerModel(grid,rowCount,columnCount);
-		        
+        System.out.print(rowCount);
+        System.out.print(", " + String.valueOf(columnCount));
+        System.out.print(" Pre");
+		this.player = new PlayerModel(grid);
+		System.out.print(rowCount);
+        System.out.print(", " + String.valueOf(columnCount));
+        System.out.print(" Post");
+        
         noEnemies = 2;
         enemies = new ArrayList<EnemyAIModel>();
     	for(int i = 0; i < noEnemies; i++) {
-    		EnemyAIModel buffer = new EnemyAIModel(grid,rowCount,columnCount);
+    		EnemyAIModel buffer = new EnemyAIModel(grid);
     		this.enemies.add(buffer);
     	}
     	
@@ -188,7 +196,7 @@ public class Controller implements EventHandler<KeyEvent> {
                 shipVelocity = new Point2D(0,0);
             }
         	
-        	this.enemies.get(i).moveEnemy();
+        	this.enemies.get(i).moveEnemy(player.getLocation());
         
         	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
                 gameOver = true;
