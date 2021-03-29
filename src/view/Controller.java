@@ -55,18 +55,17 @@ public class Controller implements EventHandler<KeyEvent> {
     }
 
     public void initialize() {
-    	String file = this.getCurrentLevel(0);
-    	initializeLevel(file);
-    	
-        this.update(ShipModel.Direction.NONE);
         this.startTimer();
+    	
+    	String file = this.getCurrentLevel(0);
+    	startLevel(file);
     }
 
     private void startTimer() {
         this.timer = new java.util.Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
-                Platform.runLater(()->update(player.getCurrentDirection()));
+                Platform.runLater(()->update());
             }
         };
 
@@ -75,7 +74,7 @@ public class Controller implements EventHandler<KeyEvent> {
     }
     
     
-    public void initializeLevel(String fileName) {
+    public void startLevel(String fileName) {
         File file = new File(fileName);
         Scanner scanner = null;
         try {
@@ -108,7 +107,7 @@ public class Controller implements EventHandler<KeyEvent> {
 
 		
 		//noEnemies should be decided by the number of enemies declared in level file
-        noEnemies = 1;
+        noEnemies = 2;
         enemies = new ArrayList<EnemyAIModel>();
     	for(int i = 0; i < noEnemies; i++) {
     		EnemyAIModel buffer = new EnemyAIModel(grid);
@@ -160,7 +159,6 @@ public class Controller implements EventHandler<KeyEvent> {
             }
             row++;
         }
-        
     }
     
     
@@ -172,11 +170,11 @@ public class Controller implements EventHandler<KeyEvent> {
         flagCount = 0;
         score = 0;
         level = 1;
-        initializeLevel(Controller.getCurrentLevel(0));
+        startLevel(Controller.getCurrentLevel(0));
     }
     
-    public void step(Direction direction) {
-        player.moveShip(direction);
+    public void step() {
+        player.movePlayer();
         Point2D shipLocation = player.getLocation();
         Point2D shipVelocity = player.getVelocity();
         CellValue shipLocationCellValue = grid[(int) player.shipLocation.getX()][(int) shipLocation.getY()];
@@ -210,9 +208,9 @@ public class Controller implements EventHandler<KeyEvent> {
     
     
     
-    private void update(ShipModel.Direction direction) {
+    private void update() {
     	player.setGameGrid(grid);
-    	this.step(direction);
+    	this.step();
         
         this.gameView.update(player,enemies);
         
@@ -247,6 +245,9 @@ public class Controller implements EventHandler<KeyEvent> {
             paused = false;
             this.startNewGame();
             this.startTimer();
+        } else if (code == KeyCode.G) {
+        	String file = this.getCurrentLevel(0);
+        	startLevel(file);
         } else {
             keyRecognized = false;
         }

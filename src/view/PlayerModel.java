@@ -10,21 +10,21 @@ public class PlayerModel extends ShipModel{
 		super(gameGrid);
 	}
 
-	public void moveShip(Direction direction) {
-		Point2D predictedShipVelocity = changeVelocity(direction);
+	public void movePlayer() {
+		Point2D predictedShipVelocity = changeVelocity(this.currentDirection);
         
         Point2D predictedShipLocation = shipLocation.add(predictedShipVelocity);
         predictedShipLocation = setOffScreenLocation(predictedShipLocation);
         
         
-        if (direction.equals(lastDirection)) {
+        if (this.currentDirection.equals(lastDirection)) {
 
         	if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
                 shipVelocity = changeVelocity(Direction.NONE);
         } else {
         	shipVelocity = predictedShipVelocity;
             shipLocation = predictedShipLocation;
-            setLastDirection(direction);
+            setLastDirection(this.currentDirection);
             }
         }
         else {
@@ -40,7 +40,7 @@ public class PlayerModel extends ShipModel{
             } else {
                 shipVelocity = predictedShipVelocity;
                 shipLocation = predictedShipLocation;
-                setLastDirection(direction);
+                setLastDirection(this.currentDirection);
             }
         }
     }
