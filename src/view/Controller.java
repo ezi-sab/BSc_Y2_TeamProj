@@ -104,15 +104,11 @@ public class Controller implements EventHandler<KeyEvent> {
         }
         grid = new CellValue[rowCount][columnCount];
         
-        System.out.print(rowCount);
-        System.out.print(", " + String.valueOf(columnCount));
-        System.out.print(" Pre");
 		this.player = new PlayerModel(grid);
-		System.out.print(rowCount);
-        System.out.print(", " + String.valueOf(columnCount));
-        System.out.print(" Post");
-        
-        noEnemies = 2;
+
+		
+		//noEnemies should be decided by the number of enemies declared in level file
+        noEnemies = 1;
         enemies = new ArrayList<EnemyAIModel>();
     	for(int i = 0; i < noEnemies; i++) {
     		EnemyAIModel buffer = new EnemyAIModel(grid);
@@ -147,7 +143,7 @@ public class Controller implements EventHandler<KeyEvent> {
                     	thisValue = CellValue.FLAG;
                     	break;
                     default:
-                    	if (Character.isDigit(valChar)) {
+                    	if (Character.isDigit(valChar) && (valChar - '0' <= noEnemies)) {
 	                    	thisValue = CellValue.ENEMY1STARTINGPOINT;
 	                    	int valInt = valChar - '0' - 1;
 	                    	enemies.get(valInt).setLocation(new Point2D(row,column));

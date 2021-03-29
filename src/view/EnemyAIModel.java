@@ -16,37 +16,41 @@ public class EnemyAIModel extends ShipModel{
 
 	public Direction randomDirectionGenerator(){
     	Random generator = new Random();
-    	int randInt = generator.nextInt(4);
-        if (randInt == 0){
-            return Direction.LEFT;
-        }
-        else if (randInt == 1){
-            return Direction.RIGHT;
-        }
-        else if(randInt == 2){
-            return Direction.UP;
-        }
-        else{
-            return Direction.DOWN;
-        }
+    	int randInt;
+    	Direction randDirection;
+    	do {
+    		randInt = generator.nextInt(3);
+	        switch (randInt){
+	        case 0:		randDirection = Direction.LEFT;
+	        			break;
+	        case 1:		randDirection = Direction.RIGHT;
+						break;
+    		case 2:		randDirection = Direction.UP;
+						break;
+    		default: 	randDirection = Direction.DOWN;
+						break;
+	        }
+    	} while(randDirection == this.currentDirection);
+    	return randDirection;
     }
 
 	
     public Point2D[] enemyAI(Point2D velocity, Point2D playerLocation){
         Random generator = new Random();
-        
+        Direction direction = currentDirection;
         if (shipLocation.getY() == playerLocation.getY()) {
             if (shipLocation.getX() > playerLocation.getX()) {
-                velocity = changeVelocity(Direction.UP);
+            	direction = Direction.UP;
             } else {
-                velocity = changeVelocity(Direction.DOWN);
+            	direction = Direction.DOWN;
             }
+            velocity = changeVelocity(direction);
             Point2D predictedLocation = shipLocation.add(velocity);
             //if the ghost would go offscreen, wrap around
             predictedLocation = setOffScreenLocation(predictedLocation);
             //generate new random directions until ghost can move without hitting a wall
             while (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
-            	Direction direction = randomDirectionGenerator();
+            	direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
                 predictedLocation = shipLocation.add(velocity);
             }
@@ -55,14 +59,15 @@ public class EnemyAIModel extends ShipModel{
         //check if ghost is in PacMan's row and move towards him
         else if (shipLocation.getX() == playerLocation.getX()) {
             if (shipLocation.getY() > playerLocation.getY()) {
-                velocity = changeVelocity(Direction.LEFT);
+            	direction = Direction.LEFT;
             } else {
-                velocity = changeVelocity(Direction.RIGHT);
+            	direction = Direction.RIGHT;
             }
+            velocity = changeVelocity(direction);
             Point2D predictedLocation = shipLocation.add(velocity);
             predictedLocation = setOffScreenLocation(predictedLocation);
             while (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
-            	Direction direction = randomDirectionGenerator();
+            	direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
                 predictedLocation = shipLocation.add(velocity);
             }
@@ -73,13 +78,15 @@ public class EnemyAIModel extends ShipModel{
             Point2D predictedLocation = shipLocation.add(velocity);
             predictedLocation = setOffScreenLocation(predictedLocation);
             while(gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK){
-                Direction direction = randomDirectionGenerator();
+                direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
                 predictedLocation = shipLocation.add(velocity);
             }
             shipLocation = predictedLocation;
         }
         
+        this.lastDirection = this.currentDirection;
+        this.currentDirection = direction;
         Point2D[] data = {velocity, shipLocation};
         return data;
         

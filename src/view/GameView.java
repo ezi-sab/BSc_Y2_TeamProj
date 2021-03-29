@@ -174,14 +174,14 @@ public class GameView extends Group {
                 
                 for (int i = 0; i < enemies.size(); i++) {
                 	if (row == enemies.get(i).getLocation().getX() && column == enemies.get(i).getLocation().getY()) {
-	                	this.cellViews[row][column].setImage(this.enemyImages[i]);
-		                if (enemies.get(i).getLastDirection() == ShipModel.Direction.RIGHT) {
+                		this.cellViews[row][column].setImage(this.enemyImages[i]);
+		                if (enemies.get(i).getCurrentDirection() == ShipModel.Direction.RIGHT) {
 		                	this.cellViews[row][column].setRotate(90);
-		                } else if (enemies.get(i).getLastDirection() == ShipModel.Direction.LEFT) {
+		                } else if (enemies.get(i).getCurrentDirection() == ShipModel.Direction.LEFT) {
 		                	this.cellViews[row][column].setRotate(-90);
-		                } else if (enemies.get(i).getLastDirection() == ShipModel.Direction.UP || enemies.get(i).getLastDirection() == ShipModel.Direction.NONE) {
+		                } else if (enemies.get(i).getCurrentDirection() == ShipModel.Direction.UP || enemies.get(i).getCurrentDirection() == ShipModel.Direction.NONE) {
 		                	this.cellViews[row][column].setRotate(0);
-		                } else if (enemies.get(i).getLastDirection() == ShipModel.Direction.DOWN) {
+		                } else if (enemies.get(i).getCurrentDirection() == ShipModel.Direction.DOWN) {
 		                	this.cellViews[row][column].setRotate(180);
 		                }
                 	}
