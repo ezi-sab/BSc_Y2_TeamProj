@@ -18,6 +18,8 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import view.Controller;
+
 public class Controller implements EventHandler<KeyEvent> {
 
 
@@ -46,10 +48,12 @@ public class Controller implements EventHandler<KeyEvent> {
     static private int noEnemies;
     static private int score;
     static private int level;
-    static private int flagCount;
     static private boolean gameOver;
     static private boolean youWon;
-
+    static private int smalldot;
+    static private boolean levelComplete;
+    static private SoundManager soundManager;
+    
     public Controller() {
     	this.paused = false;
     }
@@ -57,7 +61,7 @@ public class Controller implements EventHandler<KeyEvent> {
     public void initialize() {
         this.startTimer();
     	
-    	String file = this.getCurrentLevel(0);
+    	String file = getCurrentLevel(0);
     	startLevel(file);
     }
 
@@ -138,8 +142,9 @@ public class Controller implements EventHandler<KeyEvent> {
                     case 'B':
                     	thisValue = CellValue.BLOCK;
                     	break;
-                    case 'F':
-                    	thisValue = CellValue.FLAG;
+                    case 'S':
+                    	thisValue = CellValue.COIN;
+                    	smalldot++;
                     	break;
                     default:
                     	if (Character.isDigit(valChar) && (valChar - '0' <= noEnemies)) {
@@ -167,10 +172,32 @@ public class Controller implements EventHandler<KeyEvent> {
         columnCount = 0;
         gameOver = false;
         youWon = false;
-        flagCount = 0;
+        smalldot = 0;
         score = 0;
-        level = 1;
+        level = 0;
+        this.gameOverLabel.setText(String.format(""));
         startLevel(Controller.getCurrentLevel(0));
+    }
+    
+    public void startNextLevel() {
+        if (this.isLevelComplete()) {
+            level++;
+            rowCount = 0;
+            columnCount = 0;
+            youWon = false;
+    		//this.gameOverLabel.setText(String.format(""));
+
+            try {
+                this.startLevel(Controller.getCurrentLevel(level));
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                //if there are no levels left in the level array, the game ends
+                youWon = true;
+                gameOver = true;
+                level--;
+                
+            }
+        }
     }
     
     public void step() {
@@ -178,11 +205,38 @@ public class Controller implements EventHandler<KeyEvent> {
         Point2D shipLocation = player.getLocation();
         Point2D shipVelocity = player.getVelocity();
         CellValue shipLocationCellValue = grid[(int) player.shipLocation.getX()][(int) shipLocation.getY()];
-        if (shipLocationCellValue == CellValue.FLAG) {
+        /*if (shipLocationCellValue == CellValue.FLAG) {
         	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
             flagCount--;
             score += 10;
+        }*/
+
+        if (shipLocationCellValue == CellValue.COIN) {
+        	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
+        	soundManager = new SoundManager();
+        	soundManager.playCoinCollectMusic();
+        	smalldot--;
+            score += 1;
         }
+        
+        if(smalldot == 0) {
+        	//youWon = true;
+        	// start next level
+        	levelComplete = true;
+        	youWon = true;
+        	if (youWon == true) {
+            	if (level == 0) {
+            		this.gameOverLabel.setText(String.format("LEVEL 1 COMPLETED!"));
+            	} else if(level == 1) {
+            		this.gameOverLabel.setText(String.format("LEVEL 2 COMPLETED!"));
+            	} else {
+            		this.gameOverLabel.setText(String.format("YOU WON!"));
+            	}
+        	}
+        	startNextLevel();
+        }
+        
+        //TODO: Add the power up buttons.
         
         for(int i = 0; i < noEnemies; i++) {
         	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
@@ -215,13 +269,20 @@ public class Controller implements EventHandler<KeyEvent> {
         this.gameView.update(player,enemies);
         
         this.scoreLabel.setText(String.format("Score: %d", score));
-        this.levelLabel.setText(String.format("Level: %d", level));
+        this.levelLabel.setText(String.format("Level: %d", level + 1));
         if (gameOver) {
             this.gameOverLabel.setText(String.format("GAME OVER"));
             pause();
-        }
-        if (youWon) {
+         /*else if (youWon == true) {
+        	if (level < 2) {
+        		this.gameOverLabel.setText(String.format("LEVEL COMPLETED!"));
+        	} else {
+        		this.gameOverLabel.setText(String.format("YOU WON!"));
+        	}
+        }*/
+        } else if (youWon) {
             this.gameOverLabel.setText(String.format("YOU WON!"));
+
         }
     }
     
@@ -239,15 +300,11 @@ public class Controller implements EventHandler<KeyEvent> {
             direction = ShipModel.Direction.UP;
         } else if (code == KeyCode.DOWN || code == KeyCode.S) {
             direction = ShipModel.Direction.DOWN;
-        } else if (code == KeyCode.P) {
-            pause();
-            this.gameOverLabel.setText(String.format(""));
-            paused = false;
-            this.startNewGame();
-            this.startTimer();
         } else if (code == KeyCode.G) {
-        	String file = this.getCurrentLevel(0);
-        	startLevel(file);
+        	pause();
+        	this.startNewGame();
+        	paused = false;
+            this.startTimer();
         } else {
             keyRecognized = false;
         }
@@ -259,6 +316,7 @@ public class Controller implements EventHandler<KeyEvent> {
 
     public void pause() {
         this.timer.cancel();
+        this.paused = true;
     }
 
     public double getBoardWidth() {
@@ -266,7 +324,7 @@ public class Controller implements EventHandler<KeyEvent> {
     }
 
     public double getBoardHeight() {
-        return GameView.CELL_WIDTH * this.gameView.getGvRowCount();
+        return (GameView.CELL_WIDTH * this.gameView.getGvRowCount()) + 100;
     }
     
     public CellValue[][] getGrid(){
@@ -287,6 +345,10 @@ public class Controller implements EventHandler<KeyEvent> {
     
     public boolean getPaused() {
         return paused;
+    }
+    
+    public boolean isLevelComplete() {
+    	return levelComplete;
     }
 }
     

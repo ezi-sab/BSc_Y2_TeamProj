@@ -55,7 +55,6 @@ public class ViewManager {
 	private menuSubScene sceneToHide;
 	
 	private SoundManager soundManager;
-	private Boolean inGameMusic;
 
 	List<buttons> menuButtons;
 	
@@ -70,8 +69,7 @@ public class ViewManager {
 		mainStage = new Stage();
 		mainStage.setScene(mainScene);
 		soundManager = new SoundManager();
-		soundManager.playBackGroundMusic(true);
-		inGameMusic = true;
+		soundManager.playBackGroundMusic();
 		createSubScene();
 		createButtons();
 		createBackground();
@@ -330,7 +328,8 @@ public class ViewManager {
 			public void handle(ActionEvent actionEvent) {
 				
 				if(soundManager.isBackGroundMusic() == false) {
-					soundManager.playBackGroundMusic(true);
+					soundManager.changeBackGroundMusic(true);
+					soundManager.playBackGroundMusic();
 				}
 			}
 		});
@@ -350,7 +349,8 @@ public class ViewManager {
 			public void handle(ActionEvent actionEvent) {
 
 				if(soundManager.isBackGroundMusic() == true) {
-					soundManager.playBackGroundMusic(false);
+					soundManager.changeBackGroundMusic(false);
+					soundManager.playBackGroundMusic();
 				}
 
 			}
@@ -370,8 +370,8 @@ public class ViewManager {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 				
-				if(isInGameMusic() == false) {
-					inGameMusic = true;
+				if(soundManager.isInGameMusic() == false) {
+					soundManager.changeInGameMusic(true);
 				}
 			}
 		});
@@ -390,20 +390,14 @@ public class ViewManager {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 
-				if(isInGameMusic() == true) {
-					inGameMusic = false;
+				if(soundManager.isInGameMusic() == true) {
+					soundManager.changeInGameMusic(false);
 				}
 
 			}
 		});
 	
 		return musicOff;
-		
-	}
-	
-	private boolean isInGameMusic() {
-		
-		return inGameMusic;
 		
 	}
 	

@@ -42,9 +42,9 @@ public class GameView extends Group {
     @FXML private int gvColumnCount;
     private ImageView[][] cellViews;
    
-    private Image coin; //set to final
     private Image powerUp; //set to final
     private final Image blockImage = new Image(getClass().getResourceAsStream("/res/spaceBuilding_018.png"));
+    private final Image coinImage = new Image(getClass().getResourceAsStream("/res/smalldot.png"));
     private static Image shipImage;
 
     
@@ -56,7 +56,7 @@ public class GameView extends Group {
     private final Image bulletImage = new Image(getClass().getResourceAsStream("/res/laserRed15.png"));
     
     
-    public final static double CELL_WIDTH = 30.0;
+    public final static double CELL_WIDTH = 35.0;
     
     private SmallInfoLabel pointsLabel;
     private ImageView[] playerLifes;
@@ -150,8 +150,8 @@ public class GameView extends Group {
         for (int row = 0; row < gvRowCount; row++) {
             for (int column = 0; column < gvColumnCount; column++) {
             	CellValue value = player.getCellValue(row, column);
-                if (value == CellValue.EMPTY) {
-                    this.cellViews[row][column].setImage(null);
+                if (value == CellValue.COIN) {
+                    this.cellViews[row][column].setImage(this.coinImage);
                 } else if (value == CellValue.BLOCK) {
                     this.cellViews[row][column].setImage(this.blockImage);
                 } else {

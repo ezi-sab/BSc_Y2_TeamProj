@@ -7,26 +7,37 @@ import javafx.scene.media.MediaPlayer;
 
 public class SoundManager {
 	
-	Media bgm = new Media(Paths.get("src/view/resources/sounds/spaceinvaders1.mp3").toUri().toString());
+	static Media bgm = new Media(Paths.get("src/view/resources/sounds/spaceinvaders1.mp3").toUri().toString());
 	
-	MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
+	static MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
 	MediaPlayer mediaPlayerMenu;
 	MediaPlayer mediaPlayerCoin;
 	MediaPlayer mediaPlayerEnemyDead;
 	MediaPlayer mediaPlayerExplosion;
 	
-	boolean backGroundMusic;
+	static boolean backGroundMusic = true;
+	static boolean inGameMusic = true;
 	
-	public void playBackGroundMusic(boolean music) {
+	public void playBackGroundMusic() {
 		
-		if (music == true) {
+		if (backGroundMusic == true) {
+			
 			mediaPlayerBgm.setCycleCount(MediaPlayer.INDEFINITE);
 			mediaPlayerBgm.play();
 			backGroundMusic = true;
-		} else if (music == false) {
+			
+		} else if (backGroundMusic == false) {
+			
 			mediaPlayerBgm.pause();
 			backGroundMusic = false;
+			
 		}
+		
+	}
+	
+	public void changeBackGroundMusic(boolean music) {
+		
+		backGroundMusic = music;
 		
 	}
 	
@@ -46,26 +57,49 @@ public class SoundManager {
 	
 	public void playCoinCollectMusic() {
 		
-		Media coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-(Button).mp3").toUri().toString());
-		MediaPlayer mediaPlayerCoin = new MediaPlayer(coin);
-		mediaPlayerCoin.setAutoPlay(true);
+		if(inGameMusic == true) {
+			
+			Media coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-(Button).mp3").toUri().toString());
+			MediaPlayer mediaPlayerCoin = new MediaPlayer(coin);
+			mediaPlayerCoin.setAutoPlay(true);
+			
+		}
 		
 	}
 	
 	public void playEnemyDeadMusic() {
 		
-		Media enemyDead = new Media(Paths.get("src/view/resources/sounds/Roblox-death-sound.mp3").toUri().toString());
-		MediaPlayer mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
-		mediaPlayerEnemyDead.play();
+		if(inGameMusic == true) {
+			
+			Media enemyDead = new Media(Paths.get("src/view/resources/sounds/explosion.mp3").toUri().toString());
+			MediaPlayer mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
+			mediaPlayerEnemyDead.play();
+			
+		}
 		
 	}
 	
-	public void playExplosionMusic() {
+	public void playPlayerDeadMusic() {
 		
-		Media explosion = new Media(Paths.get("src/view/resources/sounds/explosion.mp3").toUri().toString());
-		MediaPlayer mediaPlayerExplosion = new MediaPlayer(explosion);
-		mediaPlayerExplosion.play();
+		if(inGameMusic == true) {
+			
+			Media playerDead = new Media(Paths.get("src/view/resources/sounds/Roblox-death-sound.mp3").toUri().toString());
+			MediaPlayer mediaPlayerExplosion = new MediaPlayer(playerDead);
+			mediaPlayerExplosion.play();
+			
+		}
 		
+	}
+	
+	public void changeInGameMusic(boolean music) {
+		
+		inGameMusic = music;
+		
+	}
+	
+	public boolean isInGameMusic() {
+		
+		return inGameMusic;
 	}
 
 }

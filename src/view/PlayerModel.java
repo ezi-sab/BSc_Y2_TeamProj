@@ -21,10 +21,11 @@ public class PlayerModel extends ShipModel{
 
         	if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
                 shipVelocity = changeVelocity(Direction.NONE);
+                setLastDirection(this.currentDirection);
         } else {
         	shipVelocity = predictedShipVelocity;
             shipLocation = predictedShipLocation;
-            setLastDirection(this.currentDirection);
+            //setLastDirection(this.currentDirection);
             }
         }
         else {
