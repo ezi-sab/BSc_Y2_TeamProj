@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import model.InfoLabel;
 import model.Ship;
 import model.ShipPicker;
+import model.VolumeShip;
 import model.buttons;
 import model.menuSubScene;
 
@@ -51,14 +52,13 @@ public class ViewManager {
 	private menuSubScene helpSubScene;
 	private menuSubScene creditsSubScene;
 	private menuSubScene musicControls;
-	
 	private menuSubScene sceneToHide;
 	
 	private SoundManager soundManager;
 
 	List<buttons> menuButtons;
-	
 	List<ShipPicker> shipsList;
+	
 	private Ship chosenShip; 
 	
 	public ViewManager() {
@@ -278,7 +278,10 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
+				
 				if (chosenShip != null) {
+					soundManager.setBackGroundMusicVolume(0);
+					soundManager.playBackGroundMusic();
 					GameView gameViewManager = new GameView();
 					gameViewManager.setShipImage(chosenShip);
 					try {
@@ -305,102 +308,218 @@ public class ViewManager {
 		chooseBGMusicOption.setLayoutX(125);
 		chooseBGMusicOption.setLayoutY(25);
 		musicControls.getPane().getChildren().add(chooseBGMusicOption);
-		musicControls.getPane().getChildren().add(bgmOnButton());
-		musicControls.getPane().getChildren().add(bgmOffButton());
+		musicControls.getPane().getChildren().add(bgmVolumeShips());
 		
 		InfoLabel chooseIGMusicOption = new InfoLabel("IN-GAME MUSIC");
 		chooseIGMusicOption.setLayoutX(125);
 		chooseIGMusicOption.setLayoutY(200);
 		musicControls.getPane().getChildren().add(chooseIGMusicOption);
-		musicControls.getPane().getChildren().add(igmOnButton());
-		musicControls.getPane().getChildren().add(igmOffButton());
-
+		musicControls.getPane().getChildren().add(igmVolumeShips());
+		
 	}
 	
-	private buttons bgmOnButton() {
+	private HBox bgmVolumeShips() {
 		
-		buttons musicOn = new buttons("ON");
-		musicOn.setLayoutX(100);
-		musicOn.setLayoutY(100);
+		HBox bgmVolBox = new HBox();
+		VolumeShip volumeShip1 = new VolumeShip();
+		VolumeShip volumeShip2 = new VolumeShip();
+		VolumeShip volumeShip3 = new VolumeShip();
+		VolumeShip volumeShip4 = new VolumeShip();
+		VolumeShip volumeShip5 = new VolumeShip();
 		
-		musicOn.setOnAction(new EventHandler<ActionEvent>() {
+		bgmVolBox.getChildren().add(volumeShip1);
+		volumeShip1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
 			@Override
-			public void handle(ActionEvent actionEvent) {
+			public void handle(MouseEvent event) {
+			
+				soundManager.setBackGroundMusicVolume(0);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(false);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+			
+			}
+		
+		});
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip2);
+		volumeShip2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setBackGroundMusicVolume(0.25);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+			
+			}
+		
+		});
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip3);
+		volumeShip3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setBackGroundMusicVolume(0.50);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+		
+			}
+		});
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip4);
+		volumeShip4.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setBackGroundMusicVolume(0.75);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(false);
+		
+			}
+		});
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip5);
+		volumeShip5.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setBackGroundMusicVolume(1);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(true);
+		
+			}
+		});
+		
+		bgmVolBox.setLayoutX(35);
+		bgmVolBox.setLayoutY(100);
+		return bgmVolBox;
+		
+	}
+	
+	private HBox igmVolumeShips() {
+		
+		HBox igmVolBox = new HBox();
+		VolumeShip volumeShip1 = new VolumeShip();
+		VolumeShip volumeShip2 = new VolumeShip();
+		VolumeShip volumeShip3 = new VolumeShip();
+		VolumeShip volumeShip4 = new VolumeShip();
+		VolumeShip volumeShip5 = new VolumeShip();
+		
+		igmVolBox.getChildren().add(volumeShip1);
+		volumeShip1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setInGameMusicVolume(0);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(false);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
 				
-				if(soundManager.isBackGroundMusic() == false) {
-					soundManager.changeBackGroundMusic(true);
-					soundManager.playBackGroundMusic();
-				}
 			}
+		
 		});
+		igmVolBox.setSpacing(10);
 		
-		return musicOn;
+		igmVolBox.getChildren().add(volumeShip2);
+		volumeShip2.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		
-	}
-
-	private buttons bgmOffButton() {
-	
-		buttons musicOff = new buttons("OFF");
-		musicOff.setLayoutX(300);
-		musicOff.setLayoutY(100);
-	
-		musicOff.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent actionEvent) {
-
-				if(soundManager.isBackGroundMusic() == true) {
-					soundManager.changeBackGroundMusic(false);
-					soundManager.playBackGroundMusic();
-				}
-
-			}
-		});
-	
-		return musicOff;
-		
-	}
-	
-	private buttons igmOnButton() {
-		
-		buttons musicOn = new buttons("ON");
-		musicOn.setLayoutX(100);
-		musicOn.setLayoutY(275);
-		
-		musicOn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
+			public void handle(MouseEvent event) {
+			
+				soundManager.setInGameMusicVolume(0.25);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
 				
-				if(soundManager.isInGameMusic() == false) {
-					soundManager.changeInGameMusic(true);
-				}
 			}
+		
 		});
+		igmVolBox.setSpacing(10);
 		
-		return musicOn;
-		
-	}
-	
-	private buttons igmOffButton() {
-		
-		buttons musicOff = new buttons("OFF");
-		musicOff.setLayoutX(300);
-		musicOff.setLayoutY(275);
-	
-		musicOff.setOnAction(new EventHandler<ActionEvent>() {
+		igmVolBox.getChildren().add(volumeShip3);
+		volumeShip3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
 			@Override
-			public void handle(ActionEvent actionEvent) {
-
-				if(soundManager.isInGameMusic() == true) {
-					soundManager.changeInGameMusic(false);
-				}
-
+			public void handle(MouseEvent event) {
+			
+				soundManager.setInGameMusicVolume(0.50);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+		
 			}
 		});
-	
-		return musicOff;
+		igmVolBox.setSpacing(10);
+		
+		igmVolBox.getChildren().add(volumeShip4);
+		volumeShip4.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setInGameMusicVolume(0.75);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(false);
+		
+			}
+		});
+		igmVolBox.setSpacing(10);
+		
+		igmVolBox.getChildren().add(volumeShip5);
+		volumeShip5.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				soundManager.setInGameMusicVolume(1);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(true);
+		
+			}
+		});
+		
+		igmVolBox.setLayoutX(35);
+		igmVolBox.setLayoutY(275);
+		return igmVolBox;
 		
 	}
-	
+
 	public Stage getMainStage() {
 		
 		return mainStage;
@@ -436,9 +555,9 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				showSubScene(shipSelectSubScene);
 				SoundManager sound = new SoundManager();
 				sound.playMenuOpenMusic();
+				showSubScene(shipSelectSubScene);
 			}
 			
 		});
@@ -453,9 +572,9 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				showSubScene(scoreSubScene);
 				SoundManager sound = new SoundManager();
 				sound.playMenuOpenMusic();
+				showSubScene(scoreSubScene);
 			}
 			
 		});
@@ -471,9 +590,9 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				showSubScene(musicControls);
 				SoundManager sound = new SoundManager();
 				sound.playMenuOpenMusic();
+				showSubScene(musicControls);
 			}
 			
 			
@@ -490,9 +609,9 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				showSubScene(helpSubScene);
 				SoundManager sound = new SoundManager();
 				sound.playMenuOpenMusic();
+				showSubScene(helpSubScene);
 			}
 			
 			
@@ -509,9 +628,9 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent event) {
-				showSubScene(creditsSubScene);
 				SoundManager sound = new SoundManager();
 				sound.playMenuOpenMusic();
+				showSubScene(creditsSubScene);
 			}
 			
 			
@@ -528,8 +647,6 @@ public class ViewManager {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				SoundManager sound = new SoundManager();
-				sound.playMenuOpenMusic();
 				mainStage.close();				
 			}
 			

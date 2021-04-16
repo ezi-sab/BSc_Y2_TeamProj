@@ -7,99 +7,98 @@ import javafx.scene.media.MediaPlayer;
 
 public class SoundManager {
 	
-	static Media bgm = new Media(Paths.get("src/view/resources/sounds/spaceinvaders1.mp3").toUri().toString());
+	static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
 	
 	static MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
 	MediaPlayer mediaPlayerMenu;
+	MediaPlayer mediaPlayerCountDown;
 	MediaPlayer mediaPlayerCoin;
 	MediaPlayer mediaPlayerEnemyDead;
-	MediaPlayer mediaPlayerExplosion;
+	MediaPlayer mediaPlayerPlayerDead;
 	
-	static boolean backGroundMusic = true;
-	static boolean inGameMusic = true;
+	static double backGroundMusicVolume = 1.00;
+	static double inGameMusicVolume = 1.00;
 	
 	public void playBackGroundMusic() {
 		
-		if (backGroundMusic == true) {
-			
-			mediaPlayerBgm.setCycleCount(MediaPlayer.INDEFINITE);
-			mediaPlayerBgm.play();
-			backGroundMusic = true;
-			
-		} else if (backGroundMusic == false) {
-			
+		mediaPlayerBgm.setCycleCount(MediaPlayer.INDEFINITE);
+		mediaPlayerBgm.setVolume(backGroundMusicVolume);
+		mediaPlayerBgm.play();
+		
+	}
+	
+	public void setBackGroundMusicVolume(double vol) {
+		
+		backGroundMusicVolume = vol;
+		if(backGroundMusicVolume == 0) {
 			mediaPlayerBgm.pause();
-			backGroundMusic = false;
-			
+		} else {
+			mediaPlayerBgm.play();
+			mediaPlayerBgm.setVolume(backGroundMusicVolume);
 		}
 		
 	}
 	
-	public void changeBackGroundMusic(boolean music) {
+	public double getBackGroundMusicVolume() {
 		
-		backGroundMusic = music;
-		
-	}
-	
-	public boolean isBackGroundMusic() {
-		
-		return backGroundMusic;
+		return backGroundMusicVolume;
 		
 	}
 	
 	public void playMenuOpenMusic() {
 		
-		Media menuMusic = new Media(Paths.get("src/view/resources/sounds/fastinvader1.mp3").toUri().toString());
+		Media menuMusic = new Media(Paths.get("src/view/resources/sounds/Fastinvader-sound.mp3").toUri().toString());
 		MediaPlayer mediaPlayerMenu = new MediaPlayer(menuMusic);
+		mediaPlayerMenu.setVolume(backGroundMusicVolume);
 		mediaPlayerMenu.setAutoPlay(true);
 		
 	}
 	
-	public void playCoinCollectMusic() {
+	public void playCountDownMusic() {
 		
-		if(inGameMusic == true) {
+		Media countDown = new Media(Paths.get("src/view/resources/sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
+		MediaPlayer mediaPlayerCountDown = new MediaPlayer(countDown);
+		mediaPlayerCountDown.setVolume(inGameMusicVolume);
+		mediaPlayerCountDown.setAutoPlay(true);
+		
+	}
+	
+	public void playCoinCollectMusic() {
 			
-			Media coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-(Button).mp3").toUri().toString());
-			MediaPlayer mediaPlayerCoin = new MediaPlayer(coin);
-			mediaPlayerCoin.setAutoPlay(true);
-			
-		}
+		Media coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
+		MediaPlayer mediaPlayerCoin = new MediaPlayer(coin);
+		mediaPlayerCoin.setVolume(inGameMusicVolume);
+		mediaPlayerCoin.setAutoPlay(true);
 		
 	}
 	
 	public void playEnemyDeadMusic() {
-		
-		if(inGameMusic == true) {
 			
-			Media enemyDead = new Media(Paths.get("src/view/resources/sounds/explosion.mp3").toUri().toString());
-			MediaPlayer mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
-			mediaPlayerEnemyDead.play();
-			
-		}
+		Media enemyDead = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
+		MediaPlayer mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
+		mediaPlayerEnemyDead.setVolume(inGameMusicVolume);
+		mediaPlayerEnemyDead.setAutoPlay(true);
 		
 	}
 	
 	public void playPlayerDeadMusic() {
-		
-		if(inGameMusic == true) {
 			
-			Media playerDead = new Media(Paths.get("src/view/resources/sounds/Roblox-death-sound.mp3").toUri().toString());
-			MediaPlayer mediaPlayerExplosion = new MediaPlayer(playerDead);
-			mediaPlayerExplosion.play();
-			
-		}
+		Media playerDead = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
+		MediaPlayer mediaPlayerPlayerDead = new MediaPlayer(playerDead);
+		mediaPlayerPlayerDead.setVolume(inGameMusicVolume);
+		mediaPlayerPlayerDead.setAutoPlay(true);	
 		
 	}
 	
-	public void changeInGameMusic(boolean music) {
+	public void setInGameMusicVolume(double vol) {
 		
-		inGameMusic = music;
+		inGameMusicVolume = vol;
 		
 	}
 	
-	public boolean isInGameMusic() {
+	public double getInGameMusicVolume() {
 		
-		return inGameMusic;
+		return inGameMusicVolume;
 	}
 
 }
