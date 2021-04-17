@@ -1,23 +1,31 @@
 package view;
 
 import java.nio.file.Paths;
-
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import model.VolumeShip;
 
 public class SoundManager {
 	
-	static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
+	private static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
+	private Media menuMusic;
+	private Media countDown;
+	private Media coin;
+	private Media enemyDead;
+	private Media playerDead;
 	
-	static MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
-	MediaPlayer mediaPlayerMenu;
-	MediaPlayer mediaPlayerCountDown;
-	MediaPlayer mediaPlayerCoin;
-	MediaPlayer mediaPlayerEnemyDead;
-	MediaPlayer mediaPlayerPlayerDead;
+	private static MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
+	private MediaPlayer mediaPlayerMenu;
+	private MediaPlayer mediaPlayerCountDown;
+	private MediaPlayer mediaPlayerCoin;
+	private MediaPlayer mediaPlayerEnemyDead;
+	private MediaPlayer mediaPlayerPlayerDead;
 	
-	static double backGroundMusicVolume = 1.00;
-	static double inGameMusicVolume = 1.00;
+	private static double backGroundMusicVolume = 1.00;
+	private static double inGameMusicVolume = 1.00;
 	
 	public void playBackGroundMusic() {
 		
@@ -27,9 +35,18 @@ public class SoundManager {
 		
 	}
 	
-	public void setBackGroundMusicVolume(double vol) {
+	public void playMenuOpenMusic() {
 		
-		backGroundMusicVolume = vol;
+		menuMusic = new Media(Paths.get("src/view/resources/sounds/Fastinvader-sound.mp3").toUri().toString());
+		mediaPlayerMenu = new MediaPlayer(menuMusic);
+		mediaPlayerMenu.setVolume(backGroundMusicVolume);
+		mediaPlayerMenu.setAutoPlay(true);
+		
+	}
+	
+	public void setBackGroundMusicVolume(double volume) {
+		
+		backGroundMusicVolume = volume;
 		if(backGroundMusicVolume == 0) {
 			mediaPlayerBgm.pause();
 		} else {
@@ -39,25 +56,117 @@ public class SoundManager {
 		
 	}
 	
-	public double getBackGroundMusicVolume() {
+	public HBox bgmVolumeShips() {
 		
-		return backGroundMusicVolume;
+		HBox bgmVolBox = new HBox();
+		VolumeShip volumeShip1 = new VolumeShip();
+		VolumeShip volumeShip2 = new VolumeShip();
+		VolumeShip volumeShip3 = new VolumeShip();
+		VolumeShip volumeShip4 = new VolumeShip();
+		VolumeShip volumeShip5 = new VolumeShip();
+		
+		bgmVolBox.getChildren().add(volumeShip1);
+		volumeShip1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				
+				setBackGroundMusicVolume(0);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(false);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+				
+			}
+			
+		});
+		
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip2);
+		volumeShip2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				
+				setBackGroundMusicVolume(0.25);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+				
+			}
+			
+		});
+		
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip3);
+		volumeShip3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				
+				setBackGroundMusicVolume(0.50);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+				
+			}
+		});
+		
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip4);
+		volumeShip4.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				
+				setBackGroundMusicVolume(0.75);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(false);
+				
+			}
+		});
+		
+		bgmVolBox.setSpacing(10);
+		
+		bgmVolBox.getChildren().add(volumeShip5);
+		volumeShip5.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				
+				setBackGroundMusicVolume(1);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(true);
+				
+			}
+		});
+		
+		bgmVolBox.setLayoutX(35);
+		bgmVolBox.setLayoutY(100);
+		
+		return bgmVolBox;
 		
 	}
 	
-	public void playMenuOpenMusic() {
-		
-		Media menuMusic = new Media(Paths.get("src/view/resources/sounds/Fastinvader-sound.mp3").toUri().toString());
-		MediaPlayer mediaPlayerMenu = new MediaPlayer(menuMusic);
-		mediaPlayerMenu.setVolume(backGroundMusicVolume);
-		mediaPlayerMenu.setAutoPlay(true);
-		
-	}
 	
 	public void playCountDownMusic() {
 		
-		Media countDown = new Media(Paths.get("src/view/resources/sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
-		MediaPlayer mediaPlayerCountDown = new MediaPlayer(countDown);
+		countDown = new Media(Paths.get("src/view/resources/sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
+		mediaPlayerCountDown = new MediaPlayer(countDown);
 		mediaPlayerCountDown.setVolume(inGameMusicVolume);
 		mediaPlayerCountDown.setAutoPlay(true);
 		
@@ -65,8 +174,8 @@ public class SoundManager {
 	
 	public void playCoinCollectMusic() {
 			
-		Media coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
-		MediaPlayer mediaPlayerCoin = new MediaPlayer(coin);
+		coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
+		mediaPlayerCoin = new MediaPlayer(coin);
 		mediaPlayerCoin.setVolume(inGameMusicVolume);
 		mediaPlayerCoin.setAutoPlay(true);
 		
@@ -74,8 +183,8 @@ public class SoundManager {
 	
 	public void playEnemyDeadMusic() {
 			
-		Media enemyDead = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
-		MediaPlayer mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
+		enemyDead = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
+		mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
 		mediaPlayerEnemyDead.setVolume(inGameMusicVolume);
 		mediaPlayerEnemyDead.setAutoPlay(true);
 		
@@ -83,22 +192,124 @@ public class SoundManager {
 	
 	public void playPlayerDeadMusic() {
 			
-		Media playerDead = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
-		MediaPlayer mediaPlayerPlayerDead = new MediaPlayer(playerDead);
+		playerDead = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
+		mediaPlayerPlayerDead = new MediaPlayer(playerDead);
 		mediaPlayerPlayerDead.setVolume(inGameMusicVolume);
 		mediaPlayerPlayerDead.setAutoPlay(true);	
 		
 	}
 	
-	public void setInGameMusicVolume(double vol) {
+	public void setInGameMusicVolume(double volume) {
 		
-		inGameMusicVolume = vol;
+		inGameMusicVolume = volume;
 		
 	}
 	
-	public double getInGameMusicVolume() {
+	
+	public HBox igmVolumeShips() {
 		
-		return inGameMusicVolume;
+		HBox igmVolBox = new HBox();
+		VolumeShip volumeShip1 = new VolumeShip();
+		VolumeShip volumeShip2 = new VolumeShip();
+		VolumeShip volumeShip3 = new VolumeShip();
+		VolumeShip volumeShip4 = new VolumeShip();
+		VolumeShip volumeShip5 = new VolumeShip();
+		
+		igmVolBox.getChildren().add(volumeShip1);
+		volumeShip1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				setInGameMusicVolume(0);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(false);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+				
+			}
+		
+		});
+		
+		igmVolBox.setSpacing(10);
+		
+		igmVolBox.getChildren().add(volumeShip2);
+		volumeShip2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		
+			@Override
+			public void handle(MouseEvent event) {
+			
+				setInGameMusicVolume(0.25);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(false);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+				
+			}
+		
+		});
+		
+		igmVolBox.setSpacing(10);
+		
+		igmVolBox.getChildren().add(volumeShip3);
+		volumeShip3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				setInGameMusicVolume(0.50);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(false);
+				volumeShip5.setVolume(false);
+		
+			}
+		});
+		
+		igmVolBox.setSpacing(10);
+		
+		igmVolBox.getChildren().add(volumeShip4);
+		volumeShip4.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				setInGameMusicVolume(0.75);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(false);
+		
+			}
+		});
+		
+		igmVolBox.setSpacing(10);
+		
+		igmVolBox.getChildren().add(volumeShip5);
+		volumeShip5.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+			
+				setInGameMusicVolume(1);
+				volumeShip1.setVolume(true);
+				volumeShip2.setVolume(true);
+				volumeShip3.setVolume(true);
+				volumeShip4.setVolume(true);
+				volumeShip5.setVolume(true);
+		
+			}
+		});
+		
+		igmVolBox.setLayoutX(35);
+		igmVolBox.setLayoutY(275);
+		
+		return igmVolBox;
+		
 	}
 
 }

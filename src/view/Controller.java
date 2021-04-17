@@ -52,15 +52,15 @@ public class Controller implements EventHandler<KeyEvent> {
     static private boolean youWon;
     static private int smalldot;
     static private boolean levelComplete;
-    static private SoundManager soundManager;
+    static private SoundManager soundManager = new SoundManager();
     
     public Controller() {
     	this.paused = false;
     }
 
     public void initialize() {
+    	soundManager.playCountDownMusic();
         this.startTimer();
-    	
     	String file = getCurrentLevel(0);
     	startLevel(file);
     }
@@ -74,7 +74,7 @@ public class Controller implements EventHandler<KeyEvent> {
         };
 
         long frameTimeInMilliseconds = (long) (1000.0 / FPS);
-        this.timer.schedule(timerTask, 0, frameTimeInMilliseconds);
+        this.timer.schedule(timerTask, 3500, frameTimeInMilliseconds);
     }
     
     
@@ -175,6 +175,7 @@ public class Controller implements EventHandler<KeyEvent> {
         smalldot = 0;
         score = 0;
         level = 0;
+        soundManager.playCountDownMusic();
         this.gameOverLabel.setText(String.format(""));
         startLevel(Controller.getCurrentLevel(0));
     }
@@ -185,7 +186,7 @@ public class Controller implements EventHandler<KeyEvent> {
             rowCount = 0;
             columnCount = 0;
             youWon = false;
-    		//this.gameOverLabel.setText(String.format(""));
+            soundManager.playCountDownMusic();
 
             try {
                 this.startLevel(Controller.getCurrentLevel(level));
@@ -351,5 +352,3 @@ public class Controller implements EventHandler<KeyEvent> {
     	return levelComplete;
     }
 }
-    
-
