@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import model.ScoreBoard;
 import view.ShipModel.CellValue;
 import view.ShipModel.Direction;
 import javafx.application.Platform;
@@ -52,6 +53,7 @@ public class Controller implements EventHandler<KeyEvent> {
     static private boolean youWon;
     static private int smalldot;
     static private boolean levelComplete;
+    private int keyPressed = 0;
     static private SoundManager soundManager = new SoundManager();
     
     public Controller() {
@@ -59,8 +61,6 @@ public class Controller implements EventHandler<KeyEvent> {
     }
 
     public void initialize() {
-    	soundManager.playCountDownMusic();
-        this.startTimer();
     	String file = getCurrentLevel(0);
     	startLevel(file);
     }
@@ -81,6 +81,8 @@ public class Controller implements EventHandler<KeyEvent> {
     public void startLevel(String fileName) {
         File file = new File(fileName);
         Scanner scanner = null;
+        soundManager.playCountDownMusic();
+        this.startTimer();
         try {
             scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
@@ -175,7 +177,6 @@ public class Controller implements EventHandler<KeyEvent> {
         smalldot = 0;
         score = 0;
         level = 0;
-        soundManager.playCountDownMusic();
         this.gameOverLabel.setText(String.format(""));
         startLevel(Controller.getCurrentLevel(0));
     }
@@ -186,18 +187,8 @@ public class Controller implements EventHandler<KeyEvent> {
             rowCount = 0;
             columnCount = 0;
             youWon = false;
-            soundManager.playCountDownMusic();
-
-            try {
-                this.startLevel(Controller.getCurrentLevel(level));
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
-                //if there are no levels left in the level array, the game ends
-                youWon = true;
-                gameOver = true;
-                level--;
-                
-            }
+            levelComplete = false;
+            this.startLevel(Controller.getCurrentLevel(level));
         }
     }
     
@@ -220,23 +211,6 @@ public class Controller implements EventHandler<KeyEvent> {
             score += 1;
         }
         
-        if(smalldot == 0) {
-        	//youWon = true;
-        	// start next level
-        	levelComplete = true;
-        	youWon = true;
-        	if (youWon == true) {
-            	if (level == 0) {
-            		this.gameOverLabel.setText(String.format("LEVEL 1 COMPLETED!"));
-            	} else if(level == 1) {
-            		this.gameOverLabel.setText(String.format("LEVEL 2 COMPLETED!"));
-            	} else {
-            		this.gameOverLabel.setText(String.format("YOU WON!"));
-            	}
-        	}
-        	startNextLevel();
-        }
-        
         //TODO: Add the power up buttons.
         
         for(int i = 0; i < noEnemies; i++) {
@@ -252,8 +226,11 @@ public class Controller implements EventHandler<KeyEvent> {
                 shipVelocity = new Point2D(0,0);
             }
     	}
-
         
+        if(smalldot == 0) {	
+        	youWon = true;
+        }
+
         //start a new level if level is complete
         /*if (this.isLevelComplete()) {
             shipVelocity = new Point2D(0,0);
@@ -272,19 +249,37 @@ public class Controller implements EventHandler<KeyEvent> {
         this.scoreLabel.setText(String.format("Score: %d", score));
         this.levelLabel.setText(String.format("Level: %d", level + 1));
         if (gameOver) {
+        	
             this.gameOverLabel.setText(String.format("GAME OVER"));
+            ScoreBoard.writeScore(score);
             pause();
-         /*else if (youWon == true) {
-        	if (level < 2) {
-        		this.gameOverLabel.setText(String.format("LEVEL COMPLETED!"));
-        	} else {
-        		this.gameOverLabel.setText(String.format("YOU WON!"));
-        	}
-        }*/
+            
         } else if (youWon) {
-            this.gameOverLabel.setText(String.format("YOU WON!"));
-
+        	
+        	if (level == 0) {
+        		
+        		this.gameOverLabel.setText(String.format("LEVEL 1 COMPLETED!"));
+        		pause();
+        		levelComplete = true;
+        		startNextLevel();
+        		
+        	} else if(level == 1) {
+        		
+        		this.gameOverLabel.setText(String.format("LEVEL 2 COMPLETED!"));
+        		pause();
+        		levelComplete = true;
+        		startNextLevel();
+        		
+        	} else if(level == 2) {
+        		
+        		this.gameOverLabel.setText(String.format("YOU WON!"));
+        		ScoreBoard.writeScore(score);
+        		pause();
+        		
+        	}
+        	
         }
+        
     }
     
     
@@ -304,11 +299,18 @@ public class Controller implements EventHandler<KeyEvent> {
         } else if (code == KeyCode.G) {
         	pause();
         	this.startNewGame();
-        	paused = false;
-            this.startTimer();
+        } else if (code == KeyCode.P) {
+        	if (keyPressed % 2 == 0) {
+        		pause();
+        	} else {
+        		soundManager.playCountDownMusic();
+        		startTimer();
+        	}
+        	keyPressed++; 
         } else {
             keyRecognized = false;
         }
+        
         if (keyRecognized) {
             keyEvent.consume();
             player.setCurrentDirection(direction);

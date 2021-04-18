@@ -25,7 +25,7 @@ public class SoundManager {
 	private MediaPlayer mediaPlayerPlayerDead;
 	
 	private static double backGroundMusicVolume = 1.00;
-	private static double inGameMusicVolume = 1.00;
+	private static double inGameMusicVolume = 0.75;
 	
 	public void playBackGroundMusic() {
 		
@@ -56,6 +56,12 @@ public class SoundManager {
 		
 	}
 	
+	public double getbackGroundMusicVolume() {
+		
+		return backGroundMusicVolume;
+		
+	}
+	
 	public HBox bgmVolumeShips() {
 		
 		HBox bgmVolBox = new HBox();
@@ -65,6 +71,43 @@ public class SoundManager {
 		VolumeShip volumeShip4 = new VolumeShip();
 		VolumeShip volumeShip5 = new VolumeShip();
 		
+		if (getbackGroundMusicVolume() == 0) {
+			
+			volumeShip2.setVolume(false);
+			volumeShip3.setVolume(false);
+			volumeShip4.setVolume(false);
+			volumeShip5.setVolume(false);
+			
+		} else if (getbackGroundMusicVolume() == 0.25) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(false);
+			volumeShip4.setVolume(false);
+			volumeShip5.setVolume(false);
+			
+		} else if (getbackGroundMusicVolume() == 0.5) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(true);
+			volumeShip4.setVolume(false);
+			volumeShip5.setVolume(false);
+			
+		} else if (getbackGroundMusicVolume() == 0.75) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(true);
+			volumeShip4.setVolume(true);
+			volumeShip5.setVolume(false);
+			
+		} else if (getbackGroundMusicVolume() == 1) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(true);
+			volumeShip4.setVolume(true);
+			volumeShip5.setVolume(true);
+			
+		}
+		
 		bgmVolBox.getChildren().add(volumeShip1);
 		volumeShip1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			
@@ -72,7 +115,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(false);
 				volumeShip3.setVolume(false);
 				volumeShip4.setVolume(false);
@@ -91,7 +133,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0.25);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(false);
 				volumeShip4.setVolume(false);
@@ -110,7 +151,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0.50);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(true);
 				volumeShip4.setVolume(false);
@@ -128,7 +168,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0.75);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(true);
 				volumeShip4.setVolume(true);
@@ -146,7 +185,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(1);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(true);
 				volumeShip4.setVolume(true);
@@ -161,7 +199,6 @@ public class SoundManager {
 		return bgmVolBox;
 		
 	}
-	
 	
 	public void playCountDownMusic() {
 		
@@ -205,6 +242,11 @@ public class SoundManager {
 		
 	}
 	
+	public double getInGameMusicVolume() {
+		
+		return inGameMusicVolume;
+		
+	}
 	
 	public HBox igmVolumeShips() {
 		
@@ -215,6 +257,43 @@ public class SoundManager {
 		VolumeShip volumeShip4 = new VolumeShip();
 		VolumeShip volumeShip5 = new VolumeShip();
 		
+		if (getInGameMusicVolume() == 0) {
+			
+			volumeShip2.setVolume(false);
+			volumeShip3.setVolume(false);
+			volumeShip4.setVolume(false);
+			volumeShip5.setVolume(false);
+			
+		} else if (getInGameMusicVolume() == 0.25) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(false);
+			volumeShip4.setVolume(false);
+			volumeShip5.setVolume(false);
+			
+		} else if (getInGameMusicVolume() == 0.5) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(true);
+			volumeShip4.setVolume(false);
+			volumeShip5.setVolume(false);
+			
+		} else if (getInGameMusicVolume() == 0.75) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(true);
+			volumeShip4.setVolume(true);
+			volumeShip5.setVolume(false);
+			
+		} else if (getInGameMusicVolume() == 1) {
+			
+			volumeShip2.setVolume(true);
+			volumeShip3.setVolume(true);
+			volumeShip4.setVolume(true);
+			volumeShip5.setVolume(true);
+			
+		}
+		
 		igmVolBox.getChildren().add(volumeShip1);
 		volumeShip1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			
@@ -222,7 +301,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(false);
 				volumeShip3.setVolume(false);
 				volumeShip4.setVolume(false);
@@ -241,7 +319,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0.25);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(false);
 				volumeShip4.setVolume(false);
@@ -260,7 +337,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0.50);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(true);
 				volumeShip4.setVolume(false);
@@ -278,7 +354,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0.75);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(true);
 				volumeShip4.setVolume(true);
@@ -296,7 +371,6 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(1);
-				volumeShip1.setVolume(true);
 				volumeShip2.setVolume(true);
 				volumeShip3.setVolume(true);
 				volumeShip4.setVolume(true);

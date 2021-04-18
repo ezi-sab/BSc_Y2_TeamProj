@@ -29,6 +29,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.InfoLabel;
+import model.ScoreBoard;
 import model.Ship;
 import model.ShipPicker;
 import model.buttons;
@@ -130,11 +131,14 @@ public class ViewManager {
 		scoreContainer.setLayoutX(150);
 		scoreContainer.setLayoutY(150);
 		
+		String[] scoreArray;
+		scoreArray = ScoreBoard.readScore();
+		
 		Label scoreHeading = new Label("Name			Score ");
 		scoreHeading.setUnderline(true);
-		Label score1 = new Label("Ship 1		           100");
-		Label score2 = new Label("Ship 2		           100");
-		Label score3 = new Label("Ship 3		           100");
+		Label score1 = new Label("Ship 1" + scoreArray[0]);
+		Label score2 = new Label("Ship 2" + scoreArray[1]);
+		Label score3 = new Label("Ship 3" + scoreArray[2]);
 		scoreHeading.setFont(Font.font("Verdana",20));
 		score1.setFont(Font.font("Verdana",20));
 		score2.setFont(Font.font("Verdana",20));
