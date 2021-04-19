@@ -6,12 +6,10 @@ import javafx.scene.layout.HBox;
 
 public class VolumeShip extends HBox {
 	
-	private ImageView blueOrBlack;
-	private Image blackShipImage = new Image("view/resources/shipPicker/playerShip3_black.png");
-	private Image blueShipImage = new Image("view/resources/shipPicker/playerShip3_blue.png");
-	
-	private boolean volume; 
-	
+	private final ImageView blueOrBlack;
+	private final Image blackShipImage = new Image("view/resources/shipPicker/playerShip3_black.png");
+	private final Image blueShipImage = new Image("view/resources/shipPicker/playerShip3_blue.png");
+
 	public VolumeShip() {
 		
 		blueOrBlack = new ImageView("view/resources/shipPicker/playerShip3_blue.png");
@@ -20,9 +18,12 @@ public class VolumeShip extends HBox {
 	}
 	
 	public void setVolume(boolean vol) {
-		
-		volume = vol;
-		Image imageToSet = volume ? blueShipImage : blackShipImage;
+		Image imageToSet;
+		if(vol) {
+			imageToSet = blueShipImage;
+		} else {
+			imageToSet =blackShipImage;
+		}
 		blueOrBlack.setImage(imageToSet);
 		
 	}

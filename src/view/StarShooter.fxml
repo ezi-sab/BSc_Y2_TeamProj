@@ -31,7 +31,7 @@
     <bottom>
         <HBox prefHeight="35" style="-fx-padding: 10px, 5px, 10px, 5px; -fx-background-color: #F3B61D">
             <Label style="-fx-font-size: 140%; -fx-text-fill: white"
-                   text="Move: arrow keys/WSDA Shoot: spacebar / New game: G" />
+                   text="Move: arrow keys/ WSDA / New game: G" />
         </HBox>
     </bottom>
 </BorderPane>
