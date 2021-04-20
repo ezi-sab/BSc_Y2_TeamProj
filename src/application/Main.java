@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 //import javafx.scene.Scene;
 //import javafx.scene.layout.BorderPane;
+import view.GameView;
 import view.ViewManager;
 
 
@@ -12,6 +13,7 @@ import view.ViewManager;
 public class Main extends Application {
 
 	// ViewManager viewManager = new ViewManager();
+	boolean gameStarted = false;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -24,12 +26,18 @@ public class Main extends Application {
 			ViewManager manager = new ViewManager();
 			primaryStage = manager.getMainStage();
 			primaryStage.show();
+			gameStarted = true;
+			if (gameStarted) {
+				primaryStage.toBack();
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
+
+
 }

@@ -34,6 +34,7 @@ import model.Ship;
 import model.ShipPicker;
 import model.buttons;
 import model.menuSubScene;
+import application.Main;
 
 public class ViewManager {
 	
@@ -59,7 +60,9 @@ public class ViewManager {
 	List<buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
-	private Ship chosenShip; 
+	private Ship chosenShip;
+//	private boolean gameStarted = false;
+
 	
 	public ViewManager() {
 		
@@ -288,7 +291,12 @@ public class ViewManager {
 					GameView gameViewManager = new GameView();
 					gameViewManager.setShipImage(chosenShip);
 					try {
+
 						gameViewManager.createNewGame(mainStage, chosenShip);
+						Main main = new application.Main();
+						main.start(getMainStage());
+
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
