@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Timer;
@@ -76,15 +77,81 @@ public class Controller implements EventHandler<KeyEvent> {
         };
 
         long frameTimeInMilliseconds = (long) (1000.0 / FPS);
-        this.timer.schedule(timerTask, 3500, frameTimeInMilliseconds);
+        this.timer.schedule(timerTask, 0, frameTimeInMilliseconds);
+    }
+    
+    
+    private void delayPause(int delay) {
+    	
+    	Timer delayPauseTimer = new Timer();
+    	TimerTask delayPauseTask = new TimerTask() {
+    		
+    		@Override
+    		public void run() {
+    			Platform.runLater(() -> pause());
+    		}
+    	};
+    	
+    	delayPauseTimer.schedule(delayPauseTask, new Date(System.currentTimeMillis() + delay));
+    }
+    
+    
+    private void delayNextScene(int delay) {
+    	
+    	Timer delayNextSceneTimer = new Timer();
+    	TimerTask delaySceneTask = new TimerTask() {
+    		
+    		@Override
+    		public void run() {
+    			Platform.runLater(() -> startTimer());
+    		}
+    	};
+    	
+    	delayNextSceneTimer.schedule(delaySceneTask, new Date(System.currentTimeMillis() + delay));
+    	
+    }
+    
+    
+    private void delayNextLevel(int delay) {
+    	
+    	Timer delayNextLevelTimer = new Timer();
+    	TimerTask delayNextLevelTask = new TimerTask() {
+    		
+    		@Override
+    		public void run() {
+    			Platform.runLater(() -> startNextLevel());
+    		}
+    	};
+    	
+    	delayNextLevelTimer.schedule(delayNextLevelTask, new Date(System.currentTimeMillis() + delay));    	
+    }
+    
+    
+    private void delayMainScene(int delay) {
+    	
+    	Timer delayMainSceneTimer = new Timer();
+    	TimerTask delayMainSceneTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				soundManager.bgmFadeIn();
+				Platform.runLater(() -> viewManager.setToMainScene());
+			}
+		};
+    	
+		delayMainSceneTimer.schedule(delayMainSceneTask, new Date(System.currentTimeMillis() + delay));
+		
     }
     
     
     public void startLevel(String fileName) {
         File file = new File(fileName);
         Scanner scanner = null;
-        soundManager.playCountDownMusic();
         this.startTimer();
+        delayPause(10);
+        soundManager.playCountDownMusic();
+        delayNextScene(3500);
+        
         try {
             scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
@@ -195,7 +262,7 @@ public class Controller implements EventHandler<KeyEvent> {
             columnCount = 0;
             youWon = false;
             levelComplete = false;
-            this.startLevel(Controller.getCurrentLevel(level));
+            startLevel(Controller.getCurrentLevel(level));
         }
     }
     
@@ -217,17 +284,15 @@ public class Controller implements EventHandler<KeyEvent> {
         //TODO: Add the power up buttons.
         
         for(int i = 0; i < noEnemies; i++) {
+        	
         	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
                 gameOver = true;
+                soundManager.playPlayerDeadMusic();
                 shipVelocity = new Point2D(0,0);
             }
         	
         	this.enemies.get(i).moveEnemy(player.getLocation());
-        
-        	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
-                gameOver = true;
-                shipVelocity = new Point2D(0,0);
-            }
+        	
     	}
         
         if(smalldot == 0) {	
@@ -254,24 +319,23 @@ public class Controller implements EventHandler<KeyEvent> {
             pause();
             gameOver = false;
             score = 0;
-            soundManager.bgmFadeIn();
-            viewManager.setToMainScene();
+            delayMainScene(2000);
             
         } else if (youWon) {
         	
         	if (level == 0) {
         		
         		this.gameOverLabel.setText(String.format("LEVEL 1 COMPLETED!"));
-        		pause();
         		levelComplete = true;
-        		startNextLevel();
+        		pause();
+        		delayNextLevel(1000);
         		
         	} else if(level == 1) {
         		
         		this.gameOverLabel.setText(String.format("LEVEL 2 COMPLETED!"));
-        		pause();
         		levelComplete = true;
-        		startNextLevel();
+        		pause();
+        		delayNextLevel(1000);
         		
         	} else if(level == 2) {
         		
@@ -283,8 +347,7 @@ public class Controller implements EventHandler<KeyEvent> {
         		youWon = false;
         		levelComplete = false;
         		score = 0;
-        		soundManager.bgmFadeIn();
-        		viewManager.setToMainScene();
+        		delayMainScene(2000);
         		
         	}
         	
@@ -314,7 +377,7 @@ public class Controller implements EventHandler<KeyEvent> {
         		pause();
         	} else {
         		soundManager.playCountDownMusic();
-        		startTimer();
+        		delayNextScene(3500);
         	}
         	keyPressed++; 
         } else {

@@ -42,7 +42,7 @@ public class SoundManager {
 	private static HBox bgmVolBox;
 	private static HBox igmVolBox;
 	
-	private static double backGroundMusicVolume = 0.50;
+	private static double backGroundMusicVolume = 1;
 	private static double inGameMusicVolume = 0.50;
 	
 	private static double pastBGMVolume;
@@ -70,13 +70,15 @@ public class SoundManager {
 	
 	public void setBackGroundMusicVolume(double volume) {
 		
-		backGroundMusicVolume = volume;
-		if(backGroundMusicVolume == 0) {
-			mediaPlayerBgm.setMute(true);
-		} else {
-			mediaPlayerBgm.setVolume(backGroundMusicVolume);
-			mediaPlayerBgm.setMute(false);
-		}
+		try {
+			backGroundMusicVolume = volume;
+			if(backGroundMusicVolume == 0) {
+				mediaPlayerBgm.setMute(true);
+			} else {
+				mediaPlayerBgm.setVolume(backGroundMusicVolume);
+				mediaPlayerBgm.setMute(false);
+			}
+		} catch (NullPointerException e) {}
 		
 	}
 	
@@ -127,6 +129,36 @@ public class SoundManager {
 					
 				}
 				
+				if (volumeToSet == 1) {
+					
+					volumeShip2.setVolume(true);
+					volumeShip3.setVolume(true);
+					volumeShip4.setVolume(true);
+					volumeShip5.setVolume(true);
+					
+				} else if (volumeToSet >= 0.75) {
+					
+					volumeShip2.setVolume(true);
+					volumeShip3.setVolume(true);
+					volumeShip4.setVolume(true);
+					volumeShip5.setVolume(false);
+					
+				} else if (volumeToSet >= 0.50) {
+					
+					volumeShip2.setVolume(true);
+					volumeShip3.setVolume(true);
+					volumeShip4.setVolume(false);
+					volumeShip5.setVolume(false);
+					
+				} else if (volumeToSet == 0.25) {
+					
+					volumeShip2.setVolume(true);
+					volumeShip3.setVolume(false);
+					volumeShip4.setVolume(false);
+					volumeShip5.setVolume(false);
+					
+				}
+				
 			}
 		};
 		
@@ -137,15 +169,19 @@ public class SoundManager {
 	
 	public void fadeIn(double deltaVolume) {
 		
-		mediaPlayerBgm.setVolume(volumeToSet);
-		
-		if(mediaPlayerBgm.isMute() == true) {
+		try {
 			
-			mediaPlayerBgm.setMute(false);
+			mediaPlayerBgm.setVolume(volumeToSet);
 			
-		}
+			if(mediaPlayerBgm.isMute() == true) {
+				
+				mediaPlayerBgm.setMute(false);
+				
+			}
+			
+			volumeToSet += deltaVolume;
 		
-		volumeToSet += deltaVolume;
+		} catch(NullPointerException e) {}
 		
 	}
 	
@@ -494,6 +530,6 @@ public class SoundManager {
 		return igmVolBox;
 		
 	}
-
+	
 	
 }
