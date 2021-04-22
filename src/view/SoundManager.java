@@ -1,6 +1,8 @@
 package view;
 
 import java.nio.file.Paths;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -9,6 +11,7 @@ import javafx.scene.media.MediaPlayer;
 import model.VolumeShip;
 
 public class SoundManager {
+	
 	
 	private static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
 	private Media menuMusic;
@@ -39,10 +42,12 @@ public class SoundManager {
 	private static HBox bgmVolBox;
 	private static HBox igmVolBox;
 	
-	private static double backGroundMusicVolume = 1.00;
-	private static double inGameMusicVolume = 0.75;
+	private static double backGroundMusicVolume = 0.50;
+	private static double inGameMusicVolume = 0.50;
 	
 	private static double pastBGMVolume;
+	private double volumeToSet = 0;	
+	
 	
 	public void playBackGroundMusic() {
 		
@@ -51,6 +56,7 @@ public class SoundManager {
 		mediaPlayerBgm.play();
 		
 	}
+	
 	
 	public void playMenuOpenMusic() {
 		
@@ -61,17 +67,19 @@ public class SoundManager {
 		
 	}
 	
+	
 	public void setBackGroundMusicVolume(double volume) {
 		
 		backGroundMusicVolume = volume;
 		if(backGroundMusicVolume == 0) {
-			mediaPlayerBgm.pause();
+			mediaPlayerBgm.setMute(true);
 		} else {
-			mediaPlayerBgm.play();
 			mediaPlayerBgm.setVolume(backGroundMusicVolume);
+			mediaPlayerBgm.setMute(false);
 		}
 		
 	}
+	
 	
 	public double getbackGroundMusicVolume() {
 		
@@ -79,17 +87,68 @@ public class SoundManager {
 		
 	}
 	
+	
 	public void setBGMVolumeBeforeGame() {
 		
 		pastBGMVolume = getbackGroundMusicVolume();
 		
 	}
 	
+	
 	public double getBGMVolumeBeforeGame() {
 		
 		return pastBGMVolume;
 		
 	}
+	
+	
+	public void bgmFadeIn() {
+		
+		int fadeDuration = 5000;
+		int fadeInterval = 250;
+		int numberOfSteps = fadeDuration/fadeInterval;
+		double deltaVolume = getBGMVolumeBeforeGame() / (double) numberOfSteps;
+		
+		Timer timer = new Timer();
+		TimerTask timerTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				
+				fadeIn(deltaVolume);
+				
+				if(volumeToSet >= getBGMVolumeBeforeGame()) {
+					
+					timer.cancel();
+					timer.purge();
+					setBackGroundMusicVolume(pastBGMVolume);
+					setBgmVolumeShips();
+					volumeToSet = 0;
+					
+				}
+				
+			}
+		};
+		
+		timer.schedule(timerTask, fadeInterval, fadeInterval);
+		
+	}
+	
+	
+	public void fadeIn(double deltaVolume) {
+		
+		mediaPlayerBgm.setVolume(volumeToSet);
+		
+		if(mediaPlayerBgm.isMute() == true) {
+			
+			mediaPlayerBgm.setMute(false);
+			
+		}
+		
+		volumeToSet += deltaVolume;
+		
+	}
+	
 	
 	public void setBgmVolumeShips() {
 		
@@ -131,6 +190,7 @@ public class SoundManager {
 		}
 		
 	}
+	
 	
 	public HBox bgmVolumeShips() {
 		
@@ -235,6 +295,7 @@ public class SoundManager {
 		
 	}
 	
+	
 	public void playCountDownMusic() {
 		
 		countDown = new Media(Paths.get("src/view/resources/sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
@@ -243,6 +304,7 @@ public class SoundManager {
 		mediaPlayerCountDown.setAutoPlay(true);
 		
 	}
+	
 	
 	public void playCoinCollectMusic() {
 			
@@ -253,6 +315,7 @@ public class SoundManager {
 		
 	}
 	
+	
 	public void playEnemyDeadMusic() {
 			
 		enemyDead = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
@@ -261,6 +324,7 @@ public class SoundManager {
 		mediaPlayerEnemyDead.setAutoPlay(true);
 		
 	}
+	
 	
 	public void playPlayerDeadMusic() {
 			
@@ -271,17 +335,20 @@ public class SoundManager {
 		
 	}
 	
+	
 	public void setInGameMusicVolume(double volume) {
 		
 		inGameMusicVolume = volume;
 		
 	}
 	
+	
 	public double getInGameMusicVolume() {
 		
 		return inGameMusicVolume;
 		
 	}
+	
 	
 	public void setIgmVolumeShips() {
 		
@@ -323,6 +390,7 @@ public class SoundManager {
 		}
 		
 	}
+	
 	
 	public HBox igmVolumeShips() {
 		
@@ -427,4 +495,5 @@ public class SoundManager {
 		
 	}
 
+	
 }

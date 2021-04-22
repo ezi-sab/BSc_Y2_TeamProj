@@ -1,10 +1,7 @@
 package view;
 
-
 import java.util.ArrayList;
-
 import java.util.List;
-
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,6 +30,7 @@ import model.menuSubScene;
 
 public class ViewManager {
 	
+	
 	private static final int width = 1258;
 	private static final int height = 814;
 	private static AnchorPane mainPane;
@@ -58,6 +56,7 @@ public class ViewManager {
 	
 	private Ship chosenShip;
 	
+	
 	public ViewManager() {
 		
 		menuButtons = new ArrayList<>();
@@ -73,6 +72,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private void showSubScene(menuSubScene subScene) {
 		
 		if(sceneToHide != null) {
@@ -83,6 +83,7 @@ public class ViewManager {
 		sceneToHide= subScene;
 		
 	}
+	
 	
 	private void createSubScene() {
 		
@@ -102,6 +103,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private void createShipSelectSubScene() {
 		
 		shipSelectSubScene = new menuSubScene();
@@ -115,6 +117,7 @@ public class ViewManager {
 		shipSelectSubScene.getPane().getChildren().add(createButtonToStart());
 		
 	}
+	
 	
 	private void createScoreSubScene() {
 		
@@ -130,6 +133,7 @@ public class ViewManager {
 		scoreSubScene.getPane().getChildren().add(scoreBoard.getScoreVBox());
 		
 	}
+	
 	
 	private void createCreditsSubScene() {
 		
@@ -158,12 +162,12 @@ public class ViewManager {
 		
 		VBox creditsBox = new VBox(20, credit0, credit1, credit2, credit3, credit4, credit5, credit6);
 		
-		
 		creditsBox.setLayoutX(50);
 		creditsBox.setLayoutY(80);
 		creditsSubScene.getPane().getChildren().addAll(creditsLabel, creditsBox);				
 				
 	}
+	
 	
 	private void createHelpSubScene() {
 		
@@ -189,7 +193,6 @@ public class ViewManager {
 		Label meteorHelp = new Label("These are enemy ships.\nAvoid them!");
 		Label starHelp   = new Label("The coins give you points,\nIF you can grab them!");
 		Label lifeHelp   = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
-		
 		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
@@ -223,7 +226,6 @@ public class ViewManager {
 	}
 	
 	
-	
 	private HBox createShipsToChoose() {
 		
 		HBox box = new HBox();
@@ -252,6 +254,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private buttons createButtonToStart() {
 		
 		buttons startButton = new buttons("START");
@@ -266,6 +269,7 @@ public class ViewManager {
 				if (chosenShip != null) {
 					soundManager.setBGMVolumeBeforeGame();
 					soundManager.setBackGroundMusicVolume(0);
+					soundManager.setBgmVolumeShips();
 					GameView gameViewManager = new GameView();
 					gameViewManager.setShipImage(chosenShip);
 					try {
@@ -282,6 +286,7 @@ public class ViewManager {
 		return startButton;
 		
 	}
+	
 	
 	private void createMusicButtons() {
 		
@@ -302,17 +307,20 @@ public class ViewManager {
 		
 	}
 	
+	
 	public Stage getMainStage() {
 		
 		return mainStage;
 		
 	}
 	
+	
 	public void setToMainScene() {
 		
 		mainStage.setScene(mainScene);
 		
 	}
+	
 	
 	private void addMenuButton(buttons button) {
 		
@@ -322,6 +330,7 @@ public class ViewManager {
 		mainPane.getChildren().add(button);
 		
 	}
+	
 
 	private void createButtons() {
 		
@@ -333,6 +342,7 @@ public class ViewManager {
 		createExitButton();
 		
 	}
+	
 	
 	private void createStartButton() {
 		
@@ -351,6 +361,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private void createScoresButton() {
 		
 		buttons scoresButton = new buttons("SCORES");
@@ -366,6 +377,7 @@ public class ViewManager {
 		});
 		
 	}
+	
 	
 	private void createSettingsButton() {
 		
@@ -385,6 +397,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private void createHelpButton() {
 		
 		buttons helpButton = new buttons("HELP");
@@ -402,6 +415,7 @@ public class ViewManager {
 		});
 		
 	}
+	
 	
 	private void createCreditsButton() {
 		
@@ -421,6 +435,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private void createExitButton() {
 		
 		buttons exitButton = new buttons("EXIT");
@@ -437,6 +452,7 @@ public class ViewManager {
 		
 	}
 	
+	
 	private void createBackground() {
 		
 		Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
@@ -444,6 +460,7 @@ public class ViewManager {
 		mainPane.setBackground(new Background(background));
 		
 	}
+	
 	
 	private void createLogo() {
 		
@@ -471,5 +488,6 @@ public class ViewManager {
 		mainPane.getChildren().add(logo);
 		
 	}
+	
 	
 }

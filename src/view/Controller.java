@@ -10,7 +10,6 @@ import model.ScoreBoard;
 import view.ShipModel.CellValue;
 import view.ShipModel.Direction;
 import javafx.application.Platform;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,12 +17,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import view.Controller;
 
 public class Controller implements EventHandler<KeyEvent> {
-
-
+	
+	
     private PlayerModel player;
     private List<EnemyAIModel> enemies;
     
@@ -34,18 +32,15 @@ public class Controller implements EventHandler<KeyEvent> {
     private Timer timer;
     private boolean paused;
     
-    @FXML
-    private int rowCount;
-    @FXML
-    private int columnCount;
-    
     private CellValue[][] grid;
     
+    @FXML private int rowCount;
+    @FXML private int columnCount;
+        
     @FXML private Label levelLabel;
     @FXML private Label scoreLabel;
     @FXML private Label gameOverLabel;
     @FXML private GameView gameView;
-    
     
     private int noEnemies;
     private int score = 0;
@@ -60,15 +55,18 @@ public class Controller implements EventHandler<KeyEvent> {
     private static ScoreBoard scoreBoard = new ScoreBoard();
     private static ViewManager viewManager = new ViewManager();
     
+    
     public Controller() {
     	this.paused = false;
     }
 
+    
     public void initialize() {
     	String file = getCurrentLevel(0);
     	startLevel(file);
     }
 
+    
     private void startTimer() {
         this.timer = new java.util.Timer();
         TimerTask timerTask = new TimerTask() {
@@ -189,6 +187,7 @@ public class Controller implements EventHandler<KeyEvent> {
         startLevel(Controller.getCurrentLevel(0));
     }
     
+    
     public void startNextLevel() {
         if (this.isLevelComplete()) {
             level++;
@@ -199,6 +198,7 @@ public class Controller implements EventHandler<KeyEvent> {
             this.startLevel(Controller.getCurrentLevel(level));
         }
     }
+    
     
     public void step() {
         player.movePlayer();
@@ -237,7 +237,6 @@ public class Controller implements EventHandler<KeyEvent> {
     }
     
     
-    
     private void update() {
     	player.setGameGrid(grid);
     	this.step();
@@ -255,10 +254,8 @@ public class Controller implements EventHandler<KeyEvent> {
             pause();
             gameOver = false;
             score = 0;
-            soundManager.setBackGroundMusicVolume(soundManager.getBGMVolumeBeforeGame());
-            soundManager.setBgmVolumeShips();
+            soundManager.bgmFadeIn();
             viewManager.setToMainScene();
-            
             
         } else if (youWon) {
         	
@@ -286,8 +283,7 @@ public class Controller implements EventHandler<KeyEvent> {
         		youWon = false;
         		levelComplete = false;
         		score = 0;
-        		soundManager.setBackGroundMusicVolume(soundManager.getBGMVolumeBeforeGame());
-        		soundManager.setBgmVolumeShips();
+        		soundManager.bgmFadeIn();
         		viewManager.setToMainScene();
         		
         	}
@@ -330,41 +326,52 @@ public class Controller implements EventHandler<KeyEvent> {
             player.setCurrentDirection(direction);
         }
     }
+    
 
     public void pause() {
         this.timer.cancel();
         this.paused = true;
     }
+    
 
     public double getBoardWidth() {
         return GameView.CELL_WIDTH * this.gameView.getGvColumnCount();
     }
+    
 
     public double getBoardHeight() {
         return (GameView.CELL_WIDTH * this.gameView.getGvRowCount()) + 100;
     }
     
+    
     public CellValue[][] getGrid(){
     	return grid;
     }
+    
     
     public static String getCurrentLevel(int x) {
         return levelFiles[x];
     }
     
+    
     public PlayerModel getPlayer() {
     	return this.player;
     }
+    
     
     public List<EnemyAIModel> getEnemies() {
     	return this.enemies;
     }
     
+    
     public boolean getPaused() {
         return paused;
     }
     
+    
     public boolean isLevelComplete() {
     	return levelComplete;
     }
+    
+    
 }
