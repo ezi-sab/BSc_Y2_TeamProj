@@ -26,7 +26,8 @@ public class Controller implements EventHandler<KeyEvent> {
 
     private PlayerModel player;
     private List<EnemyAIModel> enemies;
-
+    
+//  Change all level1, level2, level3 to level0.txt to make the game easier
     private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
     final private static double FPS = 5.0;
     
@@ -46,15 +47,18 @@ public class Controller implements EventHandler<KeyEvent> {
     @FXML private GameView gameView;
     
     
-    static private int noEnemies;
-    static private int score;
-    static private int level;
-    static private boolean gameOver;
-    static private boolean youWon;
-    static private int smalldot;
-    static private boolean levelComplete;
+    private int noEnemies;
+    private int score = 0;
+    private int level = 0;
+    private boolean gameOver = false;
+    private boolean youWon = false;
+    private int smalldot = 0;
+    private boolean levelComplete = false;
     private int keyPressed = 0;
-    static private SoundManager soundManager = new SoundManager();
+    
+    private static SoundManager soundManager = new SoundManager();
+    private static ScoreBoard scoreBoard = new ScoreBoard();
+    private static ViewManager viewManager = new ViewManager();
     
     public Controller() {
     	this.paused = false;
@@ -148,6 +152,9 @@ public class Controller implements EventHandler<KeyEvent> {
                     	thisValue = CellValue.COIN;
                     	smalldot++;
                     	break;
+                    case 'F':
+                    	thisValue = CellValue.EMPTY;
+                    	break;
                     default:
                     	if (Character.isDigit(valChar) && (valChar - '0' <= noEnemies)) {
 	                    	thisValue = CellValue.ENEMY1STARTINGPOINT;
@@ -173,6 +180,7 @@ public class Controller implements EventHandler<KeyEvent> {
         rowCount = 0;
         columnCount = 0;
         gameOver = false;
+        levelComplete = false;
         youWon = false;
         smalldot = 0;
         score = 0;
@@ -197,11 +205,6 @@ public class Controller implements EventHandler<KeyEvent> {
         Point2D shipLocation = player.getLocation();
         Point2D shipVelocity = player.getVelocity();
         CellValue shipLocationCellValue = grid[(int) player.shipLocation.getX()][(int) shipLocation.getY()];
-        /*if (shipLocationCellValue == CellValue.FLAG) {
-        	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
-            flagCount--;
-            score += 10;
-        }*/
 
         if (shipLocationCellValue == CellValue.COIN) {
         	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
@@ -231,11 +234,6 @@ public class Controller implements EventHandler<KeyEvent> {
         	youWon = true;
         }
 
-        //start a new level if level is complete
-        /*if (this.isLevelComplete()) {
-            shipVelocity = new Point2D(0,0);
-            startNextLevel();
-        }*/
     }
     
     
@@ -250,9 +248,17 @@ public class Controller implements EventHandler<KeyEvent> {
         this.levelLabel.setText(String.format("Level: %d", level + 1));
         if (gameOver) {
         	
-            this.gameOverLabel.setText(String.format("GAME OVER"));
-            ScoreBoard.writeScore(score);
+        	this.gameOverLabel.setText(String.format("GAME OVER"));
+            scoreBoard.writeScore(score);
+			scoreBoard.ClearVBox();
+            scoreBoard.setScoreVBox();
             pause();
+            gameOver = false;
+            score = 0;
+            soundManager.setBackGroundMusicVolume(0.25);
+            soundManager.setBgmVolumeShips();
+            viewManager.setToMainScene();
+            
             
         } else if (youWon) {
         	
@@ -273,8 +279,16 @@ public class Controller implements EventHandler<KeyEvent> {
         	} else if(level == 2) {
         		
         		this.gameOverLabel.setText(String.format("YOU WON!"));
-        		ScoreBoard.writeScore(score);
+        		scoreBoard.writeScore(score);
+				scoreBoard.ClearVBox();
+        		scoreBoard.setScoreVBox();
         		pause();
+        		youWon = false;
+        		levelComplete = false;
+        		score = 0;
+        		soundManager.setBackGroundMusicVolume(0.25);
+        		soundManager.setBgmVolumeShips();
+        		viewManager.setToMainScene();
         		
         	}
         	

@@ -38,40 +38,39 @@ import application.Main;
 
 public class ViewManager {
 	
-	private static final int width = 1024;
-	private static final int height = 768;
-	private AnchorPane mainPane;
-	private Scene mainScene;
-	private Stage mainStage;
+	private static final int width = 1258;
+	private static final int height = 814;
+	private static AnchorPane mainPane;
+	private static Scene mainScene;
+	private static Stage mainStage = new Stage();
 	
 	private final static int MENU_BUTTON_STARTX = 100;
 	private final static int MENU_BUTTON_STARTY = 185;
 	
 	private menuSubScene shipSelectSubScene;
-	private menuSubScene scoreSubScene;
+	private static menuSubScene scoreSubScene;
 	private menuSubScene settingsSubScene;
 	private menuSubScene helpSubScene;
 	private menuSubScene creditsSubScene;
 	private menuSubScene musicControls;
 	private menuSubScene sceneToHide;
 	
-	private SoundManager soundManager;
+	private static SoundManager soundManager = new SoundManager();
+	private static ScoreBoard scoreBoard = new ScoreBoard();
 
 	List<buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
 	private Ship chosenShip;
-//	private boolean gameStarted = false;
-
 	
 	public ViewManager() {
 		
 		menuButtons = new ArrayList<>();
 		mainPane = new AnchorPane();
 		mainScene = new Scene(mainPane, width, height);
-		mainStage = new Stage();
 		mainStage.setScene(mainScene);
-		soundManager = new SoundManager();
+		mainStage.setTitle("Star Shooter");
+		//soundManager = new SoundManager();
 		soundManager.playBackGroundMusic();
 		createSubScene();
 		createButtons();
@@ -130,26 +129,11 @@ public class ViewManager {
 		InfoLabel score = new InfoLabel("SCORES");
 		score.setLayoutX(115);
 		score.setLayoutY(20);
-		VBox scoreContainer = new VBox();
-		scoreContainer.setLayoutX(150);
-		scoreContainer.setLayoutY(150);
 		
-		String[] scoreArray;
-		scoreArray = ScoreBoard.readScore();
+		scoreBoard.setScoreVBox();
 		
-		Label scoreHeading = new Label("Name			Score ");
-		scoreHeading.setUnderline(true);
-		Label score1 = new Label("Ship 1" + scoreArray[0]);
-		Label score2 = new Label("Ship 2" + scoreArray[1]);
-		Label score3 = new Label("Ship 3" + scoreArray[2]);
-		scoreHeading.setFont(Font.font("Verdana",20));
-		score1.setFont(Font.font("Verdana",20));
-		score2.setFont(Font.font("Verdana",20));
-		score3.setFont(Font.font("Verdana",20));
-		scoreContainer.setBackground(new Background(new BackgroundFill(Color.MEDIUMAQUAMARINE, new CornerRadii(20), new Insets(-20,-20,-20,-20))));
-		scoreContainer.getChildren().addAll(scoreHeading, score1, score2, score3);
-		
-		scoreSubScene.getPane().getChildren().addAll(score, scoreContainer);//, score1, score2, score3);		
+		scoreSubScene.getPane().getChildren().add(score);
+		scoreSubScene.getPane().getChildren().add(scoreBoard.getScoreVBox());
 		
 	}
 	
@@ -287,16 +271,10 @@ public class ViewManager {
 				
 				if (chosenShip != null) {
 					soundManager.setBackGroundMusicVolume(0);
-					soundManager.playBackGroundMusic();
 					GameView gameViewManager = new GameView();
 					gameViewManager.setShipImage(chosenShip);
 					try {
-
-						gameViewManager.createNewGame(mainStage, chosenShip);
-						Main main = new application.Main();
-						main.start(getMainStage());
-
-
+						gameViewManager.createNewGame(chosenShip);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -332,6 +310,18 @@ public class ViewManager {
 	public Stage getMainStage() {
 		
 		return mainStage;
+		
+	}
+	
+	public Scene getMainScene() {
+		
+		return mainScene;
+		
+	}
+	
+	public void setToMainScene() {
+		
+		mainStage.setScene(mainScene);
 		
 	}
 	
@@ -469,7 +459,7 @@ public class ViewManager {
 	private void createLogo() {
 		
 		ImageView logo = new ImageView("view/resources/StarShooter.png");
-		logo.setLayoutX(138);
+		logo.setLayoutX(290);
 		logo.setLayoutY(50);
 		
 		logo.setOnMouseEntered(new EventHandler<MouseEvent>() {

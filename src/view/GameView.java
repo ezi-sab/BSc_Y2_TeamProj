@@ -24,24 +24,20 @@ import model.SmallInfoLabel;
 import view.ShipModel.CellValue;
 
 public class GameView extends Group {
-	 private AnchorPane gamePane;
-	 private Scene gameScene;
-	 private Stage gameStage;
-	 
-	 
-	 private FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StarShooter.fxml"));
-	 private Controller controller;
-	    
-	 private Stage menuStage;
+	private static AnchorPane gamePane;
+	private static Scene gameScene;
+	private static Parent root;
+	
+	private FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StarShooter.fxml"));
+	private static Controller controller;
 
     @FXML private int gvRowCount;
     @FXML private int gvColumnCount;
     private ImageView[][] cellViews;
-
+    
     private final Image blockImage = new Image(getClass().getResourceAsStream("/res/spaceBuilding_018.png"));
     private final Image coinImage = new Image(getClass().getResourceAsStream("/res/smalldot.png"));
     private static Image shipImage;
-
     
     private final Image enemyImages[] = {
     		new Image(getClass().getResourceAsStream("/res/spaceShips_004.png")), 
@@ -50,6 +46,7 @@ public class GameView extends Group {
 
     private final Image bulletImage = new Image(getClass().getResourceAsStream("/res/laserRed15.png"));
     
+    public static ViewManager viewManager = new ViewManager();
     
     public final static double CELL_WIDTH = 34.0;
     
@@ -57,15 +54,13 @@ public class GameView extends Group {
     private ImageView[] playerLifes;
     private int playerLife;
     private int points;
-
+    
     public GameView() {
     	initializeStage();
     }
     
     private void initializeStage() {
     	gamePane = new AnchorPane();
-    	gameStage = new Stage();
-    	gameStage.setScene(gameScene);
     }
     
     // make new empty grid of cells
@@ -86,9 +81,9 @@ public class GameView extends Group {
         }
     }
     
-    public void createNewGame(Stage menuStage, Ship chosenShip) throws Exception {
-    	this.menuStage = menuStage;
-    	this.menuStage.hide();
+    public void createNewGame(Ship chosenShip) throws Exception {
+    	//this.menuStage = menuStage;
+    	//this.menuStage.hide();
     	
     	createGameElements(chosenShip);
 
@@ -100,17 +95,15 @@ public class GameView extends Group {
 		gamePane.setBackground(new Background(background));
 		*/
         
-        Parent root = loader.load();
-        gameStage.setTitle("Space Shooter");
+        root = loader.load();
     	controller = loader.getController(); 
         root.setOnKeyPressed(controller);
         
         double sceneWidth = controller.getBoardWidth();
         double sceneHeight = controller.getBoardHeight();
-        gameStage.setScene(new Scene(root, sceneWidth, sceneHeight));
-        gameStage.show();
-        root.requestFocus();{
-        }
+        gameScene = new Scene(root, sceneWidth, sceneHeight);
+        viewManager.getMainStage().setScene(gameScene);
+        root.requestFocus();
     }
     
     private void createGameElements(Ship chosenShip) {
