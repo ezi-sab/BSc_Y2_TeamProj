@@ -42,6 +42,8 @@ public class SoundManager {
 	private static double backGroundMusicVolume = 1.00;
 	private static double inGameMusicVolume = 0.75;
 	
+	private static double pastBGMVolume;
+	
 	public void playBackGroundMusic() {
 		
 		mediaPlayerBgm.setCycleCount(MediaPlayer.INDEFINITE);
@@ -74,6 +76,18 @@ public class SoundManager {
 	public double getbackGroundMusicVolume() {
 		
 		return backGroundMusicVolume;
+		
+	}
+	
+	public void setBGMVolumeBeforeGame() {
+		
+		pastBGMVolume = getbackGroundMusicVolume();
+		
+	}
+	
+	public double getBGMVolumeBeforeGame() {
+		
+		return pastBGMVolume;
 		
 	}
 	

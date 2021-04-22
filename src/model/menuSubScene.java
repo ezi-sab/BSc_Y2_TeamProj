@@ -34,7 +34,7 @@ public class menuSubScene extends SubScene {
 		isHidden = true;
 		
 		setLayoutX(1300);
-		setLayoutY(275);
+		setLayoutY(260);
 		
 		// TODO Auto-generated constructor stub
 	}

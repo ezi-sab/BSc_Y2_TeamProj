@@ -70,7 +70,6 @@ public class ViewManager {
 		mainScene = new Scene(mainPane, width, height);
 		mainStage.setScene(mainScene);
 		mainStage.setTitle("Star Shooter");
-		//soundManager = new SoundManager();
 		soundManager.playBackGroundMusic();
 		createSubScene();
 		createButtons();
@@ -270,6 +269,7 @@ public class ViewManager {
 			public void handle(ActionEvent event) {
 				
 				if (chosenShip != null) {
+					soundManager.setBGMVolumeBeforeGame();
 					soundManager.setBackGroundMusicVolume(0);
 					GameView gameViewManager = new GameView();
 					gameViewManager.setShipImage(chosenShip);
@@ -459,8 +459,8 @@ public class ViewManager {
 	private void createLogo() {
 		
 		ImageView logo = new ImageView("view/resources/StarShooter.png");
-		logo.setLayoutX(290);
-		logo.setLayoutY(50);
+		logo.setLayoutX(255);
+		logo.setLayoutY(35);
 		
 		logo.setOnMouseEntered(new EventHandler<MouseEvent>() {
 

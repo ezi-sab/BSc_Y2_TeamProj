@@ -255,7 +255,7 @@ public class Controller implements EventHandler<KeyEvent> {
             pause();
             gameOver = false;
             score = 0;
-            soundManager.setBackGroundMusicVolume(0.25);
+            soundManager.setBackGroundMusicVolume(soundManager.getBGMVolumeBeforeGame());
             soundManager.setBgmVolumeShips();
             viewManager.setToMainScene();
             
@@ -286,7 +286,7 @@ public class Controller implements EventHandler<KeyEvent> {
         		youWon = false;
         		levelComplete = false;
         		score = 0;
-        		soundManager.setBackGroundMusicVolume(0.25);
+        		soundManager.setBackGroundMusicVolume(soundManager.getBGMVolumeBeforeGame());
         		soundManager.setBgmVolumeShips();
         		viewManager.setToMainScene();
         		
