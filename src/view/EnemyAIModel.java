@@ -3,8 +3,8 @@ package view;
 import java.util.Random;
 
 import javafx.geometry.Point2D;
-import view.ShipModel.CellValue;
-import view.ShipModel.Direction;
+//import view.ShipModel.CellValue;
+//import view.ShipModel.Direction;
 
 public class EnemyAIModel extends ShipModel{
     

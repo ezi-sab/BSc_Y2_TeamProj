@@ -8,7 +8,6 @@ import java.util.List;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -20,12 +19,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.InfoLabel;
@@ -34,7 +30,6 @@ import model.Ship;
 import model.ShipPicker;
 import model.buttons;
 import model.menuSubScene;
-import application.Main;
 
 public class ViewManager {
 	
@@ -310,12 +305,6 @@ public class ViewManager {
 	public Stage getMainStage() {
 		
 		return mainStage;
-		
-	}
-	
-	public Scene getMainScene() {
-		
-		return mainScene;
 		
 	}
 	
