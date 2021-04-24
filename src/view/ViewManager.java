@@ -267,7 +267,11 @@ public class ViewManager {
 			public void handle(ActionEvent event) {
 				
 				if (chosenShip != null) {
-					soundManager.setBGMVolumeBeforeGame();
+					soundManager.setStopTimer(true);
+					if (soundManager.getBGMVolumeBeforeReached() == true) {
+						soundManager.setBGMVolumeBeforeGame(soundManager.getbackGroundMusicVolume());
+						soundManager.setBGMVolumeBeforeReached(false);
+					}
 					soundManager.setBackGroundMusicVolume(0);
 					soundManager.setBgmVolumeShips();
 					GameView gameViewManager = new GameView();

@@ -17,15 +17,15 @@ public class SoundManager {
 	private Media menuMusic;
 	private Media countDown;
 	private Media coin;
-	private Media enemyDead;
-	private Media playerDead;
+	private Media enemyExplode;
+	private Media playerExplode;
 	
 	private static MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
 	private MediaPlayer mediaPlayerMenu;
 	private MediaPlayer mediaPlayerCountDown;
 	private MediaPlayer mediaPlayerCoin;
-	private MediaPlayer mediaPlayerEnemyDead;
-	private MediaPlayer mediaPlayerPlayerDead;
+	private MediaPlayer mediaPlayerEnemyExplode;
+	private MediaPlayer mediaPlayerPlayerExplode;
 	
 	private static VolumeShip volumeShip1;
 	private static VolumeShip volumeShip2;
@@ -46,9 +46,21 @@ public class SoundManager {
 	private static double inGameMusicVolume = 0.50;
 	
 	private static double pastBGMVolume;
-	private double volumeToSet = 0;	
+	private double volumeToSet = 0;
 	
+	public static boolean stopTimer = true;
+	public static boolean bgmVolumeBeforeReached = true;
 	
+	private Timer fadeInTimer = new Timer();
+	
+	private int fadeDuration = 5000;
+	private int fadeInterval = 250;
+	private int numberOfSteps = fadeDuration/fadeInterval;
+	private double deltaVolume = getBGMVolumeBeforeGame() / (double) numberOfSteps;
+	
+	/*
+	 * Plays BackGround Music.
+	 */
 	public void playBackGroundMusic() {
 		
 		mediaPlayerBgm.setCycleCount(MediaPlayer.INDEFINITE);
@@ -57,7 +69,9 @@ public class SoundManager {
 		
 	}
 	
-	
+	/*
+	 * Plays Menu Open Music.
+	 */
 	public void playMenuOpenMusic() {
 		
 		menuMusic = new Media(Paths.get("src/view/resources/sounds/Fastinvader-sound.mp3").toUri().toString());
@@ -67,52 +81,14 @@ public class SoundManager {
 		
 	}
 	
-	
-	public void setBackGroundMusicVolume(double volume) {
-		
-		try {
-			backGroundMusicVolume = volume;
-			if(backGroundMusicVolume == 0) {
-				mediaPlayerBgm.setMute(true);
-			} else {
-				mediaPlayerBgm.setVolume(backGroundMusicVolume);
-				mediaPlayerBgm.setMute(false);
-			}
-		} catch (NullPointerException e) {}
-		
-	}
-	
-	
-	public double getbackGroundMusicVolume() {
-		
-		return backGroundMusicVolume;
-		
-	}
-	
-	
-	public void setBGMVolumeBeforeGame() {
-		
-		pastBGMVolume = getbackGroundMusicVolume();
-		
-	}
-	
-	
-	public double getBGMVolumeBeforeGame() {
-		
-		return pastBGMVolume;
-		
-	}
-	
-	
+	/*
+	 * Plays BackGround Music with a Fade-in effect using Timer and TimerTask.
+	 */
 	public void bgmFadeIn() {
 		
-		int fadeDuration = 5000;
-		int fadeInterval = 250;
-		int numberOfSteps = fadeDuration/fadeInterval;
-		double deltaVolume = getBGMVolumeBeforeGame() / (double) numberOfSteps;
+		stopTimer = false;
 		
-		Timer timer = new Timer();
-		TimerTask timerTask = new TimerTask() {
+		TimerTask fadeInTimerTask = new TimerTask() {
 			
 			@Override
 			public void run() {
@@ -121,113 +97,132 @@ public class SoundManager {
 				
 				if(volumeToSet >= getBGMVolumeBeforeGame()) {
 					
-					timer.cancel();
-					timer.purge();
+					fadeInTimer.cancel();
+					fadeInTimer.purge();
 					setBackGroundMusicVolume(pastBGMVolume);
-					setBgmVolumeShips();
+					bgmVolumeBeforeReached = true;
 					volumeToSet = 0;
-					
-				}
-				
-				if (volumeToSet == 1) {
-					
-					volumeShip2.setVolume(true);
-					volumeShip3.setVolume(true);
-					volumeShip4.setVolume(true);
-					volumeShip5.setVolume(true);
-					
-				} else if (volumeToSet >= 0.75) {
-					
-					volumeShip2.setVolume(true);
-					volumeShip3.setVolume(true);
-					volumeShip4.setVolume(true);
-					volumeShip5.setVolume(false);
-					
-				} else if (volumeToSet >= 0.50) {
-					
-					volumeShip2.setVolume(true);
-					volumeShip3.setVolume(true);
-					volumeShip4.setVolume(false);
-					volumeShip5.setVolume(false);
-					
-				} else if (volumeToSet == 0.25) {
-					
-					volumeShip2.setVolume(true);
-					volumeShip3.setVolume(false);
-					volumeShip4.setVolume(false);
-					volumeShip5.setVolume(false);
 					
 				}
 				
 			}
 		};
 		
-		timer.schedule(timerTask, fadeInterval, fadeInterval);
+		fadeInTimer.schedule(fadeInTimerTask, fadeInterval, fadeInterval);
 		
 	}
 	
-	
-	public void fadeIn(double deltaVolume) {
+	/*
+	 * Called by bgmFadeIn() to apply Fade-in effect.
+	 * 
+	 * @param deltaVolume  small value of volume to be increased. 
+	 */
+	private void fadeIn(double deltaVolume) {
 		
 		try {
 			
-			mediaPlayerBgm.setVolume(volumeToSet);
+			if (stopTimer == false) {
 			
-			if(mediaPlayerBgm.isMute() == true) {
+				mediaPlayerBgm.setVolume(volumeToSet);
 				
-				mediaPlayerBgm.setMute(false);
+				if(mediaPlayerBgm.isMute() == true) {
+					
+					mediaPlayerBgm.setMute(false);
+					
+				}
+				
+				volumeToSet += deltaVolume;
+				
+				if (volumeToSet == 1) {
+					
+					volumeShip2.setVolumeShip(true);
+					volumeShip3.setVolumeShip(true);
+					volumeShip4.setVolumeShip(true);
+					volumeShip5.setVolumeShip(true);
+					
+				} else if (volumeToSet >= 0.75) {
+					
+					volumeShip2.setVolumeShip(true);
+					volumeShip3.setVolumeShip(true);
+					volumeShip4.setVolumeShip(true);
+					volumeShip5.setVolumeShip(false);
+					
+				} else if (volumeToSet >= 0.50) {
+					
+					volumeShip2.setVolumeShip(true);
+					volumeShip3.setVolumeShip(true);
+					volumeShip4.setVolumeShip(false);
+					volumeShip5.setVolumeShip(false);
+					
+				} else if (volumeToSet == 0.25) {
+					
+					volumeShip2.setVolumeShip(true);
+					volumeShip3.setVolumeShip(false);
+					volumeShip4.setVolumeShip(false);
+					volumeShip5.setVolumeShip(false);
+					
+				}
+
+			} else {
+				
+				fadeInTimer.cancel();
+				fadeInTimer.purge();
 				
 			}
-			
-			volumeToSet += deltaVolume;
 		
 		} catch(NullPointerException e) {}
 		
 	}
 	
-	
+	/* 
+	 * Sets BGM VolumeShips according to BackGround Music.  
+	 */
 	public void setBgmVolumeShips() {
 		
 		if (getbackGroundMusicVolume() == 0) {
 			
-			volumeShip2.setVolume(false);
-			volumeShip3.setVolume(false);
-			volumeShip4.setVolume(false);
-			volumeShip5.setVolume(false);
+			volumeShip2.setVolumeShip(false);
+			volumeShip3.setVolumeShip(false);
+			volumeShip4.setVolumeShip(false);
+			volumeShip5.setVolumeShip(false);
 			
 		} else if (getbackGroundMusicVolume() == 0.25) {
 			
-			volumeShip2.setVolume(true);
-			volumeShip3.setVolume(false);
-			volumeShip4.setVolume(false);
-			volumeShip5.setVolume(false);
+			volumeShip2.setVolumeShip(true);
+			volumeShip3.setVolumeShip(false);
+			volumeShip4.setVolumeShip(false);
+			volumeShip5.setVolumeShip(false);
 			
 		} else if (getbackGroundMusicVolume() == 0.5) {
 			
-			volumeShip2.setVolume(true);
-			volumeShip3.setVolume(true);
-			volumeShip4.setVolume(false);
-			volumeShip5.setVolume(false);
+			volumeShip2.setVolumeShip(true);
+			volumeShip3.setVolumeShip(true);
+			volumeShip4.setVolumeShip(false);
+			volumeShip5.setVolumeShip(false);
 			
 		} else if (getbackGroundMusicVolume() == 0.75) {
 			
-			volumeShip2.setVolume(true);
-			volumeShip3.setVolume(true);
-			volumeShip4.setVolume(true);
-			volumeShip5.setVolume(false);
+			volumeShip2.setVolumeShip(true);
+			volumeShip3.setVolumeShip(true);
+			volumeShip4.setVolumeShip(true);
+			volumeShip5.setVolumeShip(false);
 			
 		} else if (getbackGroundMusicVolume() == 1) {
 			
-			volumeShip2.setVolume(true);
-			volumeShip3.setVolume(true);
-			volumeShip4.setVolume(true);
-			volumeShip5.setVolume(true);
+			volumeShip2.setVolumeShip(true);
+			volumeShip3.setVolumeShip(true);
+			volumeShip4.setVolumeShip(true);
+			volumeShip5.setVolumeShip(true);
 			
 		}
 		
 	}
 	
-	
+	/*
+	 * Makes a HBox of BGM VolumeShips.
+	 * 
+	 * @return bgmVolBox  HBox containing BGM VolumeShips.
+	 */
 	public HBox bgmVolumeShips() {
 		
 		bgmVolBox = new HBox();
@@ -246,10 +241,11 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0);
-				volumeShip2.setVolume(false);
-				volumeShip3.setVolume(false);
-				volumeShip4.setVolume(false);
-				volumeShip5.setVolume(false);
+				volumeShip2.setVolumeShip(false);
+				volumeShip3.setVolumeShip(false);
+				volumeShip4.setVolumeShip(false);
+				volumeShip5.setVolumeShip(false);
+				stopTimer = true;
 				
 			}
 			
@@ -264,10 +260,11 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0.25);
-				volumeShip2.setVolume(true);
-				volumeShip3.setVolume(false);
-				volumeShip4.setVolume(false);
-				volumeShip5.setVolume(false);
+				volumeShip2.setVolumeShip(true);
+				volumeShip3.setVolumeShip(false);
+				volumeShip4.setVolumeShip(false);
+				volumeShip5.setVolumeShip(false);
+				stopTimer = true;
 				
 			}
 			
@@ -282,10 +279,11 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0.50);
-				volumeShip2.setVolume(true);
-				volumeShip3.setVolume(true);
-				volumeShip4.setVolume(false);
-				volumeShip5.setVolume(false);
+				volumeShip2.setVolumeShip(true);
+				volumeShip3.setVolumeShip(true);
+				volumeShip4.setVolumeShip(false);
+				volumeShip5.setVolumeShip(false);
+				stopTimer = true;
 				
 			}
 		});
@@ -299,10 +297,11 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(0.75);
-				volumeShip2.setVolume(true);
-				volumeShip3.setVolume(true);
-				volumeShip4.setVolume(true);
-				volumeShip5.setVolume(false);
+				volumeShip2.setVolumeShip(true);
+				volumeShip3.setVolumeShip(true);
+				volumeShip4.setVolumeShip(true);
+				volumeShip5.setVolumeShip(false);
+				stopTimer = true;
 				
 			}
 		});
@@ -316,22 +315,25 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 				
 				setBackGroundMusicVolume(1);
-				volumeShip2.setVolume(true);
-				volumeShip3.setVolume(true);
-				volumeShip4.setVolume(true);
-				volumeShip5.setVolume(true);
+				volumeShip2.setVolumeShip(true);
+				volumeShip3.setVolumeShip(true);
+				volumeShip4.setVolumeShip(true);
+				volumeShip5.setVolumeShip(true);
+				stopTimer = true;
 				
 			}
 		});
 		
-		bgmVolBox.setLayoutX(35);
+		bgmVolBox.setLayoutX(55);
 		bgmVolBox.setLayoutY(100);
 		
 		return bgmVolBox;
 		
 	}
 	
-	
+	/*
+	 * Plays CountDown Music before game starts.
+	 */
 	public void playCountDownMusic() {
 		
 		countDown = new Media(Paths.get("src/view/resources/sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
@@ -341,7 +343,9 @@ public class SoundManager {
 		
 	}
 	
-	
+	/*
+	 * Plays sound when a coin is collected.
+	 */
 	public void playCoinCollectMusic() {
 			
 		coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
@@ -351,83 +355,79 @@ public class SoundManager {
 		
 	}
 	
-	
-	public void playEnemyDeadMusic() {
+	/*
+	 * Plays sound when enemy is exploded.
+	 */
+	public void playEnemyExplodeMusic() {
 			
-		enemyDead = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
-		mediaPlayerEnemyDead = new MediaPlayer(enemyDead);
-		mediaPlayerEnemyDead.setVolume(inGameMusicVolume);
-		mediaPlayerEnemyDead.setAutoPlay(true);
+		enemyExplode = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
+		mediaPlayerEnemyExplode = new MediaPlayer(enemyExplode);
+		mediaPlayerEnemyExplode.setVolume(inGameMusicVolume);
+		mediaPlayerEnemyExplode.setAutoPlay(true);
 		
 	}
 	
-	
-	public void playPlayerDeadMusic() {
+	/*
+	 * Plays sound when player is exploded.
+	 */
+	public void playPlayerExplodeMusic() {
 			
-		playerDead = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
-		mediaPlayerPlayerDead = new MediaPlayer(playerDead);
-		mediaPlayerPlayerDead.setVolume(inGameMusicVolume);
-		mediaPlayerPlayerDead.setAutoPlay(true);	
+		playerExplode = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
+		mediaPlayerPlayerExplode = new MediaPlayer(playerExplode);
+		mediaPlayerPlayerExplode.setVolume(inGameMusicVolume);
+		mediaPlayerPlayerExplode.setAutoPlay(true);	
 		
 	}
 	
-	
-	public void setInGameMusicVolume(double volume) {
-		
-		inGameMusicVolume = volume;
-		
-	}
-	
-	
-	public double getInGameMusicVolume() {
-		
-		return inGameMusicVolume;
-		
-	}
-	
-	
+	/*
+	 * sets IGM VolumeShips according to In-Game Music. 
+	 */
 	public void setIgmVolumeShips() {
 		
 		if (getInGameMusicVolume() == 0) {
 			
-			volumeShip7.setVolume(false);
-			volumeShip8.setVolume(false);
-			volumeShip9.setVolume(false);
-			volumeShip0.setVolume(false);
+			volumeShip7.setVolumeShip(false);
+			volumeShip8.setVolumeShip(false);
+			volumeShip9.setVolumeShip(false);
+			volumeShip0.setVolumeShip(false);
 			
 		} else if (getInGameMusicVolume() == 0.25) {
 			
-			volumeShip7.setVolume(true);
-			volumeShip8.setVolume(false);
-			volumeShip9.setVolume(false);
-			volumeShip0.setVolume(false);
+			volumeShip7.setVolumeShip(true);
+			volumeShip8.setVolumeShip(false);
+			volumeShip9.setVolumeShip(false);
+			volumeShip0.setVolumeShip(false);
 			
 		} else if (getInGameMusicVolume() == 0.5) {
 			
-			volumeShip7.setVolume(true);
-			volumeShip8.setVolume(true);
-			volumeShip9.setVolume(false);
-			volumeShip0.setVolume(false);
+			volumeShip7.setVolumeShip(true);
+			volumeShip8.setVolumeShip(true);
+			volumeShip9.setVolumeShip(false);
+			volumeShip0.setVolumeShip(false);
 			
 		} else if (getInGameMusicVolume() == 0.75) {
 			
-			volumeShip7.setVolume(true);
-			volumeShip8.setVolume(true);
-			volumeShip9.setVolume(true);
-			volumeShip0.setVolume(false);
+			volumeShip7.setVolumeShip(true);
+			volumeShip8.setVolumeShip(true);
+			volumeShip9.setVolumeShip(true);
+			volumeShip0.setVolumeShip(false);
 			
 		} else if (getInGameMusicVolume() == 1) {
 			
-			volumeShip7.setVolume(true);
-			volumeShip8.setVolume(true);
-			volumeShip9.setVolume(true);
-			volumeShip0.setVolume(true);
+			volumeShip7.setVolumeShip(true);
+			volumeShip8.setVolumeShip(true);
+			volumeShip9.setVolumeShip(true);
+			volumeShip0.setVolumeShip(true);
 			
 		}
 		
 	}
 	
-	
+	/*
+	 * Makes a HBox of IGM VolumeShips.
+	 * 
+	 * @return igmVolBox  HBox containing IGM VolumeShips.
+	 */
 	public HBox igmVolumeShips() {
 		
 		igmVolBox = new HBox();
@@ -446,10 +446,10 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0);
-				volumeShip7.setVolume(false);
-				volumeShip8.setVolume(false);
-				volumeShip9.setVolume(false);
-				volumeShip0.setVolume(false);
+				volumeShip7.setVolumeShip(false);
+				volumeShip8.setVolumeShip(false);
+				volumeShip9.setVolumeShip(false);
+				volumeShip0.setVolumeShip(false);
 				
 			}
 		
@@ -464,10 +464,10 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0.25);
-				volumeShip7.setVolume(true);
-				volumeShip8.setVolume(false);
-				volumeShip9.setVolume(false);
-				volumeShip0.setVolume(false);
+				volumeShip7.setVolumeShip(true);
+				volumeShip8.setVolumeShip(false);
+				volumeShip9.setVolumeShip(false);
+				volumeShip0.setVolumeShip(false);
 				
 			}
 		
@@ -482,10 +482,10 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0.50);
-				volumeShip7.setVolume(true);
-				volumeShip8.setVolume(true);
-				volumeShip9.setVolume(false);
-				volumeShip0.setVolume(false);
+				volumeShip7.setVolumeShip(true);
+				volumeShip8.setVolumeShip(true);
+				volumeShip9.setVolumeShip(false);
+				volumeShip0.setVolumeShip(false);
 		
 			}
 		});
@@ -499,10 +499,10 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(0.75);
-				volumeShip7.setVolume(true);
-				volumeShip8.setVolume(true);
-				volumeShip9.setVolume(true);
-				volumeShip0.setVolume(false);
+				volumeShip7.setVolumeShip(true);
+				volumeShip8.setVolumeShip(true);
+				volumeShip9.setVolumeShip(true);
+				volumeShip0.setVolumeShip(false);
 		
 			}
 		});
@@ -516,19 +516,110 @@ public class SoundManager {
 			public void handle(MouseEvent event) {
 			
 				setInGameMusicVolume(1);
-				volumeShip7.setVolume(true);
-				volumeShip8.setVolume(true);
-				volumeShip9.setVolume(true);
-				volumeShip0.setVolume(true);
+				volumeShip7.setVolumeShip(true);
+				volumeShip8.setVolumeShip(true);
+				volumeShip9.setVolumeShip(true);
+				volumeShip0.setVolumeShip(true);
 		
 			}
 		});
 		
-		igmVolBox.setLayoutX(35);
+		igmVolBox.setLayoutX(55);
 		igmVolBox.setLayoutY(275);
 		
 		return igmVolBox;
 		
+	}
+	
+	/*
+	 * Sets parameter value to backGroundMusicVolume.
+	 * 
+	 * @param volume  value to be set to backGroundMusicVolume.
+	 */
+	public void setBackGroundMusicVolume(double volume) {
+		
+		try {
+			backGroundMusicVolume = volume;
+			if(backGroundMusicVolume == 0) {
+				mediaPlayerBgm.setMute(true);
+			} else {
+				mediaPlayerBgm.setVolume(backGroundMusicVolume);
+				mediaPlayerBgm.setMute(false);
+			}
+			setBgmVolumeShips();
+		} catch (NullPointerException e) {}
+		
+	}
+	
+	/*
+	 * @return backGroundMusicVolume  Volume of BackGround Music.
+	 */
+	public double getbackGroundMusicVolume() {
+		return backGroundMusicVolume;	
+	}
+	
+	/*
+	 * Sets parameter value to pastBGMVolume.
+	 * 
+	 * @param volume  value to be set to pastBGMVolume.
+	 */
+	public void setBGMVolumeBeforeGame(double volume) {
+		pastBGMVolume = volume;
+	}
+	
+	/*
+	 * @return pastBGMVolume  Volume of BackGround Music before Game starts.
+	 */
+	public double getBGMVolumeBeforeGame() {
+		return pastBGMVolume;	
+	}
+	
+	/*
+	 * Sets parameter value to stopTimer.
+	 * 
+	 * @param val  value to be set to stopTimer.
+	 */
+	public void setStopTimer(boolean val) {
+		stopTimer = val;	
+	}
+	
+	/*
+	 * @return stopTimer  boolean used to know whether the fadeInTimer has stopped.
+	 */
+	public boolean getStopTimer() {
+		return stopTimer;
+	}
+	
+	/*
+	 * Sets parameter value to bgmVolumeBeforeReached.
+	 * 
+	 * @param val  value to be set to bgmVolumeBeforeReached.
+	 */
+	public void setBGMVolumeBeforeReached(boolean val) {
+		bgmVolumeBeforeReached = val;	
+	}
+	
+	/*
+	 * @return bgmVolumeBeforeReached  boolean used to know whether backGroundMusicVolume is set to pastBGMVolume.
+	 */
+	public boolean getBGMVolumeBeforeReached() {
+		return bgmVolumeBeforeReached;
+	}
+	
+	/*
+	 * Sets parameter value to inGameMusicVolume.
+	 * 
+	 * @param volume  value to be set to inGameMusicVolume.
+	 */
+	public void setInGameMusicVolume(double volume) {
+		inGameMusicVolume = volume;
+	}
+	
+	/*
+	 * @return inGameMusicVolume  volume of In-Game Music.
+	 */
+	public double getInGameMusicVolume() {	
+		return inGameMusicVolume;
 	}
 	
 	

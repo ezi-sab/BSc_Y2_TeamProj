@@ -26,7 +26,7 @@ public class Controller implements EventHandler<KeyEvent> {
     private PlayerModel player;
     private List<EnemyAIModel> enemies;
     
-//  Change all level1, level2, level3 to level0.txt to make the game easier
+//  Change all level1, level2, level3 to level0 to make the game easier
     private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
     final private static double FPS = 5.0;
     
@@ -287,11 +287,17 @@ public class Controller implements EventHandler<KeyEvent> {
         	
         	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
                 gameOver = true;
-                soundManager.playPlayerDeadMusic();
+                soundManager.playPlayerExplodeMusic();
                 shipVelocity = new Point2D(0,0);
             }
         	
         	this.enemies.get(i).moveEnemy(player.getLocation());
+        	
+        	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
+                gameOver = true;
+                soundManager.playPlayerExplodeMusic();
+                shipVelocity = new Point2D(0,0);
+            }
         	
     	}
         
@@ -319,7 +325,7 @@ public class Controller implements EventHandler<KeyEvent> {
             pause();
             gameOver = false;
             score = 0;
-            delayMainScene(2000);
+            delayMainScene(3000);
             
         } else if (youWon) {
         	
@@ -328,14 +334,14 @@ public class Controller implements EventHandler<KeyEvent> {
         		this.gameOverLabel.setText(String.format("LEVEL 1 COMPLETED!"));
         		levelComplete = true;
         		pause();
-        		delayNextLevel(1000);
+        		delayNextLevel(2000);
         		
         	} else if(level == 1) {
         		
         		this.gameOverLabel.setText(String.format("LEVEL 2 COMPLETED!"));
         		levelComplete = true;
         		pause();
-        		delayNextLevel(1000);
+        		delayNextLevel(2000);
         		
         	} else if(level == 2) {
         		
@@ -347,7 +353,7 @@ public class Controller implements EventHandler<KeyEvent> {
         		youWon = false;
         		levelComplete = false;
         		score = 0;
-        		delayMainScene(2000);
+        		delayMainScene(3000);
         		
         	}
         	
