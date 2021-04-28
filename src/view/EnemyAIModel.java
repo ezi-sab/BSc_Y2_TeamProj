@@ -1,10 +1,7 @@
 package view;
 
 import java.util.Random;
-
 import javafx.geometry.Point2D;
-//import view.ShipModel.CellValue;
-//import view.ShipModel.Direction;
 
 public class EnemyAIModel extends ShipModel{
     
@@ -21,13 +18,13 @@ public class EnemyAIModel extends ShipModel{
     	do {
     		randInt = generator.nextInt(3);
 	        switch (randInt){
-	        case 0:		randDirection = Direction.LEFT;
+	        case 0:		randDirection = Direction.RIGHT;
 	        			break;
-	        case 1:		randDirection = Direction.RIGHT;
+	        case 1:		randDirection = Direction.DOWN;
 						break;
-    		case 2:		randDirection = Direction.UP;
+    		case 2:		randDirection = Direction.LEFT;
 						break;
-    		default: 	randDirection = Direction.DOWN;
+    		default: 	randDirection = Direction.UP;
 						break;
 	        }
     	} while(randDirection == this.currentDirection);
@@ -40,9 +37,9 @@ public class EnemyAIModel extends ShipModel{
         Direction direction = currentDirection;
         if (shipLocation.getY() == playerLocation.getY()) {
             if (shipLocation.getX() > playerLocation.getX()) {
-            	direction = Direction.UP;
+            	direction = Direction.LEFT;
             } else {
-            	direction = Direction.DOWN;
+            	direction = Direction.RIGHT;
             }
             velocity = changeVelocity(direction);
             Point2D predictedLocation = shipLocation.add(velocity);
@@ -59,9 +56,9 @@ public class EnemyAIModel extends ShipModel{
         //check if ghost is in PacMan's row and move towards him
         else if (shipLocation.getX() == playerLocation.getX()) {
             if (shipLocation.getY() > playerLocation.getY()) {
-            	direction = Direction.LEFT;
+            	direction = Direction.UP;
             } else {
-            	direction = Direction.RIGHT;
+            	direction = Direction.DOWN;
             }
             velocity = changeVelocity(direction);
             Point2D predictedLocation = shipLocation.add(velocity);
@@ -92,11 +89,13 @@ public class EnemyAIModel extends ShipModel{
         
     }
     
+    
     public void moveEnemy(Point2D playerLocation) {
         Point2D[] enemyData = enemyAI(shipVelocity, playerLocation);
         shipVelocity = enemyData[0];
         shipLocation = enemyData[1];
 
     }
+    
     
 }

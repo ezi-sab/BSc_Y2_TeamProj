@@ -25,7 +25,7 @@
     </top>
 
     <center>
-        <GameView fx:id="gameView" gvRowCount="21" gvColumnCount="37"/> <!--rowCount="21" columnCount="19"  />-->
+        <GameView fx:id="gameView" gvRowCount="37" gvColumnCount="21"/> <!--rowCount="37" columnCount="21"  />-->
     </center>
 
     <bottom>

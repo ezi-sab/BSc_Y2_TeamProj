@@ -1,11 +1,7 @@
 package view;
 
 import java.util.List;
-
 import javafx.fxml.FXML;
-
-
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -13,13 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.stage.Stage;
 import model.Ship;
-import model.ShipPicker;
 import model.SmallInfoLabel;
 import view.ShipModel.CellValue;
 
@@ -70,8 +60,8 @@ public class GameView extends Group {
             for (int row = 0; row < gvRowCount; row++) {
                 for (int column = 0; column < gvColumnCount; column++) {
                     ImageView imageView = new ImageView();
-                    imageView.setX((double) column * CELL_WIDTH);
-                    imageView.setY((double) row * CELL_WIDTH);
+                    imageView.setX((double) row * CELL_WIDTH);
+                    imageView.setY((double) column * CELL_WIDTH);
                     imageView.setFitWidth(CELL_WIDTH);
                     imageView.setFitHeight(CELL_WIDTH);
                     this.cellViews[row][column] = imageView;
@@ -132,8 +122,8 @@ public class GameView extends Group {
         }
         set the image to correspond with the value of that cell
         */
-        for (int row = 0; row < gvRowCount; row++) {
-            for (int column = 0; column < gvColumnCount; column++) {
+        for (int column = 0; column < gvColumnCount; column++) {
+            for (int row = 0; row < gvRowCount; row++) {
             	CellValue value = player.getCellValue(row, column);
                 if (value == CellValue.COIN) {
                     this.cellViews[row][column].setImage(this.coinImage);

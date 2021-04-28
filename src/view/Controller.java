@@ -51,6 +51,7 @@ public class Controller implements EventHandler<KeyEvent> {
     private int smalldot = 0;
     private boolean levelComplete = false;
     private int keyPressed = 0;
+    private static ShipModel.Direction lastDirection;
     
     private static SoundManager soundManager = new SoundManager();
     private static ScoreBoard scoreBoard = new ScoreBoard();
@@ -69,7 +70,7 @@ public class Controller implements EventHandler<KeyEvent> {
 
     
     private void startTimer() {
-        this.timer = new java.util.Timer();
+        this.timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
                 Platform.runLater(()->update());
@@ -158,17 +159,18 @@ public class Controller implements EventHandler<KeyEvent> {
             e.printStackTrace();
         }
         
+        columnCount = 0;
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             @SuppressWarnings("resource")
 			Scanner lineScanner = new Scanner(line);
             
-            columnCount = 0;
+            rowCount = 0;
             while (lineScanner.hasNext()) {
                 lineScanner.next();
-                columnCount++;
+                rowCount++;
             }
-            rowCount++;
+            columnCount++;
         }
         Scanner scanner2 = null;
         try {
@@ -189,10 +191,10 @@ public class Controller implements EventHandler<KeyEvent> {
     		this.enemies.add(buffer);
     	}
     	
-        int row = 0;
+        int column = 0;
         
         while (scanner2.hasNextLine()) {
-            int column = 0;
+            int row = 0;
             String line = scanner2.nextLine();
             @SuppressWarnings("resource")
 			Scanner lineScanner = new Scanner(line);
@@ -234,9 +236,9 @@ public class Controller implements EventHandler<KeyEvent> {
                     	}
                 }
                 grid[row][column] = thisValue;
-                column++;
+                row++;
             }
-            row++;
+            column++;
         }
     }
     
@@ -271,7 +273,7 @@ public class Controller implements EventHandler<KeyEvent> {
         player.movePlayer();
         Point2D shipLocation = player.getLocation();
         Point2D shipVelocity = player.getVelocity();
-        CellValue shipLocationCellValue = grid[(int) player.shipLocation.getX()][(int) shipLocation.getY()];
+        CellValue shipLocationCellValue = grid[(int) shipLocation.getX()][(int) shipLocation.getY()];
 
         if (shipLocationCellValue == CellValue.COIN) {
         	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
@@ -366,16 +368,22 @@ public class Controller implements EventHandler<KeyEvent> {
     public void handle(KeyEvent keyEvent) {
         boolean keyRecognized = true;
         KeyCode code = keyEvent.getCode();
-        ShipModel.Direction direction = ShipModel.Direction.NONE;
+        ShipModel.Direction direction = lastDirection;
         if (code == KeyCode.LEFT || code == KeyCode.A) {
             direction = ShipModel.Direction.LEFT;
+            lastDirection = direction;
         } else if (code == KeyCode.RIGHT || code == KeyCode.D) {
             direction = ShipModel.Direction.RIGHT;
+            lastDirection = direction;
         } else if (code == KeyCode.UP || code == KeyCode.W) {
             direction = ShipModel.Direction.UP;
+            lastDirection = direction;
         } else if (code == KeyCode.DOWN || code == KeyCode.S) {
             direction = ShipModel.Direction.DOWN;
+            lastDirection = direction;
         } else if (code == KeyCode.G) {
+        	direction = ShipModel.Direction.NONE;
+        	lastDirection = direction;
         	pause();
         	this.startNewGame();
         } else if (code == KeyCode.P) {
@@ -404,12 +412,12 @@ public class Controller implements EventHandler<KeyEvent> {
     
 
     public double getBoardWidth() {
-        return GameView.CELL_WIDTH * this.gameView.getGvColumnCount();
+        return GameView.CELL_WIDTH * this.gameView.getGvRowCount();
     }
     
 
     public double getBoardHeight() {
-        return (GameView.CELL_WIDTH * this.gameView.getGvRowCount()) + 100;
+        return (GameView.CELL_WIDTH * this.gameView.getGvColumnCount()) + 100;
     }
     
     
@@ -441,6 +449,5 @@ public class Controller implements EventHandler<KeyEvent> {
     public boolean isLevelComplete() {
     	return levelComplete;
     }
-    
     
 }
