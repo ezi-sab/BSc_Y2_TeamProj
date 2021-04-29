@@ -27,6 +27,7 @@ public class buttons extends Button {
 
     }
 
+
     private void setButtonFont() {
         try {
             setFont(Font.loadFont(new FileInputStream(FONT_PATH), 23));

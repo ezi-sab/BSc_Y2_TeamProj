@@ -22,7 +22,7 @@ public class menuSubScene extends SubScene {
     public menuSubScene() {
         super(new AnchorPane(), 600, 400);
         prefWidth(600);
-        prefHeight(400);
+        prefHeight(450);
 
         BackgroundImage image = new BackgroundImage(new Image(BACKGROUND_IMG, 600, 400, false, true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
@@ -33,19 +33,19 @@ public class menuSubScene extends SubScene {
 
         isHidden = true;
 
-        setLayoutX(1030);
-        setLayoutY(240);
+        setLayoutX(1300);
+        setLayoutY(260);
 
         // TODO Auto-generated constructor stub
     }
 
     public void moveSubScene() {
         TranslateTransition transition = new TranslateTransition();
-        transition.setDuration(Duration.seconds(0.3));
+        transition.setDuration(Duration.seconds(0.4));
         transition.setNode(this);
 
         if(isHidden) {
-            transition.setToX(-676);
+            transition.setToX(-775);
             isHidden = false;
         }
         else {
