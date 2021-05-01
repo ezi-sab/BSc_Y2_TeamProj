@@ -25,6 +25,8 @@ public class Controller implements EventHandler<KeyEvent> {
 	
     private PlayerModel player;
     private List<EnemyAIModel> enemies;
+    // store all the flying bullets
+    private List<BulletModel> bullets;
     
 //  Change all level1, level2, level3 to level0 to make the game easier
     private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
@@ -51,7 +53,7 @@ public class Controller implements EventHandler<KeyEvent> {
     private int smalldot = 0;
     private boolean levelComplete = false;
     private int keyPressed = 0;
-    private static ShipModel.Direction lastDirection;
+    private int step = 0;
     
     private static SoundManager soundManager = new SoundManager();
     private static ScoreBoard scoreBoard = new ScoreBoard();
@@ -70,14 +72,14 @@ public class Controller implements EventHandler<KeyEvent> {
 
     
     private void startTimer() {
-        this.timer = new Timer();
+        this.timer = new java.util.Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
                 Platform.runLater(()->update());
             }
         };
 
-        long frameTimeInMilliseconds = (long) (1000.0 / FPS);
+        long frameTimeInMilliseconds = (long) (500.0 / FPS);
         this.timer.schedule(timerTask, 0, frameTimeInMilliseconds);
     }
     
@@ -159,18 +161,17 @@ public class Controller implements EventHandler<KeyEvent> {
             e.printStackTrace();
         }
         
-        columnCount = 0;
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             @SuppressWarnings("resource")
 			Scanner lineScanner = new Scanner(line);
             
-            rowCount = 0;
+            columnCount = 0;
             while (lineScanner.hasNext()) {
                 lineScanner.next();
-                rowCount++;
+                columnCount++;
             }
-            columnCount++;
+            rowCount++;
         }
         Scanner scanner2 = null;
         try {
@@ -190,11 +191,11 @@ public class Controller implements EventHandler<KeyEvent> {
     		EnemyAIModel buffer = new EnemyAIModel(grid);
     		this.enemies.add(buffer);
     	}
-    	
-        int column = 0;
+    	bullets = new ArrayList<>();
+        int row = 0;
         
         while (scanner2.hasNextLine()) {
-            int row = 0;
+            int column = 0;
             String line = scanner2.nextLine();
             @SuppressWarnings("resource")
 			Scanner lineScanner = new Scanner(line);
@@ -236,9 +237,9 @@ public class Controller implements EventHandler<KeyEvent> {
                     	}
                 }
                 grid[row][column] = thisValue;
-                row++;
+                column++;
             }
-            column++;
+            row++;
         }
     }
     
@@ -270,51 +271,145 @@ public class Controller implements EventHandler<KeyEvent> {
     
     
     public void step() {
-        player.movePlayer();
-        Point2D shipLocation = player.getLocation();
-        Point2D shipVelocity = player.getVelocity();
-        CellValue shipLocationCellValue = grid[(int) shipLocation.getX()][(int) shipLocation.getY()];
+    	step += 1;
+        checkBullet();
+    	if (step % 2 == 1) {
+	        player.movePlayer();
+	        Point2D shipLocation = player.getLocation();
+	        Point2D shipVelocity = player.getVelocity();
+	        CellValue shipLocationCellValue = grid[(int) player.shipLocation.getX()][(int) shipLocation.getY()];
+	
+	        if (shipLocationCellValue == CellValue.COIN) {
+	        	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
+	        	soundManager = new SoundManager();
+	        	soundManager.playCoinCollectMusic();
+	        	smalldot--;
+	            score += 1;
+	        }
+	        
+	        //TODO: Add the power up buttons.
+	        
+	        for(int i = 0; i < noEnemies; i++) {
+	        	
+	        	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
+	                gameOver = true;
+	                soundManager.playPlayerExplodeMusic();
+	                shipVelocity = new Point2D(0,0);
+	            }
+	        	
+	        	this.enemies.get(i).moveEnemy(player.getLocation());
+	        	
+	        	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
+	                gameOver = true;
+	                soundManager.playPlayerExplodeMusic();
+	                shipVelocity = new Point2D(0,0);
+	            }
+	        	if (!gameOver) {
+		        	Point2D enemyLocation = this.enemies.get(i).getLocation();
+		        	Point2D playerLocation = player.getLocation();
+	        		switch (enemies.get(i).getCurrentDirection()) {
+					case DOWN:
+						if (enemyLocation.getY() == playerLocation.getY() && playerLocation.getX() > enemyLocation.getX()) {
+							shoot(enemies.get(i));
+						}
+						break;
+					case UP:
+						if (enemyLocation.getY() == playerLocation.getY() && playerLocation.getX() < enemyLocation.getX()) {
+							shoot(enemies.get(i));
+						}
+						break;
+					case LEFT:
+						if (enemyLocation.getX() == playerLocation.getX() && playerLocation.getY() < enemyLocation.getY()) {
+							shoot(enemies.get(i));
+						}
+						break;
+					case RIGHT:
+						if (enemyLocation.getX() == playerLocation.getX() && playerLocation.getY() > enemyLocation.getY()) {
+							shoot(enemies.get(i));
+						}
+						break;
 
-        if (shipLocationCellValue == CellValue.COIN) {
-        	grid[(int) shipLocation.getX()][(int) shipLocation.getY()] = CellValue.EMPTY;
-        	soundManager = new SoundManager();
-        	soundManager.playCoinCollectMusic();
-        	smalldot--;
-            score += 1;
-        }
-        
-        //TODO: Add the power up buttons.
-        
-        for(int i = 0; i < noEnemies; i++) {
-        	
-        	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
-                gameOver = true;
-                soundManager.playPlayerExplodeMusic();
-                shipVelocity = new Point2D(0,0);
-            }
-        	
-        	this.enemies.get(i).moveEnemy(player.getLocation());
-        	
-        	if (shipLocation.equals(this.enemies.get(i).getLocation())) {
-                gameOver = true;
-                soundManager.playPlayerExplodeMusic();
-                shipVelocity = new Point2D(0,0);
-            }
-        	
+					default:
+						break;
+					}
+	        	}
+	    	}
     	}
-        
         if(smalldot == 0) {	
         	youWon = true;
         }
+        if (noEnemies == 0) {
+        	gameOver = true;
+            player.setVelocity(new Point2D(0,0));
+        }
+    }
+    
+    // generate a new bullet according to enemy or play's location and direction
+    public void shoot(ShipModel ship) {
+    	BulletModel bullet = new BulletModel(grid);
+    	bullet.setLocation(ship.shipLocation.add(ship.changeVelocity(ship.getCurrentDirection())));
+    	bullet.setCurrentDirection(ship.getCurrentDirection());
+    	bullets.add(bullet);
+    	if (ship instanceof PlayerModel) {
+    		soundManager.playPlayerShootingMusic();
+    	}
+    }
+    
+    //check if the bullet shot player or enemies
+    private void checkBullet() {
 
+        for(int i = 0; i < bullets.size(); i++) {
+			boolean disappear = false;
+        	if (player.getLocation().equals(this.bullets.get(i).getLocation())) {
+                gameOver = true;
+                soundManager.playPlayerExplodeMusic();
+                player.setVelocity(new Point2D(0,0));
+                return;
+            } else {
+                for(int j = 0; j < noEnemies; j++) {
+                	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
+                        enemies.remove(j);
+                        noEnemies -= 1;
+                        disappear = true;
+                        break;
+                    }
+            	}
+            }
+        	if (!disappear) {
+				if (bullets.get(i).flyBullet()) {
+		        	if (player.getLocation().equals(this.bullets.get(i).getLocation())) {
+		                gameOver = true;
+		                soundManager.playPlayerExplodeMusic();
+		                player.setVelocity(new Point2D(0,0));
+		                return;
+		            } else {
+		                for(int j = 0; j < noEnemies; j++) {
+		                	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
+		                        enemies.remove(j);
+		                        noEnemies -= 1;
+		                        disappear = true;
+		                        break;
+		                    }
+		            	}
+		            }
+				} else {
+					bullets.remove(i);
+					i -= 1;
+				}
+        	}
+        	if (disappear) {
+				bullets.remove(i);
+				i -= 1;
+        	}
+    	}
+        
     }
     
     
     private void update() {
     	player.setGameGrid(grid);
     	this.step();
-        
-        this.gameView.update(player,enemies);
+        this.gameView.update(player,enemies, bullets);
         
         this.scoreLabel.setText(String.format("Score: %d", score));
         this.levelLabel.setText(String.format("Level: %d", level + 1));
@@ -368,22 +463,16 @@ public class Controller implements EventHandler<KeyEvent> {
     public void handle(KeyEvent keyEvent) {
         boolean keyRecognized = true;
         KeyCode code = keyEvent.getCode();
-        ShipModel.Direction direction = lastDirection;
+        ShipModel.Direction direction = ShipModel.Direction.NONE;
         if (code == KeyCode.LEFT || code == KeyCode.A) {
             direction = ShipModel.Direction.LEFT;
-            lastDirection = direction;
         } else if (code == KeyCode.RIGHT || code == KeyCode.D) {
             direction = ShipModel.Direction.RIGHT;
-            lastDirection = direction;
         } else if (code == KeyCode.UP || code == KeyCode.W) {
             direction = ShipModel.Direction.UP;
-            lastDirection = direction;
         } else if (code == KeyCode.DOWN || code == KeyCode.S) {
             direction = ShipModel.Direction.DOWN;
-            lastDirection = direction;
         } else if (code == KeyCode.G) {
-        	direction = ShipModel.Direction.NONE;
-        	lastDirection = direction;
         	pause();
         	this.startNewGame();
         } else if (code == KeyCode.P) {
@@ -394,6 +483,11 @@ public class Controller implements EventHandler<KeyEvent> {
         		delayNextScene(3500);
         	}
         	keyPressed++; 
+        } else if (code == KeyCode.SPACE) { //shooting
+        	if (player.getCurrentDirection() != Direction.NONE) {
+        		direction = player.getCurrentDirection();
+	        	shoot(player);
+        	}
         } else {
             keyRecognized = false;
         }
@@ -412,12 +506,12 @@ public class Controller implements EventHandler<KeyEvent> {
     
 
     public double getBoardWidth() {
-        return GameView.CELL_WIDTH * this.gameView.getGvRowCount();
+        return GameView.CELL_WIDTH * this.gameView.getGvColumnCount();
     }
     
 
     public double getBoardHeight() {
-        return (GameView.CELL_WIDTH * this.gameView.getGvColumnCount()) + 100;
+        return (GameView.CELL_WIDTH * this.gameView.getGvRowCount()) + 100;
     }
     
     
@@ -449,5 +543,6 @@ public class Controller implements EventHandler<KeyEvent> {
     public boolean isLevelComplete() {
     	return levelComplete;
     }
+    
     
 }

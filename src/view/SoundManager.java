@@ -380,6 +380,18 @@ public class SoundManager {
 	}
 	
 	/*
+	 * Plays sound when player is shooting.
+	 */
+	public void playPlayerShootingMusic() {
+			
+		playerExplode = new Media(Paths.get("src/view/resources/sounds/shooting-sound.mp3").toUri().toString());
+		mediaPlayerPlayerExplode = new MediaPlayer(playerExplode);
+		mediaPlayerPlayerExplode.setVolume(inGameMusicVolume);
+		mediaPlayerPlayerExplode.setAutoPlay(true);	
+		
+	}
+	
+	/*
 	 * sets IGM VolumeShips according to In-Game Music. 
 	 */
 	public void setIgmVolumeShips() {

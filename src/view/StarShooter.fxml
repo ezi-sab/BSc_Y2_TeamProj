@@ -25,13 +25,13 @@
     </top>
 
     <center>
-        <GameView fx:id="gameView" gvRowCount="37" gvColumnCount="21"/> <!--rowCount="37" columnCount="21"  />-->
+        <GameView fx:id="gameView" gvRowCount="21" gvColumnCount="37"/> <!--rowCount="21" columnCount="19"  />-->
     </center>
 
     <bottom>
         <HBox prefHeight="35" style="-fx-padding: 10px, 5px, 10px, 5px; -fx-background-color: #0B5091">
             <Label style="-fx-font-size: 140%; -fx-text-fill: white"
-                   text="Move: Arrow Keys / WASD   New game: G   Pause game: P" />
+                   text="Move: Arrow Keys / WASD   Shoot: Space   New game: G   Pause game: P" />
         </HBox>
     </bottom>
 </BorderPane>

@@ -1,7 +1,11 @@
 package view;
 
 import java.util.List;
+
 import javafx.fxml.FXML;
+
+
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -9,7 +13,13 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.stage.Stage;
 import model.Ship;
+import model.ShipPicker;
 import model.SmallInfoLabel;
 import view.ShipModel.CellValue;
 
@@ -34,7 +44,7 @@ public class GameView extends Group {
     		new Image(getClass().getResourceAsStream("/res/spaceShips_009.png"))
     		};
 
-    private final Image bulletImage = new Image(getClass().getResourceAsStream("/res/laserRed15.png"));
+    private final Image bulletImage = new Image(getClass().getResourceAsStream("/res/laserRed01.png"));
     
     public static ViewManager viewManager = new ViewManager();
     
@@ -60,8 +70,8 @@ public class GameView extends Group {
             for (int row = 0; row < gvRowCount; row++) {
                 for (int column = 0; column < gvColumnCount; column++) {
                     ImageView imageView = new ImageView();
-                    imageView.setX((double) row * CELL_WIDTH);
-                    imageView.setY((double) column * CELL_WIDTH);
+                    imageView.setX((double) column * CELL_WIDTH);
+                    imageView.setY((double) row * CELL_WIDTH);
                     imageView.setFitWidth(CELL_WIDTH);
                     imageView.setFitHeight(CELL_WIDTH);
                     this.cellViews[row][column] = imageView;
@@ -114,7 +124,7 @@ public class GameView extends Group {
     }
 
     // update based off of model of grid
-    public void update(PlayerModel player, List<EnemyAIModel> enemies) {
+    public void update(PlayerModel player, List<EnemyAIModel> enemies, List<BulletModel> bullets) {
     	/*
     	assert model.getRowCount() == this.rowCount && model.getColumnCount() == this.columnCount;
         if (model.getRowCount() != this.rowCount || model.getColumnCount() != this.columnCount) {
@@ -122,8 +132,8 @@ public class GameView extends Group {
         }
         set the image to correspond with the value of that cell
         */
-        for (int column = 0; column < gvColumnCount; column++) {
-            for (int row = 0; row < gvRowCount; row++) {
+        for (int row = 0; row < gvRowCount; row++) {
+            for (int column = 0; column < gvColumnCount; column++) {
             	CellValue value = player.getCellValue(row, column);
                 if (value == CellValue.COIN) {
                     this.cellViews[row][column].setImage(this.coinImage);
@@ -157,6 +167,21 @@ public class GameView extends Group {
 		                } else if (enemies.get(i).getCurrentDirection() == ShipModel.Direction.UP || enemies.get(i).getCurrentDirection() == ShipModel.Direction.NONE) {
 		                	this.cellViews[row][column].setRotate(0);
 		                } else if (enemies.get(i).getCurrentDirection() == ShipModel.Direction.DOWN) {
+		                	this.cellViews[row][column].setRotate(180);
+		                }
+                	}
+                }
+                
+                for (int i = 0; i < bullets.size(); i++) {
+                	if (row == bullets.get(i).getLocation().getX() && column == bullets.get(i).getLocation().getY()) {
+                		this.cellViews[row][column].setImage(bulletImage);
+		                if (bullets.get(i).getCurrentDirection() == ShipModel.Direction.RIGHT) {
+		                	this.cellViews[row][column].setRotate(90);
+		                } else if (bullets.get(i).getCurrentDirection() == ShipModel.Direction.LEFT) {
+		                	this.cellViews[row][column].setRotate(-90);
+		                } else if (bullets.get(i).getCurrentDirection() == ShipModel.Direction.UP || bullets.get(i).getCurrentDirection() == ShipModel.Direction.NONE) {
+		                	this.cellViews[row][column].setRotate(0);
+		                } else if (bullets.get(i).getCurrentDirection() == ShipModel.Direction.DOWN) {
 		                	this.cellViews[row][column].setRotate(180);
 		                }
                 	}
