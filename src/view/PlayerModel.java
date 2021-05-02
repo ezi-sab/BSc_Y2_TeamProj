@@ -1,6 +1,8 @@
 package view;
 
 import javafx.geometry.Point2D;
+import view.ShipModel.CellValue;
+import view.ShipModel.Direction;
 
 public class PlayerModel extends ShipModel{
 	
@@ -9,24 +11,38 @@ public class PlayerModel extends ShipModel{
 	}
 
 	public void movePlayer() {
-		
 		Point2D predictedShipVelocity = changeVelocity(this.currentDirection);
         
         Point2D predictedShipLocation = shipLocation.add(predictedShipVelocity);
         predictedShipLocation = setOffScreenLocation(predictedShipLocation);
         
-        setLastDirection(this.currentDirection);
         
-        if (gameGrid [(int) predictedShipLocation.getX()] [(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
-        	
-        	predictedShipVelocity = changeVelocity(Direction.NONE);
-        	predictedShipLocation = shipLocation.add(predictedShipVelocity);
-        	
+        if (this.currentDirection.equals(lastDirection)) {
+
+        	if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
+                shipVelocity = changeVelocity(Direction.NONE);
+                setLastDirection(this.currentDirection);
+        } else {
+        	shipVelocity = predictedShipVelocity;
+            shipLocation = predictedShipLocation;
+            //setLastDirection(this.currentDirection);
+            }
         }
-        
-        shipVelocity = predictedShipVelocity;
-        shipLocation = predictedShipLocation;
-        
+        else {
+            if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
+                predictedShipVelocity = changeVelocity(lastDirection);
+                predictedShipLocation = shipLocation.add(predictedShipVelocity);
+                if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
+                    shipVelocity = changeVelocity(Direction.NONE);
+                } else {
+                    shipVelocity = changeVelocity(lastDirection);
+                    shipLocation = shipLocation.add(shipVelocity);
+                }
+            } else {
+                shipVelocity = predictedShipVelocity;
+                shipLocation = predictedShipLocation;
+                setLastDirection(this.currentDirection);
+            }
+        }
     }
 }
-
