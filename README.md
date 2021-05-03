@@ -1,6 +1,14 @@
 ## Progress Check Week 3
 * (STARCRAFT)
 
+## RUN SETUP
+* VM ARGUMENTS
+
+```
+--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.media,javafx.fxml
+
+```
+
 ## Game Idea
 
 Game outline - 1 player placed in a random corner of a maze with a AI bot placed in the opposite corner. The objective of the game is to destroy the other spaceship to gain a point. Spaceship shoots lasers which can rebound twice off walls.
@@ -131,7 +139,15 @@ not be fully installed if the AI bot is having difficulty with wall interaction
 
 * Background music should be implemented (sound effects will depend on the rest of the development)
 
+## Resources
 
+* MUSIC
+
+- Link: https://www.google.com
+
+* STOCK ICONS
+
+- Link: https://www.google.com
 
 
 
