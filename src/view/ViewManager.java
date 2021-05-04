@@ -54,7 +54,7 @@ public class ViewManager {
 	List<buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
-	private Ship chosenShip;
+	private static Ship chosenShip;
 	
 	
 	public ViewManager() {
@@ -267,20 +267,19 @@ public class ViewManager {
 			public void handle(ActionEvent event) {
 				
 				if (chosenShip != null) {
+					
 					soundManager.setStopTimer(true);
 					if (soundManager.getBGMVolumeBeforeReached() == true) {
 						soundManager.setBGMVolumeBeforeGame(soundManager.getbackGroundMusicVolume());
 						soundManager.setBGMVolumeBeforeReached(false);
 					}
+					
 					soundManager.setBackGroundMusicVolume(0);
 					soundManager.setBgmVolumeShips();
+					
 					GameView gameViewManager = new GameView();
-					gameViewManager.setShipImage(chosenShip);
-					try {
-						gameViewManager.createNewGame(chosenShip);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					gameViewManager.createNewGame(chosenShip);
+					
 				}
 				
 			}
@@ -453,6 +452,13 @@ public class ViewManager {
 			}
 			
 		});
+		
+	}
+	
+	
+	public Ship getChosenShip() {
+		
+		return chosenShip;
 		
 	}
 	

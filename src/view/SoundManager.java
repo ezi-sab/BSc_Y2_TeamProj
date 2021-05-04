@@ -12,11 +12,11 @@ import model.VolumeShip;
 
 public class SoundManager {
 	
-	
 	private static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
 	private Media menuMusic;
 	private Media countDown;
 	private Media coin;
+	private Media playerShoot;
 	private Media enemyExplode;
 	private Media playerExplode;
 	
@@ -24,6 +24,7 @@ public class SoundManager {
 	private MediaPlayer mediaPlayerMenu;
 	private MediaPlayer mediaPlayerCountDown;
 	private MediaPlayer mediaPlayerCoin;
+	private MediaPlayer mediaPlayerPlayerShoot;
 	private MediaPlayer mediaPlayerEnemyExplode;
 	private MediaPlayer mediaPlayerPlayerExplode;
 	
@@ -51,12 +52,7 @@ public class SoundManager {
 	public static boolean stopTimer = true;
 	public static boolean bgmVolumeBeforeReached = true;
 	
-	private Timer fadeInTimer = new Timer();
-	
-	private int fadeDuration = 5000;
-	private int fadeInterval = 250;
-	private int numberOfSteps = fadeDuration/fadeInterval;
-	private double deltaVolume = getBGMVolumeBeforeGame() / (double) numberOfSteps;
+	private Timer fadeInTimer;
 	
 	/*
 	 * Plays BackGround Music.
@@ -86,7 +82,14 @@ public class SoundManager {
 	 */
 	public void bgmFadeIn() {
 		
+		int fadeDuration = 5000;
+		int fadeInterval = 250;
+		int numberOfSteps = fadeDuration/fadeInterval;
+		double deltaVolume = getBGMVolumeBeforeGame() / (double) numberOfSteps;
+		
 		stopTimer = false;
+		volumeToSet = 0;
+		fadeInTimer = new Timer();
 		
 		TimerTask fadeInTimerTask = new TimerTask() {
 			
@@ -356,6 +359,18 @@ public class SoundManager {
 	}
 	
 	/*
+	 * Plays sound when player shoots
+	 */
+	public void playPlayerShootMusic() {
+		
+		playerShoot = new Media(Paths.get("src/view/resources/sounds/Laser-sound.mp3").toUri().toString());
+		mediaPlayerPlayerShoot = new MediaPlayer(playerShoot);
+		mediaPlayerPlayerShoot.setVolume(inGameMusicVolume);
+		mediaPlayerPlayerShoot.setAutoPlay(true);
+		
+	}
+	
+	/*
 	 * Plays sound when enemy is exploded.
 	 */
 	public void playEnemyExplodeMusic() {
@@ -373,18 +388,6 @@ public class SoundManager {
 	public void playPlayerExplodeMusic() {
 			
 		playerExplode = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
-		mediaPlayerPlayerExplode = new MediaPlayer(playerExplode);
-		mediaPlayerPlayerExplode.setVolume(inGameMusicVolume);
-		mediaPlayerPlayerExplode.setAutoPlay(true);	
-		
-	}
-	
-	/*
-	 * Plays sound when player is shooting.
-	 */
-	public void playPlayerShootingMusic() {
-			
-		playerExplode = new Media(Paths.get("src/view/resources/sounds/shooting-sound.mp3").toUri().toString());
 		mediaPlayerPlayerExplode = new MediaPlayer(playerExplode);
 		mediaPlayerPlayerExplode.setVolume(inGameMusicVolume);
 		mediaPlayerPlayerExplode.setAutoPlay(true);	
@@ -633,6 +636,5 @@ public class SoundManager {
 	public double getInGameMusicVolume() {	
 		return inGameMusicVolume;
 	}
-	
 	
 }

@@ -1,16 +1,13 @@
 package view;
 
 import java.util.Random;
-
 import javafx.geometry.Point2D;
-//import view.ShipModel.CellValue;
-//import view.ShipModel.Direction;
 
 public class EnemyAIModel extends ShipModel{
+	
     
 	public EnemyAIModel(CellValue[][] gameGrid) {
 		super(gameGrid);
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -21,13 +18,13 @@ public class EnemyAIModel extends ShipModel{
     	do {
     		randInt = generator.nextInt(3);
 	        switch (randInt){
-	        case 0:		randDirection = Direction.LEFT;
+	        case 0:		randDirection = Direction.RIGHT;
 	        			break;
-	        case 1:		randDirection = Direction.RIGHT;
+	        case 1:		randDirection = Direction.DOWN;
 						break;
-    		case 2:		randDirection = Direction.UP;
+    		case 2:		randDirection = Direction.LEFT;
 						break;
-    		default: 	randDirection = Direction.DOWN;
+    		default: 	randDirection = Direction.UP;
 						break;
 	        }
     	} while(randDirection == this.currentDirection);
@@ -36,13 +33,14 @@ public class EnemyAIModel extends ShipModel{
 
 	
     public Point2D[] enemyAI(Point2D velocity, Point2D playerLocation){
-        Random generator = new Random();
+    	
         Direction direction = currentDirection;
+        //check if ghost is in PacMan's row and move towards him
         if (shipLocation.getY() == playerLocation.getY()) {
             if (shipLocation.getX() > playerLocation.getX()) {
-            	direction = Direction.UP;
+            	direction = Direction.LEFT;
             } else {
-            	direction = Direction.DOWN;
+            	direction = Direction.RIGHT;
             }
             velocity = changeVelocity(direction);
             Point2D predictedLocation = shipLocation.add(velocity);
@@ -56,12 +54,12 @@ public class EnemyAIModel extends ShipModel{
             }
             shipLocation = predictedLocation;
         }
-        //check if ghost is in PacMan's row and move towards him
+        //check if ghost is in PacMan's column and move towards him
         else if (shipLocation.getX() == playerLocation.getX()) {
             if (shipLocation.getY() > playerLocation.getY()) {
-            	direction = Direction.LEFT;
+            	direction = Direction.UP;
             } else {
-            	direction = Direction.RIGHT;
+            	direction = Direction.DOWN;
             }
             velocity = changeVelocity(direction);
             Point2D predictedLocation = shipLocation.add(velocity);
@@ -81,6 +79,7 @@ public class EnemyAIModel extends ShipModel{
                 direction = randomDirectionGenerator();
                 velocity = changeVelocity(direction);
                 predictedLocation = shipLocation.add(velocity);
+                predictedLocation = setOffScreenLocation(predictedLocation);
             }
             shipLocation = predictedLocation;
         }
@@ -91,6 +90,7 @@ public class EnemyAIModel extends ShipModel{
         return data;
         
     }
+
     
     public void moveEnemy(Point2D playerLocation) {
         Point2D[] enemyData = enemyAI(shipVelocity, playerLocation);
@@ -98,5 +98,6 @@ public class EnemyAIModel extends ShipModel{
         shipLocation = enemyData[1];
 
     }
+    
     
 }
