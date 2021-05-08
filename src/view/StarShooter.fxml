@@ -20,7 +20,7 @@
 
     <bottom>
         <BorderPane prefHeight="35" style="-fx-padding: 10px, 5px, 10px, 5px; -fx-background-color: #0B5091">
-            <left><Label style="-fx-font-size: 140%; -fx-text-fill: white" text="Move: Arrow Keys / WASD   Shoot: Space   New game: G   Pause game: P" /></left>
+            <left><Label style="-fx-font-size: 140%; -fx-text-fill: white" text="Move: Arrow Keys / WASD   Shoot: Space   New game: G   Pause game: P   Exit Game: ESC" /></left>
             <right><Label fx:id="levelLabel" style="-fx-font-size: 150%; -fx-text-fill: white"/></right>
         </BorderPane>
     </bottom>

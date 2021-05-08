@@ -7,10 +7,21 @@ import javafx.geometry.Point2D;
  */
 public class BulletModel extends ShipModel {
 
+	/**
+	 * Constructor that calls the parent level game grid.
+	 * It gets the location ond Cell Value.
+	 * @param grid that is set to the parent level game grid
+	 */
 	public BulletModel(CellValue[][] grid) {
 		super(grid);
 	}
 
+	/**
+	 * Function that enables the velocity of the bullet that should travelled and hit.
+	 * Handles the edge cases when the bullet hits the wall and disappears.
+	 *
+	 * @return boolean detects the bullet/ laser hit to enemy or not.
+	 */
 	public boolean flyBullet() {
 		
 		Point2D predictedShipVelocity = changeVelocity(this.currentDirection);

@@ -1,5 +1,7 @@
 package view;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.animation.AnimationTimer;
@@ -7,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,8 +28,8 @@ import model.InfoLabel;
 import model.ScoreBoard;
 import model.Ship;
 import model.ShipPicker;
-import model.buttons;
-import model.menuSubScene;
+import model.Buttons;
+import model.MenuSubScene;
 
 public class ViewManager {
 	
@@ -39,24 +42,28 @@ public class ViewManager {
 	
 	private final static int MENU_BUTTON_STARTX = 100;
 	private final static int MENU_BUTTON_STARTY = 185;
+	private static TextField name;
+	private static String playerName = "";
 	
-	private menuSubScene shipSelectSubScene;
-	private static menuSubScene scoreSubScene;
-	private menuSubScene settingsSubScene;
-	private menuSubScene helpSubScene;
-	private menuSubScene creditsSubScene;
-	private menuSubScene musicControls;
-	private menuSubScene sceneToHide;
+	private MenuSubScene shipSelectSubScene;
+	private static MenuSubScene scoreSubScene;
+	private MenuSubScene settingsSubScene;
+	private MenuSubScene helpSubScene;
+	private MenuSubScene creditsSubScene;
+	private MenuSubScene musicControls;
+	private MenuSubScene sceneToHide;
 	
 	private static SoundManager soundManager = new SoundManager();
 	private static ScoreBoard scoreBoard = new ScoreBoard();
 
-	List<buttons> menuButtons;
+	List<Buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
 	private static Ship chosenShip;
-	
-	
+
+	/**
+	 * Constructor for building the Main scene of the game.
+	 */
 	public ViewManager() {
 		
 		menuButtons = new ArrayList<>();
@@ -71,9 +78,12 @@ public class ViewManager {
 		createLogo();
 		
 	}
-	
-	
-	private void showSubScene(menuSubScene subScene) {
+
+	/**
+	 * Shows the selected sub scene.
+	 * @param subScene to show or hide
+	 */
+	private void showSubScene(MenuSubScene subScene) {
 		
 		if(sceneToHide != null) {
 			sceneToHide.moveSubScene();
@@ -83,11 +93,13 @@ public class ViewManager {
 		sceneToHide= subScene;
 		
 	}
-	
-	
+
+	/**
+	 * Creates and calls the sub scenes methods.
+	 */
 	private void createSubScene() {
 		
-		settingsSubScene = new menuSubScene();
+		settingsSubScene = new MenuSubScene();
 		mainPane.getChildren().add(settingsSubScene);
 
 		
@@ -102,11 +114,15 @@ public class ViewManager {
 		createMusicButtons();
 		
 	}
-	
-	
+
+	/**
+	 * Creates Ship select sub scene.
+	 * Player can choose desired ship as their character.
+	 * Necessary Font, layout and labels are set.
+	 */
 	private void createShipSelectSubScene() {
 		
-		shipSelectSubScene = new menuSubScene();
+		shipSelectSubScene = new MenuSubScene();
 		mainPane.getChildren().add(shipSelectSubScene);
 		
 		InfoLabel chooseShipLabel = new InfoLabel("CHOOSE YOUR SHIP");
@@ -114,14 +130,19 @@ public class ViewManager {
 		chooseShipLabel.setLayoutY(20);
 		shipSelectSubScene.getPane().getChildren().add(chooseShipLabel);
 		shipSelectSubScene.getPane().getChildren().add(createShipsToChoose());
+		shipSelectSubScene.getPane().getChildren().add(retrievePlayerName());
 		shipSelectSubScene.getPane().getChildren().add(createButtonToStart());
 		
 	}
-	
-	
+
+	/**
+	 * Creates the Score sub scene.
+	 * Player can view their scores.
+	 * Necessary Font, layout and labels are set.
+	 */
 	private void createScoreSubScene() {
 		
-		scoreSubScene = new menuSubScene();
+		scoreSubScene = new MenuSubScene();
 		mainPane.getChildren().add(scoreSubScene);
 		InfoLabel score = new InfoLabel("SCORES");
 		score.setLayoutX(115);
@@ -133,11 +154,15 @@ public class ViewManager {
 		scoreSubScene.getPane().getChildren().add(scoreBoard.getScoreVBox());
 		
 	}
-	
-	
+
+	/**
+	 * Creates the Credits sub scene.
+	 * Contribution towards the game as sections.
+	 * Necessary Font, layout and labels are set.
+	 */
 	private void createCreditsSubScene() {
 		
-		creditsSubScene = new menuSubScene();
+		creditsSubScene = new MenuSubScene();
 		mainPane.getChildren().add(creditsSubScene);
 		
 		InfoLabel creditsLabel = new InfoLabel("CREDITS");
@@ -145,12 +170,12 @@ public class ViewManager {
 		creditsLabel.setLayoutY(20);
 		
 		Label credit0 = new Label("Reuben Sidhu: UI/Game Logic");
-		Label credit1 = new Label("Bharath Raj: UI/Level Design/Sound");
+		Label credit1 = new Label("Bharath Raj: UI/Game Logic/Level Design/Sound");
 		Label credit2 = new Label("Eunji Kwak: Artificial Intelligence");
 		Label credit3 = new Label("Iniyan Kanmani: Sound Design");
 		Label credit4 = new Label("Alfred: UI");
 		Label credit5 = new Label("Matthew: ");
-		Label credit6 = new Label("Xiaoliang Pu: ");
+		Label credit6 = new Label("Xiaoliang Pu: Shooting Mechanism");
 		
 		credit0.setFont(new Font("Arial", 20));
 		credit1.setFont(new Font("Arial", 20));
@@ -167,11 +192,15 @@ public class ViewManager {
 		creditsSubScene.getPane().getChildren().addAll(creditsLabel, creditsBox);				
 				
 	}
-	
-	
+
+	/**
+	 * Creates the Help sub scene.
+	 * Necessary guide for the player to get started.
+	 * Font, layout and labels are set.
+	 */
 	private void createHelpSubScene() {
 		
-		helpSubScene = new menuSubScene();
+		helpSubScene = new MenuSubScene();
 		mainPane.getChildren().add(helpSubScene);
 		InfoLabel help = new InfoLabel("HELP");
 		help.setLayoutX(120);
@@ -224,8 +253,11 @@ public class ViewManager {
 		helpSubScene.getPane().getChildren().addAll(help, helpGrid);
 		
 	}
-	
-	
+
+	/**
+	 * Creates a HBox for choosing between ships for the player to pick.
+	 * Necessary Font, layout and labels are set.
+	 */
 	private HBox createShipsToChoose() {
 		
 		HBox box = new HBox();
@@ -254,11 +286,33 @@ public class ViewManager {
 		
 	}
 	
-	
-	private buttons createButtonToStart() {
+	private TextField retrievePlayerName() {
+		name = new TextField("");
+		name.setPromptText("SHIP NAME");
+		name.setText(playerName);
+		name.setLayoutX(300-(118*2));
+		name.setLayoutY(300);
+		name.setPrefWidth(190);
+    	name.setPrefHeight(49);
+    	try {
+			name.setFont(Font.loadFont(new FileInputStream("src/model/resources/kenvector_future.ttf"), 23));
+		} catch (FileNotFoundException e) {
+			name.setFont(Font.font("Verdana", 23));
+		}
+    	name.setStyle("-fx-background-color: transparent; -fx-background-image: url('/model/resources/blue_button05.png');");
+		return name;
+	}
+
+	/**
+	 * Implements the start button.
+	 * Calls the game stub and starts everything from cold .
+	 * Checks if Player hasn't chosen a ship and a Text for the ship isn't entered.
+	 * Necessary Font, layout and labels are set.
+	 */
+	private Buttons createButtonToStart() {
 		
-		buttons startButton = new buttons("START");
-		startButton.setLayoutX(200);
+		Buttons startButton = new Buttons("START");
+		startButton.setLayoutX(300-(118*2) + 265);
 		startButton.setLayoutY(300);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -266,7 +320,7 @@ public class ViewManager {
 			@Override
 			public void handle(ActionEvent event) {
 				
-				if (chosenShip != null) {
+				if ((chosenShip != null) && !(name.getText().isBlank())) {
 					
 					soundManager.setStopTimer(true);
 					if (soundManager.getBGMVolumeBeforeReached() == true) {
@@ -277,8 +331,11 @@ public class ViewManager {
 					soundManager.setBackGroundMusicVolume(0);
 					soundManager.setBgmVolumeShips();
 					
+					name.replaceText(0, name.getText().length(), name.getText().toUpperCase());
+					playerName = name.getText();
+					
 					GameView gameViewManager = new GameView();
-					gameViewManager.createNewGame(chosenShip);
+					gameViewManager.countDownTimer(chosenShip, 1000);
 					
 				}
 				
@@ -289,11 +346,16 @@ public class ViewManager {
 		return startButton;
 		
 	}
-	
-	
+
+	/**
+	 * Ability to control game sound through this menu.
+	 * Image ships decides the game volume.
+	 * A black ship says deactivated and a bright ship says it's activated.
+	 * Necessary Font, layout and labels are set.
+	 */
 	private void createMusicButtons() {
 		
-		musicControls = new menuSubScene();
+		musicControls = new MenuSubScene();
 		mainPane.getChildren().add(musicControls);
 
 		InfoLabel chooseBGMusicOption = new InfoLabel("BACKGROUND MUSIC");
@@ -309,23 +371,30 @@ public class ViewManager {
 		musicControls.getPane().getChildren().add(soundManager.igmVolumeShips());
 		
 	}
-	
-	
+
+	/**
+	 * Gets the main stage of the game.
+	 * @return mainStage
+	 */
 	public Stage getMainStage() {
 		
 		return mainStage;
 		
 	}
-	
-	
+
+	/**
+	 * Sets the main stage to the main scene.
+	 */
 	public void setToMainScene() {
 		
 		mainStage.setScene(mainScene);
 		
 	}
-	
-	
-	private void addMenuButton(buttons button) {
+
+	/**
+	 * Creates a menu button template.
+	 */
+	private void addMenuButton(Buttons button) {
 		
 		button.setLayoutX(MENU_BUTTON_STARTX);
 		button.setLayoutY(MENU_BUTTON_STARTY + menuButtons.size() * 100);
@@ -333,8 +402,11 @@ public class ViewManager {
 		mainPane.getChildren().add(button);
 		
 	}
-	
 
+	/**
+	 * Function that calls all the buttons for the scene.
+	 * Displays every button on th main stage and scene.
+	 */
 	private void createButtons() {
 		
 		createStartButton();
@@ -345,11 +417,15 @@ public class ViewManager {
 		createExitButton();
 		
 	}
-	
-	
+
+	/**
+	 * Creates a button to start the game on the main stage.
+	 * This redirects player to the shipSelectSubScene().
+	 * Thereafter start button in sub scene enables the game .
+	 */
 	private void createStartButton() {
 		
-		buttons startButton = new buttons("PLAY");
+		Buttons startButton = new Buttons("PLAY");
 		addMenuButton(startButton);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -363,11 +439,13 @@ public class ViewManager {
 		});
 		
 	}
-	
-	
+
+	/**
+	 * Creates a scores button on the main stage.
+	 */
 	private void createScoresButton() {
 		
-		buttons scoresButton = new buttons("SCORES");
+		Buttons scoresButton = new Buttons("SCORES");
 		addMenuButton(scoresButton);
 		scoresButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -380,11 +458,13 @@ public class ViewManager {
 		});
 		
 	}
-	
-	
+
+	/**
+	 * Creates a settings button on the main stage.
+	 */
 	private void createSettingsButton() {
 		
-		buttons settingsButton = new buttons("SETTINGS");
+		Buttons settingsButton = new Buttons("SETTINGS");
 		addMenuButton(settingsButton);
 		
 		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -399,11 +479,13 @@ public class ViewManager {
 		});
 		
 	}
-	
-	
+
+	/**
+	 * Creates a help button on the main stage..
+	 */
 	private void createHelpButton() {
 		
-		buttons helpButton = new buttons("HELP");
+		Buttons helpButton = new Buttons("HELP");
 		addMenuButton(helpButton);
 		
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -418,11 +500,13 @@ public class ViewManager {
 		});
 		
 	}
-	
-	
+
+	/**
+	 * Creates a credits button on the main stage.
+	 */
 	private void createCreditsButton() {
 		
-		buttons creditsButton = new buttons("CREDITS");
+		Buttons creditsButton = new Buttons("CREDITS");
 		addMenuButton(creditsButton);
 		
 		creditsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -437,11 +521,15 @@ public class ViewManager {
 		});
 		
 	}
-	
-	
+
+	/**
+	 * Creates a exit button on the main stage.
+	 * On tapped the game exits and game window closes.
+	 * This is the end of the game.
+	 */
 	private void createExitButton() {
 		
-		buttons exitButton = new buttons("EXIT");
+		Buttons exitButton = new Buttons("EXIT");
 		addMenuButton(exitButton);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -455,14 +543,28 @@ public class ViewManager {
 		
 	}
 	
-	
+	/**
+	 * Gets the chosen ship by the player.
+	 */
 	public Ship getChosenShip() {
 		
 		return chosenShip;
 		
 	}
-	
-	
+
+	/**
+	 * Gets the player name.
+	 */
+	public String getPlayerName() {
+		
+		return playerName;
+		
+	}
+
+	/**
+	 * Creates the background for main stage.
+	 * Adds a Space Theme image.
+	 */
 	private void createBackground() {
 		
 		Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
@@ -470,8 +572,11 @@ public class ViewManager {
 		mainPane.setBackground(new Background(background));
 		
 	}
-	
-	
+
+	/**
+	 * Creates and adds the logo of the game "SPACE SHOOTER".
+	 * Font Style, Layout are specified accordingly.
+	 */
 	private void createLogo() {
 		
 		ImageView logo = new ImageView("view/resources/StarShooter.png");

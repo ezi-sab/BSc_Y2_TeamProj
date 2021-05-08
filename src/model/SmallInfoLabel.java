@@ -17,7 +17,11 @@ import javafx.scene.text.Font;
 public class SmallInfoLabel extends Label {
 	
 	private final static String FONT_PATH ="src/model/resources/kenvector_future.ttf";
-	
+
+	/**
+	 * Constructor that sets the text , font and Alignment on the Game Scene.
+	 * @param text is passed as argument to setText() for title.
+	 */
 	public SmallInfoLabel(String text) {
 		setPrefWidth(130);
 		setPrefHeight(50);
@@ -28,7 +32,10 @@ public class SmallInfoLabel extends Label {
 		setPadding(new Insets(10,10,10,10));
 		setText(text);
 	}
-	
+
+	/**
+	 * Sets the Font for the Label Text that needs to be showcased.
+	 */
 	private void setLabelFont() {
 		
 		try {

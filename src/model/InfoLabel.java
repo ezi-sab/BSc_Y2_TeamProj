@@ -20,7 +20,11 @@ public class InfoLabel extends Label{
 	public final static String FONT_PATH = "src/model/resources/kenvector_future.ttf";
 	
 	public final static String BACKGROUND_IMG = "view/resources/blue_button13.png";
-	
+
+	/**
+	 * Constructor that sets the Info label.
+	 * @param text is passed as argument in setText().
+	 */
 	public InfoLabel(String text) {
 		
 		setPrefWidth(350);
@@ -35,7 +39,10 @@ public class InfoLabel extends Label{
 		setBackground(new Background(backgroundImage));
 		
 	}
-	
+
+	/**
+	 * Sets the font style of the label.
+	 */
 	private void setLabelFont() {
 		try {
 			setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 23));

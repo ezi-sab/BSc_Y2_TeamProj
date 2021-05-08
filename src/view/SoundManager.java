@@ -15,18 +15,30 @@ public class SoundManager {
 	private static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
 	private Media menuMusic;
 	private Media countDown;
-	private Media coin;
-	private Media playerShoot;
+	private Media coinPickUp;
+	private Media laserPickUp;
+	private Media lifePickUp;
+	private Media laserEmpty;
+	private Media laserShoot;
 	private Media enemyExplode;
 	private Media playerExplode;
+	private Media levelCompleted;
+	private Media gameOver;
+	private Media gameWon;
 	
 	private static MediaPlayer mediaPlayerBgm = new MediaPlayer(bgm);
 	private MediaPlayer mediaPlayerMenu;
 	private MediaPlayer mediaPlayerCountDown;
-	private MediaPlayer mediaPlayerCoin;
-	private MediaPlayer mediaPlayerPlayerShoot;
+	private MediaPlayer mediaPlayerCoinPickUp;
+	private MediaPlayer mediaPlayerLaserPickUp;
+	private MediaPlayer mediaPlayerLifePickUp;
+	private MediaPlayer mediaPlayerLaserEmpty;
+	private MediaPlayer mediaPlayerLaserShoot;
 	private MediaPlayer mediaPlayerEnemyExplode;
 	private MediaPlayer mediaPlayerPlayerExplode;
+	private MediaPlayer mediaPlayerLevelCompleted;
+	private MediaPlayer mediaPlayerGameOver;
+	private MediaPlayer mediaPlayerGameWon;
 	
 	private static VolumeShip volumeShip1;
 	private static VolumeShip volumeShip2;
@@ -43,8 +55,8 @@ public class SoundManager {
 	private static HBox bgmVolBox;
 	private static HBox igmVolBox;
 	
-	private static double backGroundMusicVolume = 1;
-	private static double inGameMusicVolume = 0.50;
+	private static double backGroundMusicVolume = 1.0;
+	private static double inGameMusicVolume = 1.0;
 	
 	private static double pastBGMVolume;
 	private double volumeToSet = 0;
@@ -54,7 +66,7 @@ public class SoundManager {
 	
 	private Timer fadeInTimer;
 	
-	/*
+	/**
 	 * Plays BackGround Music.
 	 */
 	public void playBackGroundMusic() {
@@ -64,8 +76,8 @@ public class SoundManager {
 		mediaPlayerBgm.play();
 		
 	}
-	
-	/*
+
+	/**
 	 * Plays Menu Open Music.
 	 */
 	public void playMenuOpenMusic() {
@@ -77,7 +89,7 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * Plays BackGround Music with a Fade-in effect using Timer and TimerTask.
 	 */
 	public void bgmFadeIn() {
@@ -115,7 +127,7 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * Called by bgmFadeIn() to apply Fade-in effect.
 	 * 
 	 * @param deltaVolume  small value of volume to be increased. 
@@ -177,7 +189,7 @@ public class SoundManager {
 		
 	}
 	
-	/* 
+	/**
 	 * Sets BGM VolumeShips according to BackGround Music.  
 	 */
 	public void setBgmVolumeShips() {
@@ -221,7 +233,7 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * Makes a HBox of BGM VolumeShips.
 	 * 
 	 * @return bgmVolBox  HBox containing BGM VolumeShips.
@@ -334,7 +346,7 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * Plays CountDown Music before game starts.
 	 */
 	public void playCountDownMusic() {
@@ -346,55 +358,127 @@ public class SoundManager {
 		
 	}
 	
-	/*
-	 * Plays sound when a coin is collected.
+	/**
+	 * Plays sound when a coin is picked up.
 	 */
-	public void playCoinCollectMusic() {
+	public void playCoinPickUpMusic() {
 			
-		coin = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
-		mediaPlayerCoin = new MediaPlayer(coin);
-		mediaPlayerCoin.setVolume(inGameMusicVolume);
-		mediaPlayerCoin.setAutoPlay(true);
+		coinPickUp = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
+		mediaPlayerCoinPickUp = new MediaPlayer(coinPickUp);
+		mediaPlayerCoinPickUp.setVolume(inGameMusicVolume);
+		mediaPlayerCoinPickUp.setAutoPlay(true);
 		
 	}
 	
-	/*
-	 * Plays sound when player shoots
+	/**
+	 * Plays sound when laser power up is picked up.
 	 */
-	public void playPlayerShootMusic() {
+	public void playLaserPickUpMusic() {
 		
-		playerShoot = new Media(Paths.get("src/view/resources/sounds/Laser-sound.mp3").toUri().toString());
-		mediaPlayerPlayerShoot = new MediaPlayer(playerShoot);
-		mediaPlayerPlayerShoot.setVolume(inGameMusicVolume);
-		mediaPlayerPlayerShoot.setAutoPlay(true);
+		laserPickUp = new Media(Paths.get("src/view/resources/sounds/Laser-PickUp-sound.mp3").toUri().toString());
+		mediaPlayerLaserPickUp = new MediaPlayer(laserPickUp);
+		mediaPlayerLaserPickUp.setVolume(inGameMusicVolume);
+		mediaPlayerLaserPickUp.setAutoPlay(true);
+		
+	}
+	
+	/**
+	 * Plays sound when life power up is picked up.
+	 */
+	public void playLifePickUpMusic() {
+		
+		lifePickUp = new Media(Paths.get("src/view/resources/sounds/Life-PickUp-sound.mp3").toUri().toString());
+		mediaPlayerLifePickUp = new MediaPlayer(lifePickUp);
+		mediaPlayerLifePickUp.setVolume(inGameMusicVolume);
+		mediaPlayerLifePickUp.setAutoPlay(true);
 		
 	}
 	
 	/*
+	 * Plays sound when laser is empty.
+	 */
+	public void playLaserEmptyMusic() {
+		
+		laserEmpty = new Media(Paths.get("src/view/resources/sounds/Laser-Empty-sound.mp3").toUri().toString());
+		mediaPlayerLaserEmpty = new MediaPlayer(laserEmpty);
+		mediaPlayerLaserEmpty.setVolume(inGameMusicVolume);
+		mediaPlayerLaserEmpty.setAutoPlay(true);
+		
+	}
+	
+	/**
+	 * Plays sound when player shoots a laser.
+	 */
+	public void playLaserShootMusic() {
+		
+		laserShoot = new Media(Paths.get("src/view/resources/sounds/Laser-Shoot-sound.mp3").toUri().toString());
+		mediaPlayerLaserShoot = new MediaPlayer(laserShoot);
+		mediaPlayerLaserShoot.setVolume(inGameMusicVolume);
+		mediaPlayerLaserShoot.setAutoPlay(true);
+		
+	}
+	
+	/**
 	 * Plays sound when enemy is exploded.
 	 */
 	public void playEnemyExplodeMusic() {
 			
-		enemyExplode = new Media(Paths.get("src/view/resources/sounds/Explosion-sound.mp3").toUri().toString());
+		enemyExplode = new Media(Paths.get("src/view/resources/sounds/Enemy-Explode-sound.mp3").toUri().toString());
 		mediaPlayerEnemyExplode = new MediaPlayer(enemyExplode);
 		mediaPlayerEnemyExplode.setVolume(inGameMusicVolume);
 		mediaPlayerEnemyExplode.setAutoPlay(true);
 		
 	}
 	
-	/*
+	/**
 	 * Plays sound when player is exploded.
 	 */
 	public void playPlayerExplodeMusic() {
 			
-		playerExplode = new Media(Paths.get("src/view/resources/sounds/Roblox-Death-sound.mp3").toUri().toString());
+		playerExplode = new Media(Paths.get("src/view/resources/sounds/Player-Explode-sound.mp3").toUri().toString());
 		mediaPlayerPlayerExplode = new MediaPlayer(playerExplode);
 		mediaPlayerPlayerExplode.setVolume(inGameMusicVolume);
 		mediaPlayerPlayerExplode.setAutoPlay(true);	
 		
 	}
 	
-	/*
+	/**
+	 * Plays sound when level is completed.
+	 */
+	public void playLevelCompletedMusic() {
+			
+		levelCompleted = new Media(Paths.get("src/view/resources/sounds/Level-Completed-sound.mp3").toUri().toString());
+		mediaPlayerLevelCompleted = new MediaPlayer(levelCompleted);
+		mediaPlayerLevelCompleted.setVolume(inGameMusicVolume);
+		mediaPlayerLevelCompleted.setAutoPlay(true);	
+		
+	}
+	
+	/**
+	 * Plays sound when game is over.
+	 */
+	public void playGameOverMusic() {
+			
+		gameOver = new Media(Paths.get("src/view/resources/sounds/Game-Over-sound.mp3").toUri().toString());
+		mediaPlayerGameOver = new MediaPlayer(gameOver);
+		mediaPlayerGameOver.setVolume(inGameMusicVolume);
+		mediaPlayerGameOver.setAutoPlay(true);	
+		
+	}
+	
+	/**
+	 * Plays sound when game is won.
+	 */
+	public void playGameWonMusic() {
+			
+		gameWon = new Media(Paths.get("src/view/resources/sounds/Game-Won-sound.mp3").toUri().toString());
+		mediaPlayerGameWon = new MediaPlayer(gameWon);
+		mediaPlayerGameWon.setVolume(inGameMusicVolume);
+		mediaPlayerGameWon.setAutoPlay(true);	
+		
+	}
+	
+	/**
 	 * sets IGM VolumeShips according to In-Game Music. 
 	 */
 	public void setIgmVolumeShips() {
@@ -438,7 +522,7 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * Makes a HBox of IGM VolumeShips.
 	 * 
 	 * @return igmVolBox  HBox containing IGM VolumeShips.
@@ -546,7 +630,7 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * Sets parameter value to backGroundMusicVolume.
 	 * 
 	 * @param volume  value to be set to backGroundMusicVolume.
@@ -566,14 +650,14 @@ public class SoundManager {
 		
 	}
 	
-	/*
+	/**
 	 * @return backGroundMusicVolume  Volume of BackGround Music.
 	 */
 	public double getbackGroundMusicVolume() {
 		return backGroundMusicVolume;	
 	}
 	
-	/*
+	/**
 	 * Sets parameter value to pastBGMVolume.
 	 * 
 	 * @param volume  value to be set to pastBGMVolume.
@@ -582,14 +666,14 @@ public class SoundManager {
 		pastBGMVolume = volume;
 	}
 	
-	/*
+	/**
 	 * @return pastBGMVolume  Volume of BackGround Music before Game starts.
 	 */
 	public double getBGMVolumeBeforeGame() {
 		return pastBGMVolume;	
 	}
 	
-	/*
+	/**
 	 * Sets parameter value to stopTimer.
 	 * 
 	 * @param val  value to be set to stopTimer.
@@ -598,14 +682,14 @@ public class SoundManager {
 		stopTimer = val;	
 	}
 	
-	/*
+	/**
 	 * @return stopTimer  boolean used to know whether the fadeInTimer has stopped.
 	 */
 	public boolean getStopTimer() {
 		return stopTimer;
 	}
 	
-	/*
+	/**
 	 * Sets parameter value to bgmVolumeBeforeReached.
 	 * 
 	 * @param val  value to be set to bgmVolumeBeforeReached.
@@ -614,14 +698,14 @@ public class SoundManager {
 		bgmVolumeBeforeReached = val;	
 	}
 	
-	/*
+	/**
 	 * @return bgmVolumeBeforeReached  boolean used to know whether backGroundMusicVolume is set to pastBGMVolume.
 	 */
 	public boolean getBGMVolumeBeforeReached() {
 		return bgmVolumeBeforeReached;
 	}
 	
-	/*
+	/**
 	 * Sets parameter value to inGameMusicVolume.
 	 * 
 	 * @param volume  value to be set to inGameMusicVolume.
@@ -630,7 +714,7 @@ public class SoundManager {
 		inGameMusicVolume = volume;
 	}
 	
-	/*
+	/**
 	 * @return inGameMusicVolume  volume of In-Game Music.
 	 */
 	public double getInGameMusicVolume() {	

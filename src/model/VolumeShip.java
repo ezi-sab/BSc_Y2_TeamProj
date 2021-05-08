@@ -12,7 +12,7 @@ public class VolumeShip extends HBox {
 	private final Image blueShipImage = new Image("view/resources/shipPicker/playerShip3_blue.png", 90, 90, true, false);
 	private final Image blackShipImage = new Image("view/resources/shipPicker/playerShip3_black.png", 90, 90, true, false);
 
-	/*
+	/**
 	 * Constructor for VolumeShip class used to set initial image.
 	 */
 	public VolumeShip() {
@@ -22,7 +22,7 @@ public class VolumeShip extends HBox {
 		
 	}
 	
-	/*
+	/**
 	 * Decides the Image with reference to the parameter and sets it to the VolumShip.
 	 * 
 	 * @param vol  value used to decide and set VolumeShip's Image.
