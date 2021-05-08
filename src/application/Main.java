@@ -4,10 +4,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import view.ViewManager;
 
-	/**
- 	* @author bharathrouthu
-	* @version 1.0
- 	*/
 public class Main extends Application {
 
 	private static ViewManager viewManager = new ViewManager();
