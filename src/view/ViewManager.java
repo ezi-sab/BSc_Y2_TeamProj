@@ -31,8 +31,7 @@ import model.ShipPicker;
 import model.Buttons;
 import model.MenuSubScene;
 
-public class ViewManager {
-	
+public class ViewManager {	
 	
 	private static final int width = 1258;
 	private static final int height = 814;
@@ -55,12 +54,12 @@ public class ViewManager {
 	
 	private static SoundManager soundManager = new SoundManager();
 	private static ScoreBoard scoreBoard = new ScoreBoard();
-
+	
 	List<Buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
 	private static Ship chosenShip;
-
+	
 	/**
 	 * Constructor for building the Main scene of the game.
 	 */
@@ -70,6 +69,8 @@ public class ViewManager {
 		mainPane = new AnchorPane();
 		mainScene = new Scene(mainPane, width, height);
 		mainStage.setScene(mainScene);
+		mainStage.setMaxWidth(width);
+		mainStage.setMaxHeight(height);
 		mainStage.setTitle("Star Shooter");
 		soundManager.playBackGroundMusic();
 		createSubScene();
@@ -78,7 +79,7 @@ public class ViewManager {
 		createLogo();
 		
 	}
-
+	
 	/**
 	 * Shows the selected sub scene.
 	 * @param subScene to show or hide
@@ -93,7 +94,7 @@ public class ViewManager {
 		sceneToHide= subScene;
 		
 	}
-
+	
 	/**
 	 * Creates and calls the sub scenes methods.
 	 */
@@ -101,20 +102,15 @@ public class ViewManager {
 		
 		settingsSubScene = new MenuSubScene();
 		mainPane.getChildren().add(settingsSubScene);
-
 		
 		createShipSelectSubScene();
-		
 		createScoreSubScene();
-		
 		createCreditsSubScene();
-		
 		createHelpSubScene();
-		
 		createMusicButtons();
 		
 	}
-
+	
 	/**
 	 * Creates Ship select sub scene.
 	 * Player can choose desired ship as their character.
@@ -134,7 +130,7 @@ public class ViewManager {
 		shipSelectSubScene.getPane().getChildren().add(createButtonToStart());
 		
 	}
-
+	
 	/**
 	 * Creates the Score sub scene.
 	 * Player can view their scores.
@@ -154,7 +150,7 @@ public class ViewManager {
 		scoreSubScene.getPane().getChildren().add(scoreBoard.getScoreVBox());
 		
 	}
-
+	
 	/**
 	 * Creates the Credits sub scene.
 	 * Contribution towards the game as sections.
@@ -192,7 +188,7 @@ public class ViewManager {
 		creditsSubScene.getPane().getChildren().addAll(creditsLabel, creditsBox);				
 				
 	}
-
+	
 	/**
 	 * Creates the Help sub scene.
 	 * Necessary guide for the player to get started.
@@ -211,28 +207,25 @@ public class ViewManager {
 		helpGrid.setHgap(20);
 		helpGrid.setVgap(20);
 		
-		ImageView ship = new ImageView(new Image("/res/playerShip3_red.png", 80, 80, true, false));
-		ImageView meteor1 = new ImageView(); //meteor2 = new ImageView();
-		ImageView star = new ImageView(new Image("/res/playerLife3_red.png", 20, 20, true, false));
-		ImageView life = new ImageView(new Image("/res/playerLife3_red.png", 20, 20, true, false));
+		ImageView playerShip = new ImageView(new Image("/resources/Images/PlayerShip-Red-image.png", 80, 80, true, false));
+		ImageView enemyShip = new ImageView(new Image("/resources/Images/EnemyShip-1-image.png", 80, 80, true, false));
+		ImageView laserPowerUp = new ImageView(new Image("/resources/Images/PowerUp-Laser-image.png", 40, 40, true, false));
+		ImageView lifePowerUp = new ImageView(new Image("/resources/Images/PowerUp-Life-image.png", 40, 40, true, false));
 		
-		meteor1.setImage(new Image("/res/spaceShips_004.png", 80, 80, true, false));
-		
-		Label shipHelp 	 = new Label("This is your ship. Choose colour from the \nPlay menu. Control it with arrow keys or W/S/A/D keys.");
-		Label meteorHelp = new Label("These are enemy ships.\nAvoid them!");
-		Label starHelp   = new Label("The coins give you points,\nIF you can grab them!");
-		Label lifeHelp   = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
+		Label playerShipHelp = new Label("This is your ship. Choose colour from the \nPlay menu. Control it with arrow keys or W/S/A/D keys.");
+		Label enemyShipHelp = new Label("These are enemy ships.\nAvoid them!");
+		Label laserPowerUpHelp = new Label("The coins give you points,\nIF you can grab them!");
+		Label lifePowerUpHelp = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
 		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				meteor1.setRotate(90+now/10000000l);
-				//meteor2.setRotate(180+now/10000000l);
-				ship.setRotate(-now/10000000l);
+				enemyShip.setRotate(90+now/10000000l);
+				playerShip.setRotate(-now/10000000l);
 			}
 		};
 		timer.start();
-
+		
 		/* gridpane:
 		 * ___0_|__1_|__2_|_3_
 		 * 0|___|____|____|__
@@ -241,19 +234,18 @@ public class ViewManager {
 		 * 3|___|____|____|___
 		 */
 		
-		helpGrid.add(ship, 0, 0);
-		helpGrid.add(shipHelp, 1, 0);
-		helpGrid.add(meteor1, 0, 1);
-		//helpGrid.add(meteor2, 2, 1);
-		helpGrid.add(meteorHelp, 1, 1);
-		helpGrid.add(life, 0, 2);
-		helpGrid.add(lifeHelp, 1, 2);
-		helpGrid.add(star, 0, 3);
-		helpGrid.add(starHelp, 1, 3);
+		helpGrid.add(playerShip, 0, 0);
+		helpGrid.add(playerShipHelp, 1, 0);
+		helpGrid.add(enemyShip, 0, 1);
+		helpGrid.add(enemyShipHelp, 1, 1);
+		helpGrid.add(laserPowerUp, 0, 2);
+		helpGrid.add(laserPowerUpHelp, 1, 2);
+		helpGrid.add(lifePowerUp, 0, 3);
+		helpGrid.add(lifePowerUpHelp, 1, 3);
 		helpSubScene.getPane().getChildren().addAll(help, helpGrid);
 		
 	}
-
+	
 	/**
 	 * Creates a HBox for choosing between ships for the player to pick.
 	 * Necessary Font, layout and labels are set.
@@ -268,7 +260,7 @@ public class ViewManager {
 			shipsList.add(shipToPick);
 			box.getChildren().add(shipToPick);
 			shipToPick.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
+				
 				@Override
 				public void handle(MouseEvent event) {
 					for (ShipPicker ship:shipsList) {
@@ -295,14 +287,14 @@ public class ViewManager {
 		name.setPrefWidth(190);
     	name.setPrefHeight(49);
     	try {
-			name.setFont(Font.loadFont(new FileInputStream("src/model/resources/kenvector_future.ttf"), 23));
+			name.setFont(Font.loadFont(new FileInputStream("src/resources/Fonts/Kenvector-Future-font.ttf"), 23));
 		} catch (FileNotFoundException e) {
 			name.setFont(Font.font("Verdana", 23));
 		}
-    	name.setStyle("-fx-background-color: transparent; -fx-background-image: url('/model/resources/blue_button05.png');");
+    	name.setStyle("-fx-background-color: transparent; -fx-background-image: url('/resources/Images/Button-NotPressed-Blue-image.png');");
 		return name;
 	}
-
+	
 	/**
 	 * Implements the start button.
 	 * Calls the game stub and starts everything from cold .
@@ -316,7 +308,7 @@ public class ViewManager {
 		startButton.setLayoutY(300);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				
@@ -324,7 +316,7 @@ public class ViewManager {
 					
 					soundManager.setStopTimer(true);
 					if (soundManager.getBGMVolumeBeforeReached() == true) {
-						soundManager.setBGMVolumeBeforeGame(soundManager.getbackGroundMusicVolume());
+						soundManager.setBGMVolumeBeforeGame(soundManager.getBackGroundMusicVolume());
 						soundManager.setBGMVolumeBeforeReached(false);
 					}
 					
@@ -342,11 +334,11 @@ public class ViewManager {
 			}
 			
 		});
-	
+		
 		return startButton;
 		
 	}
-
+	
 	/**
 	 * Ability to control game sound through this menu.
 	 * Image ships decides the game volume.
@@ -357,7 +349,7 @@ public class ViewManager {
 		
 		musicControls = new MenuSubScene();
 		mainPane.getChildren().add(musicControls);
-
+		
 		InfoLabel chooseBGMusicOption = new InfoLabel("BACKGROUND MUSIC");
 		chooseBGMusicOption.setLayoutX(125);
 		chooseBGMusicOption.setLayoutY(25);
@@ -371,7 +363,7 @@ public class ViewManager {
 		musicControls.getPane().getChildren().add(soundManager.igmVolumeShips());
 		
 	}
-
+	
 	/**
 	 * Gets the main stage of the game.
 	 * @return mainStage
@@ -381,16 +373,22 @@ public class ViewManager {
 		return mainStage;
 		
 	}
-
+	
 	/**
 	 * Sets the main stage to the main scene.
 	 */
 	public void setToMainScene() {
 		
 		mainStage.setScene(mainScene);
+		if (soundManager.getBackGroundMusicVolume() == 0 && soundManager.getBGMVolumeBeforeGame() != 0) {
+			soundManager.bgmFadeIn();			
+		} else {
+			soundManager.setBgmVolumeShips();
+		}
+		soundManager.setIgmVolumeShips();
 		
 	}
-
+	
 	/**
 	 * Creates a menu button template.
 	 */
@@ -402,7 +400,7 @@ public class ViewManager {
 		mainPane.getChildren().add(button);
 		
 	}
-
+	
 	/**
 	 * Function that calls all the buttons for the scene.
 	 * Displays every button on th main stage and scene.
@@ -417,7 +415,7 @@ public class ViewManager {
 		createExitButton();
 		
 	}
-
+	
 	/**
 	 * Creates a button to start the game on the main stage.
 	 * This redirects player to the shipSelectSubScene().
@@ -429,7 +427,7 @@ public class ViewManager {
 		addMenuButton(startButton);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -439,7 +437,7 @@ public class ViewManager {
 		});
 		
 	}
-
+	
 	/**
 	 * Creates a scores button on the main stage.
 	 */
@@ -448,7 +446,7 @@ public class ViewManager {
 		Buttons scoresButton = new Buttons("SCORES");
 		addMenuButton(scoresButton);
 		scoresButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -458,7 +456,7 @@ public class ViewManager {
 		});
 		
 	}
-
+	
 	/**
 	 * Creates a settings button on the main stage.
 	 */
@@ -468,7 +466,7 @@ public class ViewManager {
 		addMenuButton(settingsButton);
 		
 		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -479,7 +477,7 @@ public class ViewManager {
 		});
 		
 	}
-
+	
 	/**
 	 * Creates a help button on the main stage..
 	 */
@@ -489,7 +487,7 @@ public class ViewManager {
 		addMenuButton(helpButton);
 		
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -500,7 +498,7 @@ public class ViewManager {
 		});
 		
 	}
-
+	
 	/**
 	 * Creates a credits button on the main stage.
 	 */
@@ -510,7 +508,7 @@ public class ViewManager {
 		addMenuButton(creditsButton);
 		
 		creditsButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -521,7 +519,7 @@ public class ViewManager {
 		});
 		
 	}
-
+	
 	/**
 	 * Creates a exit button on the main stage.
 	 * On tapped the game exits and game window closes.
@@ -533,7 +531,7 @@ public class ViewManager {
 		addMenuButton(exitButton);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent arg0) {
 				mainStage.close();				
@@ -551,7 +549,7 @@ public class ViewManager {
 		return chosenShip;
 		
 	}
-
+	
 	/**
 	 * Gets the player name.
 	 */
@@ -560,31 +558,31 @@ public class ViewManager {
 		return playerName;
 		
 	}
-
+	
 	/**
 	 * Creates the background for main stage.
 	 * Adds a Space Theme image.
 	 */
 	private void createBackground() {
 		
-		Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
+		Image backgroundImage = new Image(getClass().getResourceAsStream("/resources/Images/Space-BackGround-image.png"), 256, 256, false, true);
 		BackgroundImage background = new BackgroundImage(backgroundImage,BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
 		mainPane.setBackground(new Background(background));
 		
 	}
-
+	
 	/**
-	 * Creates and adds the logo of the game "SPACE SHOOTER".
+	 * Creates and adds the logo of the game "STAR SHOOTER".
 	 * Font Style, Layout are specified accordingly.
 	 */
 	private void createLogo() {
 		
-		ImageView logo = new ImageView("view/resources/StarShooter.png");
+		ImageView logo = new ImageView("/resources/Images/Title-StarShooter-image.png");
 		logo.setLayoutX(255);
 		logo.setLayoutY(35);
 		
 		logo.setOnMouseEntered(new EventHandler<MouseEvent>() {
-
+			
 			@Override
 			public void handle(MouseEvent event) {
 				logo.setEffect(new DropShadow());
@@ -592,7 +590,7 @@ public class ViewManager {
 		});
 		
 		logo.setOnMouseExited(new EventHandler<MouseEvent>() {
-
+			
 			@Override
 			public void handle(MouseEvent event) {
 				logo.setEffect(null);
@@ -603,6 +601,5 @@ public class ViewManager {
 		mainPane.getChildren().add(logo);
 		
 	}
-	
 	
 }

@@ -5,9 +5,9 @@ import javafx.stage.Stage;
 import view.ViewManager;
 
 public class Main extends Application {
-
+	
 	private static ViewManager viewManager = new ViewManager();
-
+	
 	/**
 	 * Sets the primary stage to main stage from viewManager.
 	 * @override start method from inbuilt javafx start()
@@ -24,7 +24,7 @@ public class Main extends Application {
 		}
 		
 	}
-
+	
 	/**
 	* Launches the main method and calls the game stage.
 	* @param args is passed as argument to launch method.

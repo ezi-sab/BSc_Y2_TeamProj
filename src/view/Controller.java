@@ -2,17 +2,30 @@ package view;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
+import model.Buttons;
+import model.InfoLabel;
 import model.ScoreBoard;
 import view.ShipModel.CellValue;
 import view.ShipModel.Direction;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,18 +39,20 @@ import view.Controller;
 
 public class Controller implements EventHandler<KeyEvent> {
 	
-	
     private List<EnemyAIModel> enemies;
     // Store all the flying bullets
     private List<BulletModel> bullets;
     private Pair<Integer,Integer> playerPosition;
     private List<Pair<Point2D, Integer>> scatterPosition = new ArrayList<Pair<Point2D, Integer>>();
     private boolean[] isEnemyDead;
-    private List<Pair<Integer,Integer>> enemyPosition = new ArrayList<Pair<Integer,Integer>>();
+    private List<Pair<Integer,Integer>> enemyStartingPositions = new ArrayList<Pair<Integer, Integer>>();
+    private Point2D[] enemyCurrentPositions;
+    private AStarThread[] aStarThread;
+    private Thread[] moveEnemyThread;
     
     // Change all level1, level2, level3 to level0 to make the game easier
     private static final String[] levelFiles = {"src/levels/level1.txt", "src/levels/level2.txt", "src/levels/level3.txt"};
-    private static final double FPS = 5.0;
+    private static final double FPS = 5;
     
     private CellValue[][] grid;
     
@@ -47,6 +62,9 @@ public class Controller implements EventHandler<KeyEvent> {
     @FXML private HBox lifeBox;
     @FXML private HBox bulletBox;
     @FXML private GameView gameView;
+    
+    private VBox gamePausedVBox = new VBox();
+    private Scene pauseScene = new Scene(gamePausedVBox, 1258, 814);
     
     private int rowCount;
     private int columnCount;
@@ -61,7 +79,6 @@ public class Controller implements EventHandler<KeyEvent> {
     private int powerUpCoins = 0;
     private boolean gameRunning = false;
     private boolean gameOver = false;
-    private boolean gamePaused = false;
     private boolean youWon = false;
     private boolean levelComplete = false;
     private boolean hidePlayer = false;
@@ -74,8 +91,7 @@ public class Controller implements EventHandler<KeyEvent> {
     private static SoundManager soundManager = new SoundManager();
     private static ScoreBoard scoreBoard = new ScoreBoard();
     private ViewManager viewManager = new ViewManager();
-
-
+    
 	/**
 	 * Initialises and starts the game with the level 1 from cold.
 	 */
@@ -85,12 +101,13 @@ public class Controller implements EventHandler<KeyEvent> {
     	createBulletBox();
     	startLevel(file, 250);
     }
-
+	
 	/**
-	 * A TimerTask for the gameplay and the FPS is set to 100.0 per ms.
+	 * A TimerTask for the gameplay and the FPS is set to 100.0 frames per ms.
 	 */
 	private void startTimer() {
         this.timer = new Timer();
+        
         TimerTask timerTask = new TimerTask() {
             public void run() {
                 Platform.runLater(() -> update());
@@ -100,14 +117,14 @@ public class Controller implements EventHandler<KeyEvent> {
         long frameTimeInMilliseconds = (long) (500.0 / FPS);
         this.timer.schedule(timerTask, 0, frameTimeInMilliseconds);
     }
-
+	
 	/**
 	 * TimerTask for pausing the screen and scene time for further scenes.
 	 * Timer is paused with supplied argument value.
 	 * @param delay time that should pause until next scene.
 	 */
 	private void delayPause(int delay) {
-    	
+		
     	Timer delayPauseTimer = new Timer();
     	TimerTask delayPauseTask = new TimerTask() {
     		
@@ -119,7 +136,7 @@ public class Controller implements EventHandler<KeyEvent> {
     	
     	delayPauseTimer.schedule(delayPauseTask, new Date(System.currentTimeMillis() + delay));
     }
-
+	
 	/**
 	 * TimerTask for delaying the screen and scene time for further scenes.
 	 * Timer is delayed with supplied argument value.
@@ -142,7 +159,7 @@ public class Controller implements EventHandler<KeyEvent> {
     	delayNextSceneTimer.schedule(delaySceneTask, new Date(System.currentTimeMillis() + delay));
     	
     }
-
+	
 	/**
 	 * TimerTask for delaying the screen and scene time after a level finishes.
 	 * Timer is delayed with supplied argument value.
@@ -165,7 +182,7 @@ public class Controller implements EventHandler<KeyEvent> {
     	
     	delayNextLevelTimer.schedule(delayNextLevelTask, new Date(System.currentTimeMillis() + delay));    	
     }
-
+    
 	/**
 	 * TimerTask for delaying the screen and scene time after countdown finishes and before level game starts.
 	 * Timer is delayed with supplied argument value.
@@ -180,7 +197,6 @@ public class Controller implements EventHandler<KeyEvent> {
 			@Override
 			public void run() {
 				Platform.runLater(() -> {
-					soundManager.bgmFadeIn();
 					viewManager.setToMainScene();
 				});
 			}
@@ -189,7 +205,7 @@ public class Controller implements EventHandler<KeyEvent> {
 		delayMainSceneTimer.schedule(delayMainSceneTask, new Date(System.currentTimeMillis() + delay));
 		
     }
-
+    
 	/**
 	 * Constructs and draws the game level by considering the text file.
 	 * Adds the necessary blocks , players, enemies , powerups, lasers in the level scene.
@@ -233,10 +249,16 @@ public class Controller implements EventHandler<KeyEvent> {
         grid = new CellValue[rowCount][columnCount];
         
 		this.player = new PlayerModel(grid);
-
 		
-		//noEnemies should be decided by the number of enemies declared in level file
-        noEnemies = 2;
+		if (level == 0) {			
+			noEnemies = 2;
+		} else {
+			noEnemies = 3;
+		}
+		
+        enemyCurrentPositions = new Point2D[noEnemies];
+        aStarThread = new AStarThread[noEnemies];
+        moveEnemyThread = new Thread[noEnemies];
         enemies = new ArrayList<EnemyAIModel>();
         isEnemyDead = new boolean[noEnemies];
     	for(int i = 0; i < noEnemies; i++) {
@@ -275,6 +297,7 @@ public class Controller implements EventHandler<KeyEvent> {
                     	break;
                     case 'L':
                     	thisValue = CellValue.LIFE;
+                    	scatterPosition.add(new Pair<Point2D, Integer>(new Point2D(row, column), 0));
                     	powerUpCoins++;
                     	break;
                     case 'U':
@@ -290,8 +313,8 @@ public class Controller implements EventHandler<KeyEvent> {
 	                    	thisValue = CellValue.ENEMY1STARTINGPOINT;
 	                    	int valInt = valChar - '0' - 1;
 	                    	enemies.get(valInt).setLocation(new Point2D(row,column));
-	                    	enemyPosition.add(new Pair<Integer,Integer> (row, column));
-	            	        enemies.get(valInt).setVelocity(new Point2D(0, 0)); //changed from -1,0
+	                    	enemyStartingPositions.add(new Pair<Integer,Integer> (row, column));
+	            	        enemies.get(valInt).setVelocity(new Point2D(0, 0));
 	            	        enemies.get(valInt).setCurrentDirection(Direction.NONE);
 	            	        enemies.get(valInt).setLastDirection(Direction.NONE);
 	            	        isEnemyDead[valInt] = false;
@@ -307,13 +330,14 @@ public class Controller implements EventHandler<KeyEvent> {
         }
         
     }
-
+	
 	/**
 	 * Create a stub and cold start of the game.
 	 * Initialises all values to the starting values.
 	 * Called everytime a game started.
 	 */
 	public void startNewGame(){
+		
         rowCount = 0;
         columnCount = 0;
         noEnemies = 0;
@@ -334,8 +358,9 @@ public class Controller implements EventHandler<KeyEvent> {
         soundManager.playCountDownMusic();
         this.gameOverLabel.setText(String.format(""));
         startLevel(Controller.getCurrentLevel(0), 3500);
+        
     }
-
+	
 
 	/**
 	 * Create a next level of the game after first level completes..
@@ -343,6 +368,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	 * Called everytime a previous level finishes.
 	 */
 	public void startNextLevel() {
+		
         if (this.isLevelComplete()) {
             level++;
             rowCount = 0;
@@ -363,8 +389,9 @@ public class Controller implements EventHandler<KeyEvent> {
             this.gameOverLabel.setText(String.format(""));
             startLevel(Controller.getCurrentLevel(level), 3500);
         }
+        
     }
-
+	
 	/**
 	 * Counts the steps of player and enemies.
 	 * Each move is a step indeed.
@@ -377,9 +404,8 @@ public class Controller implements EventHandler<KeyEvent> {
     	step += 1;
         checkBullet();
         
-        
     	if (step % 2 == 1) {
-    		if (step % 200 <= 100) {
+    		if (step % 300 <= 200) {
     			chasePlayer = true;
     		} else {
     			chasePlayer = false;
@@ -417,14 +443,17 @@ public class Controller implements EventHandler<KeyEvent> {
 	        	score += 10;
 	        }
 	        
-	        	
+	        for(int i = 0; i < noEnemies; i++) {
+	        	enemyCurrentPositions[i] = new Point2D(enemies.get(i).getLocation().getX(), enemies.get(i).getLocation().getY());
+	        }
+	        
 	        for(int i = 0; i < noEnemies; i++) {
 	        	
 	        	if (playerDeadStep <= step) {
 	        		
 	        		playerDeadStep = -20;
 	        		
-	        		if (shipLocation.equals(this.enemies.get(i).getLocation())) {
+	        		if (shipLocation.equals(enemyCurrentPositions[i])) {
 	        			gameRunning = false;
 	        			playerLives--;
 	        			playerDeadStep = step + 20;
@@ -439,27 +468,69 @@ public class Controller implements EventHandler<KeyEvent> {
 	        			}
 	        		}
 	        		
+	        	}
+	        	
+	        }
+	        
+	        for(int i = 0; i < noEnemies; i++) {
+	        	aStarThread[i] = new AStarThread();
+	        	moveEnemyThread[i] = new Thread(aStarThread[i]);
+	        	aStarThread[i].setLevel(level);
+	        }
+	        
+	        for(int i = 0; i < noEnemies; i++) {
+	        	
+	        	if (playerDeadStep <= step) {
+	        		
 	        		if(playerLives != 0) {
 	        			if(step != 1) {
 	        				if (chasePlayer) {
 	        					if (!(isEnemyDead[i])) {
 	        						if (i == 0) {
-	        							this.enemies.get(i).moveEnemyChaseMode(player.getLocation());
+	        							aStarThread[i].setEnemyAIModel(enemies.get(i));
+	        							aStarThread[i].setPlayerLocation(shipLocation);
+	        							moveEnemyThread[i].start();
 	        						} else if (i == 1) {
-	        							Point2D predictedPlayerVelocity = player.changeVelocity(player.currentDirection);
+	        							Point2D predictedPlayerVelocity = player.changeVelocity((player.currentDirection == Direction.NONE ? Direction.UP : player.currentDirection));
 	        							Point2D predictedPlayerLocation = player.shipLocation.add(predictedPlayerVelocity);
+	        							aStarThread[i].setEnemyAIModel(enemies.get(i));
 	        							if (predictedPlayerLocation.getX() >= 0 && predictedPlayerLocation.getX() < 37 && predictedPlayerLocation.getY() >= 0 && predictedPlayerLocation.getY() < 21) {
-	        								if (grid [(int) predictedPlayerLocation.getX()] [(int) predictedPlayerLocation.getY()] != CellValue.BLOCK) {
-	        									this.enemies.get(i).moveEnemyChaseMode(predictedPlayerLocation);	        						
+	        								if (grid [(int) predictedPlayerLocation.getX()] [(int) predictedPlayerLocation.getY()] != CellValue.BLOCK) {	        						
+	        									aStarThread[i].setPlayerLocation(predictedPlayerLocation);
 	        								} else {
-	        									this.enemies.get(i).moveEnemyChaseMode(player.getLocation());
+	        									aStarThread[i].setPlayerLocation(shipLocation);
 	        								}
 	        							} else {
-	        								this.enemies.get(i).moveEnemyChaseMode(player.getLocation());
+        									aStarThread[i].setPlayerLocation(shipLocation);
 	        							}
+	        							moveEnemyThread[i].start();
+	        						} else {
+	        							Direction cellBehind;
+	        							if (player.currentDirection == Direction.UP) {
+	        								cellBehind = Direction.DOWN;
+	        							} else if (player.currentDirection == Direction.RIGHT) {
+	        								cellBehind = Direction.LEFT;
+	        							} else if (player.currentDirection == Direction.DOWN) {
+	        								cellBehind = Direction.UP;
+	        							} else if (player.currentDirection == Direction.LEFT) {
+	        								cellBehind = Direction.RIGHT;
+	        							} else {
+	        								cellBehind = Direction.UP;
+	        							}
+	        							Point2D predictedPlayerVelocity = player.changeVelocity(cellBehind);
+	        							Point2D predictedPlayerLocation = player.shipLocation.add(predictedPlayerVelocity);
+	        							aStarThread[i].setEnemyAIModel(enemies.get(i));
+	        							if (predictedPlayerLocation.getX() >= 0 && predictedPlayerLocation.getX() < 37 && predictedPlayerLocation.getY() >= 0 && predictedPlayerLocation.getY() < 21) {
+	        								if (grid [(int) predictedPlayerLocation.getX()] [(int) predictedPlayerLocation.getY()] != CellValue.BLOCK) {	        						
+	        									aStarThread[i].setPlayerLocation(predictedPlayerLocation);
+	        								} else {
+	        									aStarThread[i].setPlayerLocation(shipLocation);
+	        								}
+	        							} else {
+        									aStarThread[i].setPlayerLocation(shipLocation);
+	        							}
+	        							moveEnemyThread[i].start();
 	        						}
-	        					} else {
-	        						isEnemyDead[i] = false;
 	        					}
 	        					
 	        					for (int j = 0; j < scatterPosition.size(); j++) {
@@ -467,91 +538,151 @@ public class Controller implements EventHandler<KeyEvent> {
 	        					}
 	        					
 	        				} else {
-	        					if (enemyPosition.get(i).getKey() <= 18) {
+	        					if (enemyStartingPositions.get(i).getKey() <= 18) {
+	        						int isAllPlacesReached = 0;
+	        						int totalPlacesOnLeft = 0;
+	        						
 	        						for (int j = 0; j < scatterPosition.size(); j++) {
-	        							if ((enemies.get(i).getLocation().getX() == scatterPosition.get(j).getKey().getX()) && (enemies.get(i).getLocation().getY() == scatterPosition.get(j).getKey().getY()) && (scatterPosition.get(j).getValue() == 0)) {
-	        								scatterPosition.set(j, new Pair<Point2D, Integer>(enemies.get(i).getLocation(), 1));
-	        							}
-	        							if ((scatterPosition.get(j).getKey().getX() < 18) && (scatterPosition.get(j).getValue() == 0)) {
-	        								this.enemies.get(i).moveEnemyChaseMode(scatterPosition.get(j).getKey());
-	        								break;
+	        							if (scatterPosition.get(j).getKey().getX() <= 18) {
+	        								totalPlacesOnLeft++;	        								
 	        							}
 	        						}
+	        						
+	        						for (int j = 0; j < scatterPosition.size(); j++) {
+	        							
+	        							if ((enemyCurrentPositions[i].getX() == scatterPosition.get(j).getKey().getX()) && (enemyCurrentPositions[i].getY() == scatterPosition.get(j).getKey().getY()) && (scatterPosition.get(j).getValue() == 0)) {
+	        								scatterPosition.set(j, new Pair<Point2D, Integer>(enemies.get(i).getLocation(), 1));
+	        							}
+	        							
+	        							if ((scatterPosition.get(j).getKey().getX() <= 18) && (scatterPosition.get(j).getValue() == 1)) {
+	        								isAllPlacesReached++;
+	        							}
+	        							
+	        							if (isAllPlacesReached == totalPlacesOnLeft) {
+	        								for (int k = 0; k < scatterPosition.size(); k++) {
+	        									if (scatterPosition.get(k).getKey().getX() <= 18) {
+	        										scatterPosition.set(k, new Pair<Point2D, Integer>(scatterPosition.get(k).getKey(), 0));
+	        										isAllPlacesReached = 0;
+	        									}
+	        								}
+	        								break;
+	        							}
+	        							
+	        						}
+	        						        						
+	        						for (int j = 0; j < scatterPosition.size(); j++) {
+	        							if ((scatterPosition.get(j).getKey().getX() <= 18) && (scatterPosition.get(j).getValue() == 0)) {
+	        								aStarThread[i].setEnemyAIModel(enemies.get(i));
+	        								aStarThread[i].setPlayerLocation(scatterPosition.get(j).getKey());
+	        								moveEnemyThread[i].start();
+	        								break;
+	        							}
+	        						}	        						
+	        						
 	        					} else {
+	        						int isAllPlacesReached = 0;
+	        						int totalPlacesOnRight = 0;
+	        						
 	        						for (int j = 0; j < scatterPosition.size(); j++) {
-	        							if ((enemies.get(i).getLocation().getX() == scatterPosition.get(j).getKey().getX()) && (enemies.get(i).getLocation().getY() == scatterPosition.get(j).getKey().getY()) && (scatterPosition.get(j).getValue() == 0)) {
+	        							if (scatterPosition.get(j).getKey().getX() > 18) {
+	        								totalPlacesOnRight++;	        								
+	        							}
+	        						}
+	        						
+	        						for (int j = 0; j < scatterPosition.size(); j++) {
+	        							
+	        							if ((enemyCurrentPositions[i].getX() == scatterPosition.get(j).getKey().getX()) && (enemyCurrentPositions[i].getY() == scatterPosition.get(j).getKey().getY()) && (scatterPosition.get(j).getValue() == 0)) {
 	        								scatterPosition.set(j, new Pair<Point2D, Integer>(enemies.get(i).getLocation(), 1));
 	        							}
-	        							if ((scatterPosition.get(j).getKey().getX() >= 18) && (scatterPosition.get(j).getValue() == 0)) {
-	        								this.enemies.get(i).moveEnemyChaseMode(scatterPosition.get(j).getKey());
+	        							
+	        							if ((scatterPosition.get(j).getKey().getX() > 18) && (scatterPosition.get(j).getValue() == 1)) {
+	        								isAllPlacesReached++;
+	        							}
+	        							
+	        							if (isAllPlacesReached == totalPlacesOnRight) {
+		        							for (int k = 0; k < scatterPosition.size(); k++) {
+		        								if (scatterPosition.get(k).getKey().getX() > 18) {
+		        									scatterPosition.set(k, new Pair<Point2D, Integer>(scatterPosition.get(k).getKey(), 0));
+		        									isAllPlacesReached = 0;
+		        								}
+		    	        					}
+		        							break;
+		        						}
+	        							
+	        						}
+	        						
+	        						for (int j = 0; j < scatterPosition.size(); j++) {
+	        							if ((scatterPosition.get(j).getKey().getX() > 18) && (scatterPosition.get(j).getValue() == 0)) {
+	        								aStarThread[i].setEnemyAIModel(enemies.get(i));
+	        								aStarThread[i].setPlayerLocation(scatterPosition.get(j).getKey());
+	        								moveEnemyThread[i].start();
 	        								break;
 	        							}
 	        						}
+	        						
 	        					}
 	        				}
 	        			}
-	        			
-	        			if (shipLocation.equals(this.enemies.get(i).getLocation())) {
-	        				gameRunning = false;
-	        				playerLives--;
-	        				playerDeadStep = step + 20;
-	        				createLifeHBox();
-	        				if(playerLives != 0) {                	
-	        					player.setLocation(new Point2D(playerPosition.getKey(), playerPosition.getValue()));
-	        					pause();
-	        					delayNextScene(1000);
-	        					soundManager.playPlayerExplodeMusic();
-	        				} else {
-	        					break;
-	        				}
-	        			}
-	        			
-//	        			Point2D enemyLocation = this.enemies.get(i).getLocation();
-//	        			Point2D playerLocation = player.getLocation();
-//	        			switch (enemies.get(i).getCurrentDirection()) {
-//	        			case RIGHT:
-//	        				if (enemyLocation.getY() == playerLocation.getY() && playerLocation.getX() > enemyLocation.getX()) {
-//	        					shoot(enemies.get(i));
-//	        				}
-//	        				break;
-//	        			case DOWN:
-//	        				if (enemyLocation.getX() == playerLocation.getX() && playerLocation.getY() > enemyLocation.getY()) {
-//	        					shoot(enemies.get(i));
-//	        				}
-//	        				break;
-//	        			case LEFT:
-//	        				if (enemyLocation.getY() == playerLocation.getY() && playerLocation.getX() < enemyLocation.getX()) {
-//	        					shoot(enemies.get(i));
-//	        				}
-//	        				break;
-//	        			case UP:
-//	        				if (enemyLocation.getX() == playerLocation.getX() && playerLocation.getY() < enemyLocation.getY()) {
-//	        					shoot(enemies.get(i));
-//	        				}
-//	        				break;
-//	        				
-//	        			default:
-//	        				break;
-//	        			}
-	        			
 	        		}
-	        			
 	        	} else {
 	        		
-	        		if (enemies.get(i).getLocation().getX() <= 18 && enemies.get(i).getLocation().getY() <= 11) {
-	        			enemies.get(i).moveEnemyChaseMode(new Point2D(1, 2));
-	        		} else if (enemies.get(i).getLocation().getX() > 18 && enemies.get(i).getLocation().getY() <= 11) {
-	        			enemies.get(i).moveEnemyChaseMode(new Point2D(35, 2));
-	        		} else if (enemies.get(i).getLocation().getX() <= 18 && enemies.get(i).getLocation().getY() > 11) {
-	        			enemies.get(i).moveEnemyChaseMode(new Point2D(1, 18));
-	        		} else if (enemies.get(i).getLocation().getX() > 18 && enemies.get(i).getLocation().getY() > 11) {
-	        			enemies.get(i).moveEnemyChaseMode(new Point2D(35, 18));
+	        		if (enemyCurrentPositions[i].getX() <= 18 && enemyCurrentPositions[i].getY() <= 11) {
+	        			aStarThread[i].setEnemyAIModel(enemies.get(i));
+						aStarThread[i].setPlayerLocation(new Point2D(1, 2));
+	        		} else if (enemyCurrentPositions[i].getX() > 18 && enemyCurrentPositions[i].getY() <= 11) {
+	        			aStarThread[i].setEnemyAIModel(enemies.get(i));
+						aStarThread[i].setPlayerLocation(new Point2D(35, 2));
+	        		} else if (enemyCurrentPositions[i].getX() <= 18 && enemyCurrentPositions[i].getY() > 11) {
+	        			aStarThread[i].setEnemyAIModel(enemies.get(i));
+						aStarThread[i].setPlayerLocation(new Point2D(1, 18));
+	        		} else if (enemyCurrentPositions[i].getX() > 18 && enemyCurrentPositions[i].getY() > 11) {
+	        			aStarThread[i].setEnemyAIModel(enemies.get(i));
+						aStarThread[i].setPlayerLocation(new Point2D(35, 18));
 	        		}
 	        		
+	        		moveEnemyThread[i].start();
+	        		
 	        	}
-	        	
-	        } 	
+	        }
 	        
+	        for(int i = 0; i < noEnemies; i++) {
+	        	
+	        	if (playerDeadStep <= step) {
+	        		
+	        		playerDeadStep = -20;
+	        		
+	        		if(playerLives != 0) {
+	        			
+	        			if (!(isEnemyDead[i])) {
+	        				
+	        				while (moveEnemyThread[i].isAlive()) {
+	        				}
+	        				
+	        				if(step != 1) {	        				
+	        					enemies.set(i, aStarThread[i].getEnemyAIModel());
+	        				}
+	        				
+	        				if (shipLocation.equals(enemies.get(i).getLocation())) {
+	        					gameRunning = false;
+	        					playerLives--;
+	        					playerDeadStep = step + 20;
+	        					createLifeHBox();
+	        					if(playerLives != 0) {                	
+	        						player.setLocation(new Point2D(playerPosition.getKey(), playerPosition.getValue()));
+	        						pause();
+	        						delayNextScene(1000);
+	        						soundManager.playPlayerExplodeMusic();
+	        					} else {
+	        						break;
+	        					}
+	        				}
+	        				
+	        			} else {
+	        				isEnemyDead[i] = false;	        				
+	        			}
+	        		}
+	        	}
+	        }
     	}
     	
     	
@@ -564,7 +695,7 @@ public class Controller implements EventHandler<KeyEvent> {
         }
         
     }
-
+	
 	/**
 	 * Function that implements shooting mechanism .
 	 * Shooting while it sets the location of player and direction.
@@ -586,16 +717,15 @@ public class Controller implements EventHandler<KeyEvent> {
 		}
 		
     }
-
+    
 	/**
 	 * Function that checks bullet has shot the enemy .
 	 * Shooting while it sets the location of player and direction.
 	 * Plays enemy sho music when bullet hits the enemy.
 	 * Score of player gets increased.
 	 */
-    // check if the bullet shot player or enemies
     private void checkBullet() {
-
+    	
         for(int i = 0; i < bullets.size(); i++) {
 			boolean disappear = false;
         	if (player.getLocation().equals(this.bullets.get(i).getLocation())) {
@@ -616,10 +746,8 @@ public class Controller implements EventHandler<KeyEvent> {
                 	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
                 		score += 100;
                 		soundManager.playEnemyExplodeMusic();
-                		enemies.get(j).setLocation(new Point2D (enemyPosition.get(j).getKey(), enemyPosition.get(j).getValue()));
+                		enemies.get(j).setLocation(new Point2D (enemyStartingPositions.get(j).getKey(), enemyStartingPositions.get(j).getValue()));
                 		isEnemyDead[j] = true;
-//                      enemies.remove(j);
-//                      noEnemies -= 1;
                         disappear = true;
                         break;
                     }
@@ -645,18 +773,14 @@ public class Controller implements EventHandler<KeyEvent> {
 		                	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
 		                		score += 100;
 		                		soundManager.playEnemyExplodeMusic();
-		                		enemies.get(j).setLocation(new Point2D (enemyPosition.get(j).getKey(), enemyPosition.get(j).getValue()));
+		                		enemies.get(j).setLocation(new Point2D (enemyStartingPositions.get(j).getKey(), enemyStartingPositions.get(j).getValue()));
 		                		isEnemyDead[j] = true;
-//		                        enemies.remove(j);
-//		                        noEnemies -= 1;
 		                        disappear = true;
 		                        break;
 		                    }
 		            	}
 		            }
 				} else {
-//					bullets.remove(i);
-//					i -= 1;
 					disappear = true;
 				}
         	}
@@ -667,7 +791,7 @@ public class Controller implements EventHandler<KeyEvent> {
     	}
         
     }
-
+    
 	/**
 	 * Updates the scores , level and triggers the level completion.
 	 * And keep track of the text displayed when player finishes levels.
@@ -691,6 +815,7 @@ public class Controller implements EventHandler<KeyEvent> {
         
         this.scoreLabel.setText(String.format("Score: %d", score));
         this.levelLabel.setText(String.format("Level: %d", level + 1));
+        
         if (gameOver) {
         	
         	this.gameOverLabel.setText(String.format("GAME OVER"));
@@ -746,7 +871,7 @@ public class Controller implements EventHandler<KeyEvent> {
         }
         
     }
-
+	
 	/**
 	 * Controls the player movement.
 	 * Implements two way keyboard controls for player.
@@ -771,7 +896,7 @@ public class Controller implements EventHandler<KeyEvent> {
     		} else if (code == KeyCode.UP || code == KeyCode.W) {
     			direction = ShipModel.Direction.UP;
     			lastDirection = direction;
-    		} else if (code == KeyCode.SPACE) { //shooting
+    		} else if (code == KeyCode.SPACE) {
     			if (playerBullet != 0) {
     				if (player.getCurrentDirection() != Direction.NONE) {
     					direction = player.getCurrentDirection();
@@ -786,7 +911,7 @@ public class Controller implements EventHandler<KeyEvent> {
     		} else if (code == KeyCode.P) {
     			pause();
     			gameRunning = false;
-    			gamePaused = true;
+    			createPauseScene();
     		} else if (code == KeyCode.G) {
     			direction = ShipModel.Direction.NONE;
     			lastDirection = direction;
@@ -804,25 +929,9 @@ public class Controller implements EventHandler<KeyEvent> {
     			keyEvent.consume();
     			player.setCurrentDirection(direction);
     		}
-    	} else if (gamePaused) {
-    		KeyCode code = keyEvent.getCode();
-    		if (code == KeyCode.P) {
-    			gamePaused = false;
-    			gameRunning = false;
-    			soundManager.playCountDownMusic();
-    			delayNextScene(3500);    			
-    		} else if (code == KeyCode.G) {
-    			gamePaused = false;
-    			gameRunning = false;
-    			this.startNewGame();
-    		} else if (code == KeyCode.ESCAPE) {
-    			gamePaused = false;
-    			gameRunning = false;
-    			delayMainScene(0);
-    		}
     	}
     }
-
+	
 	/**
 	 * Creates the HBox for player lives.
 	 * Reduces by 1 image each time player dies.
@@ -833,7 +942,7 @@ public class Controller implements EventHandler<KeyEvent> {
 		lifeBox.getChildren().removeAll(lifeBox.getChildren());
     	
     	Image shipImage = new Image(viewManager.getChosenShip().getShipUrl(), 40, 40, true, false);
-    	Image blackImage = new Image("res/playerLife3_black.png", 40, 40, true, false);
+    	Image blackImage = new Image("/resources/Images/PlayerShip-NoLife-image.png", 40, 40, true, false);
     	
     	if (playerLives == 3) {
     		
@@ -882,7 +991,7 @@ public class Controller implements EventHandler<KeyEvent> {
     	}
     	
     }
-
+	
 	/**
 	 * Creates the HBox for bullet count that to be shot by player.
 	 * Reduces by 1 image each time player shoots a bullet.
@@ -892,8 +1001,8 @@ public class Controller implements EventHandler<KeyEvent> {
     	
     	bulletBox.getChildren().removeAll(bulletBox.getChildren());
     	
-    	Image redLaserImage = new Image("res/laserRed15.png", 20, 40, false, false);
-    	Image blackLaserImage = new Image("res/laserBlack15.png", 20, 40, false, false);
+    	Image redLaserImage = new Image("/resources/Images/Laser-Holder-image.png", 20, 40, false, false);
+    	Image blackLaserImage = new Image("/resources/Images/Laser-Empty-image.png", 20, 40, false, false);
     	bulletBox.setLayoutX(1000);
     	bulletBox.setLayoutY(5);
     	
@@ -948,7 +1057,215 @@ public class Controller implements EventHandler<KeyEvent> {
     	}
     	
     }
-
+    
+    public void createPauseScene() {
+    	
+    	VBox pauseMenuVBox = new VBox();
+    	gamePausedVBox.getChildren().add(pauseMenuVBox);
+    	gamePausedVBox.setAlignment(Pos.CENTER);
+    	
+    	viewManager.getMainStage().setScene(pauseScene);
+    	
+    	Buttons resumeButton, newGameButton, settingsButton, helpButton, exitButton;
+    	
+    	resumeButton = new Buttons("RESUME");
+    	resumeButton.setAlignment(Pos.CENTER);
+    	resumeButton.setOnAction(new EventHandler<ActionEvent>() {
+    		
+    		@Override
+    		public void handle(ActionEvent event) {
+    			soundManager.playMenuOpenMusic();
+    			viewManager.getMainStage().setScene(gameView.getGameScene());
+    			gameRunning = false;
+    			soundManager.playCountDownMusic();
+    			delayNextScene(3500);
+    			gamePausedVBox.getChildren().removeAll(gamePausedVBox.getChildren());
+    		}
+		});
+    	
+    	pauseMenuVBox.setSpacing(20);
+    	
+    	newGameButton = new Buttons("NEW GAME");
+    	newGameButton.setAlignment(Pos.CENTER);
+    	newGameButton.setOnAction(new EventHandler<ActionEvent>() {
+    		
+			@Override
+			public void handle(ActionEvent event) {
+				soundManager.playMenuOpenMusic();
+				viewManager.getMainStage().setScene(gameView.getGameScene());
+    			gameRunning = false;
+    			Direction direction = ShipModel.Direction.NONE;
+    			lastDirection = direction;
+    			gamePausedVBox.getChildren().removeAll(gamePausedVBox.getChildren());
+    			startNewGame();
+			}
+		});
+    	
+    	pauseMenuVBox.setSpacing(20);
+    	
+    	helpButton = new Buttons("HELP");
+    	helpButton.setAlignment(Pos.CENTER);
+    	helpButton.setOnAction(new EventHandler<ActionEvent>() {
+    		
+			@Override
+			public void handle(ActionEvent event) {
+				soundManager.playMenuOpenMusic();				
+				AnchorPane helpSection = new AnchorPane();
+				helpSection.setPrefWidth(600);
+				helpSection.setPrefHeight(600);
+				pauseMenuVBox.getChildren().removeAll(pauseMenuVBox.getChildren());
+				
+				BackgroundImage image = new BackgroundImage(new Image("/resources/Images/Panel-Blue-image.png", 600, 500, false, true),
+						BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, null);
+				
+				helpSection.setBackground(new Background(image));
+				
+				pauseMenuVBox.getChildren().add(helpSection);
+				InfoLabel help = new InfoLabel("HELP");
+				help.setLayoutX(450);
+				help.setLayoutY(75);
+				GridPane helpGrid = new GridPane();
+				helpGrid.setLayoutX(425);
+				helpGrid.setLayoutY(150);
+				helpGrid.setHgap(20);
+				helpGrid.setVgap(20);
+				
+				ImageView playerShip = new ImageView(new Image("/resources/Images/PlayerShip-Red-image.png", 80, 80, true, false));
+				ImageView enemyShip = new ImageView(new Image("/resources/Images/EnemyShip-1-image.png", 80, 80, true, false));
+				ImageView laserPowerUp = new ImageView(new Image("/resources/Images/PowerUp-Laser-image.png", 40, 40, true, false));
+				ImageView lifePowerUp = new ImageView(new Image("/resources/Images/PowerUp-Life-image.png", 40, 40, true, false));
+				
+				Label playerShipHelp = new Label("This is your ship. Choose colour from the \nPlay menu. Control it with arrow keys or W/S/A/D keys.");
+				Label enemyShipHelp = new Label("These are enemy ships.\nAvoid them!");
+				Label laserPowerUpHelp = new Label("The coins give you points,\nIF you can grab them!");
+				Label lifePowerUpHelp = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
+				
+				AnimationTimer animationTimer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						enemyShip.setRotate(90+now/10000000l);
+						playerShip.setRotate(-now/10000000l);
+					}
+				};
+				animationTimer.start();
+				
+				/* gridpane:
+				 * ___0_|__1_|__2_|_3_
+				 * 0|___|____|____|__
+				 * 1|___|____|____|__
+				 * 2|___|____|____|__
+				 * 3|___|____|____|___
+				 */
+				
+				helpGrid.add(playerShip, 0, 0);
+				helpGrid.add(playerShipHelp, 1, 0);
+				helpGrid.add(enemyShip, 0, 1);
+				helpGrid.add(enemyShipHelp, 1, 1);
+				helpGrid.add(laserPowerUp, 0, 2);
+				helpGrid.add(laserPowerUpHelp, 1, 2);
+				helpGrid.add(lifePowerUp, 0, 3);
+				helpGrid.add(lifePowerUpHelp, 1, 3);
+				
+				Buttons backButton = new Buttons("BACK");
+				backButton.setLayoutX(530);
+				backButton.setLayoutY(465);
+				backButton.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent event1) {
+						soundManager.playMenuOpenMusic();
+						pauseMenuVBox.getChildren().removeAll(pauseMenuVBox.getChildren());
+						createPauseScene();
+					}
+				});
+				
+				helpSection.getChildren().addAll(help, helpGrid, backButton);
+				help.setAlignment(Pos.CENTER);
+				helpGrid.setAlignment(Pos.CENTER);
+				backButton.setAlignment(Pos.CENTER);
+			}
+		});
+    	
+    	pauseMenuVBox.setSpacing(20);
+    	
+    	settingsButton = new Buttons("SETTINGS");
+    	settingsButton.setAlignment(Pos.CENTER);
+    	settingsButton.setOnAction(new EventHandler<ActionEvent>() {
+    		
+			@Override
+			public void handle(ActionEvent event) {
+				soundManager.playMenuOpenMusic();
+				pauseMenuVBox.getChildren().removeAll(pauseMenuVBox.getChildren());
+				AnchorPane musicControls = new AnchorPane();
+				pauseMenuVBox.getChildren().add(musicControls);
+				
+				musicControls.setPrefWidth(600);
+				musicControls.setPrefHeight(475);
+				
+				BackgroundImage image = new BackgroundImage(new Image("/resources/Images/Panel-Blue-image.png", 600, 475, false, false),
+						BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, null);
+				
+				musicControls.setBackground(new Background(image));				
+				
+				InfoLabel chooseBGMusicOption = new InfoLabel("BACKGROUND MUSIC");
+				chooseBGMusicOption.setLayoutX(450);
+				chooseBGMusicOption.setLayoutY(35);
+				musicControls.getChildren().add(chooseBGMusicOption);
+				musicControls.getChildren().add(soundManager.bgmVolumeShips());
+				soundManager.getBgmBox().setLayoutX(383);
+				soundManager.getBgmBox().setLayoutY(110);
+				
+				InfoLabel chooseIGMusicOption = new InfoLabel("IN-GAME MUSIC");
+				chooseIGMusicOption.setLayoutX(450);
+				chooseIGMusicOption.setLayoutY(220);
+				musicControls.getChildren().add(chooseIGMusicOption);
+				musicControls.getChildren().add(soundManager.igmVolumeShips());
+				soundManager.getIgmBox().setLayoutX(383);
+				soundManager.getIgmBox().setLayoutY(295);
+				
+				Buttons backButton = new Buttons("BACK");
+				backButton.setAlignment(Pos.CENTER);
+				backButton.setLayoutX(530);
+				backButton.setLayoutY(400);
+				backButton.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent event1) {
+						soundManager.playMenuOpenMusic();
+						soundManager.setBGMVolumeBeforeGame(soundManager.getBackGroundMusicVolume());
+						pauseMenuVBox.getChildren().removeAll(pauseMenuVBox.getChildren());
+						createPauseScene();
+					}
+				});
+				
+				musicControls.getChildren().add(backButton);
+				
+			}
+		});
+    	
+    	pauseMenuVBox.setSpacing(20);
+    	
+    	exitButton = new Buttons("EXIT GAME");
+    	exitButton.setAlignment(Pos.CENTER);
+    	exitButton.setOnAction(new EventHandler<ActionEvent>() {
+    		
+			@Override
+			public void handle(ActionEvent event) {
+				soundManager.playMenuOpenMusic();
+    			gameRunning = false;
+    			pauseMenuVBox.getChildren().removeAll(pauseMenuVBox.getChildren());
+    			delayMainScene(0);
+			}
+		});
+    	
+    	Image backgroundImage = new Image(getClass().getResourceAsStream("/resources/Images/Space-BackGround-image.png"), 256, 256, false, true);
+		BackgroundImage background = new BackgroundImage(backgroundImage,BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
+		gamePausedVBox.setBackground(new Background(background));
+		pauseMenuVBox.getChildren().addAll(resumeButton, newGameButton, helpButton, settingsButton, exitButton); 
+		pauseMenuVBox.setAlignment(Pos.CENTER);
+    	
+    }
+    
 	/**
 	 * Function that stops the timer and pauses the game.
 	 *
@@ -956,7 +1273,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public void pause() {
         this.timer.cancel();
     }
-
+	
 	/**
 	 * Gets the width of the Game window.
 	 * Scene is set according to the size(width) of game window.
@@ -965,7 +1282,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public double getBoardWidth() {
         return GameView.CELL_WIDTH * this.gameView.getGvRowCount();
     }
-
+	
 	/**
 	 * Gets the height of the Game window.
 	 * Scene is set according to the size(height) of game window.
@@ -974,7 +1291,7 @@ public class Controller implements EventHandler<KeyEvent> {
     public double getBoardHeight() {
         return (GameView.CELL_WIDTH * this.gameView.getGvColumnCount()) + 100;
     }
-
+    
 	/**
 	 * Gets the Game Grid with point values and coordinates.
 	 * @return grid of game
@@ -982,7 +1299,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public CellValue[][] getGrid(){
     	return grid;
     }
-
+	
 	/**
 	 * Gets the current level and the URL file.
 	 * @param x integer level file is is passed into  levelFiles
@@ -991,7 +1308,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public static String getCurrentLevel(int x) {
         return levelFiles[x];
     }
-
+	
 	/**
 	 * Gets the Player Template model.
 	 * @return PlayerModel
@@ -999,7 +1316,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public PlayerModel getPlayer() {
     	return this.player;
     }
-
+	
 	/**
 	 * Gets the Enemy model.
 	 * @return List of enemies of EnemyModel
@@ -1007,7 +1324,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public List<EnemyAIModel> getEnemies() {
     	return this.enemies;
     }
-
+	
 	/**
 	 * Functions return a is level completed or not.
 	 * @return boolean whether is level complete.
@@ -1015,7 +1332,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	public boolean isLevelComplete() {
     	return levelComplete;
     }
-
+	
 	/**
 	 * Functions return a is player hidden or not.
 	 * @return boolean whether is player hidden.
@@ -1023,6 +1340,5 @@ public class Controller implements EventHandler<KeyEvent> {
     public boolean isPlayerHidden() {
     	return hidePlayer;
     }
-    
     
 }

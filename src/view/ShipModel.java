@@ -3,11 +3,11 @@ package view;
 import javafx.geometry.Point2D;
 
 public class ShipModel {
-
+	
     public enum CellValue {
         EMPTY, SHIPSTARTINGPOINT, BLOCK, FLAG, ENEMY1STARTINGPOINT, ENEMY2STARTINGPOINT, COIN, LIFE, POWERUP
     }
-
+    
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, NONE
     }
@@ -17,7 +17,7 @@ public class ShipModel {
     
     static protected CellValue[][] gameGrid;
     protected int columnCount, rowCount;
-
+    
     /**
      * Constructor method calling the grid and setups the scene with columns and rows respectively.
      * @param grid parent level game grid basically the coordinates of the level file.
@@ -27,7 +27,7 @@ public class ShipModel {
         this.rowCount = grid.length;
         this.columnCount = grid[0].length;
     }
-
+    
     /**
      * Changes the velocity of player and moves in four directions.
      * @param direction in which charcter can move
@@ -48,7 +48,7 @@ public class ShipModel {
         }
         
     }
-
+    
     /**
      * Function Teleports the player to opposite side of the game frame.
      * Sets the cell value to stop at the impossible areas in the game to traverse.
@@ -76,7 +76,7 @@ public class ShipModel {
         return objectLocation;
         
     }
-
+    
     /**
      * Gets the cell value in th egrid
      * @param row in the grid
@@ -87,7 +87,7 @@ public class ShipModel {
         assert row >= 0 && row < gameGrid.length && column >= 0 && column < gameGrid[0].length;
         return gameGrid[row][column];
     }
-
+    
     /**
      * Gets the row count.
      * @return int count of rows.
@@ -95,7 +95,7 @@ public class ShipModel {
     public int getRowCount() {
         return rowCount;
     }
-
+    
     /**
      * Gets the column count.
      * @return int count of columns.
@@ -103,7 +103,7 @@ public class ShipModel {
     public int getColumnCount() {
         return columnCount;
     }
-
+    
     /**
      * Gets the location of player ship.
      * @return Point2D of the ship location
@@ -111,14 +111,14 @@ public class ShipModel {
     public Point2D getLocation() {
         return shipLocation;
     }
-
+    
     /**
      * Sets the location of player ship.
      */
     public void setLocation(Point2D shipLocation) {
         this.shipLocation = shipLocation;
     }
-
+    
     /**
      * Gets the velocity of the Ship.
      * @return Point2D velocity of ship.
@@ -126,14 +126,14 @@ public class ShipModel {
     public Point2D getVelocity() {
         return shipVelocity;
     }
-
+    
     /**
      * Sets the velocity of the Ship.
      */
     public void setVelocity(Point2D shipVelocity) {
         this.shipVelocity = shipVelocity;
     }
-
+    
     /**
      * Gets current direction of the character.
      * @return Direction of the character.
@@ -141,13 +141,14 @@ public class ShipModel {
     public Direction getCurrentDirection() {
         return currentDirection;
     }
+    
     /**
      * Sets current direction of the character.
      */
     public void setCurrentDirection(Direction direction) {
     	this.currentDirection = direction;
     }
-
+    
     /**
      * Gets last direction of the character.
      * @return Direction of the character
@@ -155,14 +156,14 @@ public class ShipModel {
     public Direction getLastDirection() {
         return lastDirection;
     }
-
+    
     /**
      * Sets last direction of the character.
      */
     public void setLastDirection(Direction direction) {
     	this.lastDirection = direction;
     }
-
+    
     /**
      * Sets the game grid.
      * @param grid is set to game grid
@@ -170,4 +171,5 @@ public class ShipModel {
     public void setGameGrid(CellValue[][] grid) {
     	gameGrid = grid;
     }
+    
 }

@@ -4,14 +4,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-public class VolumeShip extends HBox {
+public class VolumeShip extends HBox {	
 	
+	private ImageView blueOrBlack;
 	
-	private final ImageView blueOrBlack;
+	private Image blueShipImage = new Image(getClass().getResourceAsStream(Ship.blue.getShipUrl()), 90, 90, true, false);
+	private Image blackShipImage = new Image(getClass().getResourceAsStream("/resources/Images/PlayerShip-Black-image.png"), 90, 90, true, false);
 	
-	private final Image blueShipImage = new Image("view/resources/shipPicker/playerShip3_blue.png", 90, 90, true, false);
-	private final Image blackShipImage = new Image("view/resources/shipPicker/playerShip3_black.png", 90, 90, true, false);
-
 	/**
 	 * Constructor for VolumeShip class used to set initial image.
 	 */
@@ -40,6 +39,5 @@ public class VolumeShip extends HBox {
 		blueOrBlack.setImage(imageToSet);
 		
 	}
-	
 	
 }

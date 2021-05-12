@@ -3,7 +3,7 @@ package view;
 import javafx.geometry.Point2D;
 
 public class PlayerModel extends ShipModel{
-
+	
     /**
      * Constructor method for calling the parent level game grid.
      * @param gameGrid parent game grid which is coordinates of the game file.
@@ -11,7 +11,7 @@ public class PlayerModel extends ShipModel{
 	public PlayerModel(CellValue[][] gameGrid) {
 		super(gameGrid);
 	}
-
+	
     /**
      * Functions triggers and decides the movement of player in the game scene.
      * Decides the player traversing in the free space.
@@ -24,9 +24,8 @@ public class PlayerModel extends ShipModel{
         Point2D predictedShipLocation = shipLocation.add(predictedShipVelocity);
         predictedShipLocation = setOffScreenLocation(predictedShipLocation);
         
-        
         if (this.currentDirection.equals(lastDirection)) {
-
+        	
         	if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
                 shipVelocity = changeVelocity(Direction.NONE);
                 setLastDirection(this.currentDirection);
@@ -57,10 +56,8 @@ public class PlayerModel extends ShipModel{
                 shipLocation = predictedShipLocation;
                 setLastDirection(this.currentDirection);
                 
-            }
-            
-        }
-        
+            }   
+        }   
     }
 	
 }

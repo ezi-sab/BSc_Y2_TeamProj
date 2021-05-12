@@ -12,7 +12,7 @@ import model.VolumeShip;
 
 public class SoundManager {
 	
-	private static Media bgm = new Media(Paths.get("src/view/resources/sounds/Spaceinvaders-sound.mp3").toUri().toString());
+	private static Media bgm = new Media(Paths.get("src/resources/Sounds/Spaceinvaders-sound.mp3").toUri().toString());
 	private Media menuMusic;
 	private Media countDown;
 	private Media coinPickUp;
@@ -40,17 +40,17 @@ public class SoundManager {
 	private MediaPlayer mediaPlayerGameOver;
 	private MediaPlayer mediaPlayerGameWon;
 	
-	private static VolumeShip volumeShip1;
-	private static VolumeShip volumeShip2;
-	private static VolumeShip volumeShip3;
-	private static VolumeShip volumeShip4;
-	private static VolumeShip volumeShip5;
+	private VolumeShip volumeShip1;
+	private VolumeShip volumeShip2;
+	private VolumeShip volumeShip3;
+	private VolumeShip volumeShip4;
+	private VolumeShip volumeShip5;
 	
-	private static VolumeShip volumeShip6;
-	private static VolumeShip volumeShip7;
-	private static VolumeShip volumeShip8;
-	private static VolumeShip volumeShip9;
-	private static VolumeShip volumeShip0;
+	private VolumeShip volumeShip6;
+	private VolumeShip volumeShip7;
+	private VolumeShip volumeShip8;
+	private VolumeShip volumeShip9;
+	private VolumeShip volumeShip0;
 	
 	private static HBox bgmVolBox;
 	private static HBox igmVolBox;
@@ -76,13 +76,13 @@ public class SoundManager {
 		mediaPlayerBgm.play();
 		
 	}
-
+	
 	/**
 	 * Plays Menu Open Music.
 	 */
 	public void playMenuOpenMusic() {
 		
-		menuMusic = new Media(Paths.get("src/view/resources/sounds/Fastinvader-sound.mp3").toUri().toString());
+		menuMusic = new Media(Paths.get("src/resources/Sounds/Fastinvader-sound.mp3").toUri().toString());
 		mediaPlayerMenu = new MediaPlayer(menuMusic);
 		mediaPlayerMenu.setVolume(backGroundMusicVolume);
 		mediaPlayerMenu.setAutoPlay(true);
@@ -119,7 +119,7 @@ public class SoundManager {
 					volumeToSet = 0;
 					
 				}
-				
+							
 			}
 		};
 		
@@ -177,7 +177,7 @@ public class SoundManager {
 					volumeShip5.setVolumeShip(false);
 					
 				}
-
+				
 			} else {
 				
 				fadeInTimer.cancel();
@@ -194,35 +194,35 @@ public class SoundManager {
 	 */
 	public void setBgmVolumeShips() {
 		
-		if (getbackGroundMusicVolume() == 0) {
+		if (getBackGroundMusicVolume() == 0) {
 			
 			volumeShip2.setVolumeShip(false);
 			volumeShip3.setVolumeShip(false);
 			volumeShip4.setVolumeShip(false);
 			volumeShip5.setVolumeShip(false);
 			
-		} else if (getbackGroundMusicVolume() == 0.25) {
+		} else if (getBackGroundMusicVolume() == 0.25) {
 			
 			volumeShip2.setVolumeShip(true);
 			volumeShip3.setVolumeShip(false);
 			volumeShip4.setVolumeShip(false);
 			volumeShip5.setVolumeShip(false);
 			
-		} else if (getbackGroundMusicVolume() == 0.5) {
+		} else if (getBackGroundMusicVolume() == 0.5) {
 			
 			volumeShip2.setVolumeShip(true);
 			volumeShip3.setVolumeShip(true);
 			volumeShip4.setVolumeShip(false);
 			volumeShip5.setVolumeShip(false);
 			
-		} else if (getbackGroundMusicVolume() == 0.75) {
+		} else if (getBackGroundMusicVolume() == 0.75) {
 			
 			volumeShip2.setVolumeShip(true);
 			volumeShip3.setVolumeShip(true);
 			volumeShip4.setVolumeShip(true);
 			volumeShip5.setVolumeShip(false);
 			
-		} else if (getbackGroundMusicVolume() == 1) {
+		} else if (getBackGroundMusicVolume() == 1) {
 			
 			volumeShip2.setVolumeShip(true);
 			volumeShip3.setVolumeShip(true);
@@ -351,7 +351,7 @@ public class SoundManager {
 	 */
 	public void playCountDownMusic() {
 		
-		countDown = new Media(Paths.get("src/view/resources/sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
+		countDown = new Media(Paths.get("src/resources/Sounds/Rocketleague-Countdown-sound.mp3").toUri().toString());
 		mediaPlayerCountDown = new MediaPlayer(countDown);
 		mediaPlayerCountDown.setVolume(inGameMusicVolume);
 		mediaPlayerCountDown.setAutoPlay(true);
@@ -363,7 +363,7 @@ public class SoundManager {
 	 */
 	public void playCoinPickUpMusic() {
 			
-		coinPickUp = new Media(Paths.get("src/view/resources/sounds/Pokemon-Coin-sound.mp3").toUri().toString());
+		coinPickUp = new Media(Paths.get("src/resources/Sounds/Pokemon-Coin-sound.mp3").toUri().toString());
 		mediaPlayerCoinPickUp = new MediaPlayer(coinPickUp);
 		mediaPlayerCoinPickUp.setVolume(inGameMusicVolume);
 		mediaPlayerCoinPickUp.setAutoPlay(true);
@@ -375,7 +375,7 @@ public class SoundManager {
 	 */
 	public void playLaserPickUpMusic() {
 		
-		laserPickUp = new Media(Paths.get("src/view/resources/sounds/Laser-PickUp-sound.mp3").toUri().toString());
+		laserPickUp = new Media(Paths.get("src/resources/Sounds/Laser-PickUp-sound.mp3").toUri().toString());
 		mediaPlayerLaserPickUp = new MediaPlayer(laserPickUp);
 		mediaPlayerLaserPickUp.setVolume(inGameMusicVolume);
 		mediaPlayerLaserPickUp.setAutoPlay(true);
@@ -387,7 +387,7 @@ public class SoundManager {
 	 */
 	public void playLifePickUpMusic() {
 		
-		lifePickUp = new Media(Paths.get("src/view/resources/sounds/Life-PickUp-sound.mp3").toUri().toString());
+		lifePickUp = new Media(Paths.get("src/resources/Sounds/Life-PickUp-sound.mp3").toUri().toString());
 		mediaPlayerLifePickUp = new MediaPlayer(lifePickUp);
 		mediaPlayerLifePickUp.setVolume(inGameMusicVolume);
 		mediaPlayerLifePickUp.setAutoPlay(true);
@@ -399,7 +399,7 @@ public class SoundManager {
 	 */
 	public void playLaserEmptyMusic() {
 		
-		laserEmpty = new Media(Paths.get("src/view/resources/sounds/Laser-Empty-sound.mp3").toUri().toString());
+		laserEmpty = new Media(Paths.get("src/resources/Sounds/Laser-Empty-sound.mp3").toUri().toString());
 		mediaPlayerLaserEmpty = new MediaPlayer(laserEmpty);
 		mediaPlayerLaserEmpty.setVolume(inGameMusicVolume);
 		mediaPlayerLaserEmpty.setAutoPlay(true);
@@ -411,7 +411,7 @@ public class SoundManager {
 	 */
 	public void playLaserShootMusic() {
 		
-		laserShoot = new Media(Paths.get("src/view/resources/sounds/Laser-Shoot-sound.mp3").toUri().toString());
+		laserShoot = new Media(Paths.get("src/resources/Sounds/Laser-Shoot-sound.mp3").toUri().toString());
 		mediaPlayerLaserShoot = new MediaPlayer(laserShoot);
 		mediaPlayerLaserShoot.setVolume(inGameMusicVolume);
 		mediaPlayerLaserShoot.setAutoPlay(true);
@@ -423,7 +423,7 @@ public class SoundManager {
 	 */
 	public void playEnemyExplodeMusic() {
 			
-		enemyExplode = new Media(Paths.get("src/view/resources/sounds/Enemy-Explode-sound.mp3").toUri().toString());
+		enemyExplode = new Media(Paths.get("src/resources/Sounds/Enemy-Explode-sound.mp3").toUri().toString());
 		mediaPlayerEnemyExplode = new MediaPlayer(enemyExplode);
 		mediaPlayerEnemyExplode.setVolume(inGameMusicVolume);
 		mediaPlayerEnemyExplode.setAutoPlay(true);
@@ -435,7 +435,7 @@ public class SoundManager {
 	 */
 	public void playPlayerExplodeMusic() {
 			
-		playerExplode = new Media(Paths.get("src/view/resources/sounds/Player-Explode-sound.mp3").toUri().toString());
+		playerExplode = new Media(Paths.get("src/resources/Sounds/Player-Explode-sound.mp3").toUri().toString());
 		mediaPlayerPlayerExplode = new MediaPlayer(playerExplode);
 		mediaPlayerPlayerExplode.setVolume(inGameMusicVolume);
 		mediaPlayerPlayerExplode.setAutoPlay(true);	
@@ -447,7 +447,7 @@ public class SoundManager {
 	 */
 	public void playLevelCompletedMusic() {
 			
-		levelCompleted = new Media(Paths.get("src/view/resources/sounds/Level-Completed-sound.mp3").toUri().toString());
+		levelCompleted = new Media(Paths.get("src/resources/Sounds/Level-Completed-sound.mp3").toUri().toString());
 		mediaPlayerLevelCompleted = new MediaPlayer(levelCompleted);
 		mediaPlayerLevelCompleted.setVolume(inGameMusicVolume);
 		mediaPlayerLevelCompleted.setAutoPlay(true);	
@@ -459,7 +459,7 @@ public class SoundManager {
 	 */
 	public void playGameOverMusic() {
 			
-		gameOver = new Media(Paths.get("src/view/resources/sounds/Game-Over-sound.mp3").toUri().toString());
+		gameOver = new Media(Paths.get("src/resources/Sounds/Game-Over-sound.mp3").toUri().toString());
 		mediaPlayerGameOver = new MediaPlayer(gameOver);
 		mediaPlayerGameOver.setVolume(inGameMusicVolume);
 		mediaPlayerGameOver.setAutoPlay(true);	
@@ -471,7 +471,7 @@ public class SoundManager {
 	 */
 	public void playGameWonMusic() {
 			
-		gameWon = new Media(Paths.get("src/view/resources/sounds/Game-Won-sound.mp3").toUri().toString());
+		gameWon = new Media(Paths.get("src/resources/Sounds/Game-Won-sound.mp3").toUri().toString());
 		mediaPlayerGameWon = new MediaPlayer(gameWon);
 		mediaPlayerGameWon.setVolume(inGameMusicVolume);
 		mediaPlayerGameWon.setAutoPlay(true);	
@@ -653,7 +653,7 @@ public class SoundManager {
 	/**
 	 * @return backGroundMusicVolume  Volume of BackGround Music.
 	 */
-	public double getbackGroundMusicVolume() {
+	public double getBackGroundMusicVolume() {
 		return backGroundMusicVolume;	
 	}
 	
@@ -703,6 +703,20 @@ public class SoundManager {
 	 */
 	public boolean getBGMVolumeBeforeReached() {
 		return bgmVolumeBeforeReached;
+	}
+	
+	/**
+	 * @return bgmVolBox HBox used to contain the ships which is used to adjust BGM volumes.
+	 */
+	public HBox getBgmBox() {
+		return bgmVolBox;
+	}
+	
+	/**
+	 * @return igmVolBox HBox used to contain the ships which is used to adjust IGM volumes.
+	 */
+	public HBox getIgmBox() {
+		return igmVolBox;
 	}
 	
 	/**
