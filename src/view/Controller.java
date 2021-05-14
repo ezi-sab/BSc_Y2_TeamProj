@@ -475,7 +475,6 @@ public class Controller implements EventHandler<KeyEvent> {
 	        for(int i = 0; i < noEnemies; i++) {
 	        	aStarThread[i] = new AStarThread();
 	        	moveEnemyThread[i] = new Thread(aStarThread[i]);
-	        	aStarThread[i].setLevel(level);
 	        }
 	        
 	        for(int i = 0; i < noEnemies; i++) {
@@ -721,75 +720,49 @@ public class Controller implements EventHandler<KeyEvent> {
 	/**
 	 * Function that checks bullet has shot the enemy .
 	 * Shooting while it sets the location of player and direction.
-	 * Plays enemy sho music when bullet hits the enemy.
+	 * Plays enemy shoot music when bullet hits the enemy.
 	 * Score of player gets increased.
 	 */
     private void checkBullet() {
     	
         for(int i = 0; i < bullets.size(); i++) {
+        	
 			boolean disappear = false;
-        	if (player.getLocation().equals(this.bullets.get(i).getLocation())) {
-        		gameRunning = false;
-                playerLives--;
-                playerDeadStep = step;
-                createLifeHBox();
-                if(playerLives != 0) {                	
-                	player.setLocation(new Point2D(playerPosition.getKey(), playerPosition.getValue()));
-                	pause();
-                	delayNextScene(1000);
+			
+            for(int j = 0; j < noEnemies; j++) {
+              	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
+               		score += 100;
+               		soundManager.playEnemyExplodeMusic();
+               		enemies.get(j).setLocation(new Point2D (enemyStartingPositions.get(j).getKey(), enemyStartingPositions.get(j).getValue()));
+               		isEnemyDead[j] = true;
+                    disappear = true;
+                    break;
                 }
-                soundManager.playPlayerExplodeMusic();
-                player.setVelocity(new Point2D(0,0));
-                return;
-            } else {
-                for(int j = 0; j < noEnemies; j++) {
-                	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
-                		score += 100;
-                		soundManager.playEnemyExplodeMusic();
-                		enemies.get(j).setLocation(new Point2D (enemyStartingPositions.get(j).getKey(), enemyStartingPositions.get(j).getValue()));
-                		isEnemyDead[j] = true;
-                        disappear = true;
-                        break;
-                    }
-            	}
             }
+            
         	if (!disappear) {
 				if (bullets.get(i).flyBullet()) {
-		        	if (player.getLocation().equals(this.bullets.get(i).getLocation())) {
-		        		gameRunning = false;
-		        		playerLives--;
-		        		playerDeadStep = step;
-		                createLifeHBox();
-		                if(playerLives != 0) {                	
-		                	player.setLocation(new Point2D(playerPosition.getKey(), playerPosition.getValue()));
-		                	pause();
-		                	delayNextScene(1000);
+		            for(int j = 0; j < noEnemies; j++) {
+		               	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
+		               		score += 100;
+		               		soundManager.playEnemyExplodeMusic();
+		               		enemies.get(j).setLocation(new Point2D (enemyStartingPositions.get(j).getKey(), enemyStartingPositions.get(j).getValue()));
+		               		isEnemyDead[j] = true;
+		                    disappear = true;
+		                    break;
 		                }
-		                soundManager.playPlayerExplodeMusic();
-		                player.setVelocity(new Point2D(0,0));
-		                return;
-		            } else {
-		                for(int j = 0; j < noEnemies; j++) {
-		                	if (this.enemies.get(j).getLocation().equals(this.bullets.get(i).getLocation())) {
-		                		score += 100;
-		                		soundManager.playEnemyExplodeMusic();
-		                		enemies.get(j).setLocation(new Point2D (enemyStartingPositions.get(j).getKey(), enemyStartingPositions.get(j).getValue()));
-		                		isEnemyDead[j] = true;
-		                        disappear = true;
-		                        break;
-		                    }
-		            	}
 		            }
 				} else {
 					disappear = true;
 				}
-        	}
+			}
+        	
         	if (disappear) {
 				bullets.remove(i);
 				i -= 1;
         	}
+        	
     	}
-        
     }
     
 	/**
@@ -798,6 +771,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	 * Game is set back to main scene when finished.
 	 */
 	private void update() {
+		
     	player.setGameGrid(grid);
     	this.step();
     	
@@ -810,9 +784,7 @@ public class Controller implements EventHandler<KeyEvent> {
 	        }
 	        
         }
-        
         this.gameView.update(player, enemies, bullets);
-        
         this.scoreLabel.setText(String.format("Score: %d", score));
         this.levelLabel.setText(String.format("Level: %d", level + 1));
         
@@ -867,9 +839,7 @@ public class Controller implements EventHandler<KeyEvent> {
         		delayMainScene(3000);
         		
         	}
-        	
         }
-        
     }
 	
 	/**
@@ -1148,14 +1118,6 @@ public class Controller implements EventHandler<KeyEvent> {
 					}
 				};
 				animationTimer.start();
-				
-				/* gridpane:
-				 * ___0_|__1_|__2_|_3_
-				 * 0|___|____|____|__
-				 * 1|___|____|____|__
-				 * 2|___|____|____|__
-				 * 3|___|____|____|___
-				 */
 				
 				helpGrid.add(playerShip, 0, 0);
 				helpGrid.add(playerShipHelp, 1, 0);

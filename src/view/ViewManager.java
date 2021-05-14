@@ -58,7 +58,7 @@ public class ViewManager {
 	List<Buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
-	private static Ship chosenShip;
+	private static Ship chosenShip = null;
 	
 	/**
 	 * Constructor for building the Main scene of the game.
@@ -386,6 +386,7 @@ public class ViewManager {
 			soundManager.setBgmVolumeShips();
 		}
 		soundManager.setIgmVolumeShips();
+		chosenShip = null;
 		
 	}
 	

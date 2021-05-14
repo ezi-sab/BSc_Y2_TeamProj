@@ -6,7 +6,6 @@ public class AStarThread implements Runnable {
 	
 	private EnemyAIModel enemy;
 	private Point2D playerLocation;
-	private int level;
 	
 	public void setPlayerLocation(Point2D location) {
 		playerLocation = location;
@@ -20,13 +19,9 @@ public class AStarThread implements Runnable {
 		return enemy;
 	}
 	
-	public void setLevel(int lel) {
-		level = lel;
-	}
-	
 	@Override
 	public void run() {
-		enemy.moveEnemy(playerLocation, level);
+		enemy.moveEnemy(playerLocation);
 	}
 	
 }

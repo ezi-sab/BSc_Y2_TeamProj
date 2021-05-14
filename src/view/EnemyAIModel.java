@@ -48,49 +48,21 @@ public class EnemyAIModel extends ShipModel{
 	 * Mode that searches for player from the game grid graph.
 	 * @param playerLocation used to get the location of player in the Grid.
 	 */
-    public void moveEnemy(Point2D playerLocation, int level) {
+    public void moveEnemy(Point2D playerLocation) {
     	
-    	int xDistance = (int) (shipLocation.getX() - playerLocation.getX());
-    	int yDistance = (int) (shipLocation.getY() - playerLocation.getY());
-    	
-    	if (xDistance < 0) {
-    		xDistance = (-1) * xDistance;
-    	}
-    	
-    	if (yDistance < 0) {
-    		yDistance = (-1) * yDistance;
-    	}
-    	
-    	int heuristic = xDistance + yDistance;
-    	
-    	int maxHeuristics;
-    	
-    	if (level == 0) {
-    		maxHeuristics = 20;
-    	} else if (level == 1) {
-    		maxHeuristics = 20;
-    	} else {
-    		maxHeuristics = 25;
-    	}
-    	
-    	if (heuristic <= maxHeuristics) {
-    		
-    		setLastDirection(currentDirection);
-    		Direction direction = aStarPathFinding(playerLocation);
-    		setCurrentDirection(direction);
-    		shipVelocity = changeVelocity(direction);
-    		shipLocation = shipLocation.add(shipVelocity);
-    		
-    	} else {
-    		
-    		setLastDirection(currentDirection);
-    		Direction direction = simplePathFinding(playerLocation);
-    		setCurrentDirection(direction);
-    		shipVelocity = changeVelocity(direction);
-    		shipLocation = shipLocation.add(shipVelocity);
-    		
-    	}
-    		
+   		if((shipLocation.getX() == playerLocation.getX()) && (shipLocation.getY() == playerLocation.getY())) {
+   			setLastDirection(currentDirection);
+   			Direction direction = Direction.NONE;
+   			setCurrentDirection(direction);
+   			shipVelocity = changeVelocity(direction);
+   			shipLocation = shipLocation.add(shipVelocity);
+   		} else {
+   			setLastDirection(currentDirection);
+   			Direction direction = aStarPathFinding(playerLocation);
+   			setCurrentDirection(direction);
+   			shipVelocity = changeVelocity(direction);
+   			shipLocation = shipLocation.add(shipVelocity);
+   		}
     }
     
 	/**
@@ -105,46 +77,108 @@ public class EnemyAIModel extends ShipModel{
     	List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> openNodes = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>>();
     	List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> closedNodes = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>>();
     	
-    	openNodes = findPossiblePoints(currentDirection, shipLocation, playerLocation);
+    	openNodes = findPossiblePoints(currentDirection, shipLocation, playerLocation, 0);
     	
     	while (!(reachedPlayerLocation(openNodes, playerLocation))) {
     		
     		List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> equalFDistanceNodes = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>>();
     		List <Integer> lowestDistanceIndex = new ArrayList<Integer>();
+    		
+    		int xPlayerDistance = (int) (playerLocation.getX() - openNodes.get(0).getKey().getValue().getX());
+    		int yPlayerDistance = (int) (playerLocation.getY() - openNodes.get(0).getKey().getValue().getY());
+    		if (xPlayerDistance < 0) {
+    			xPlayerDistance = (-1) * xPlayerDistance;
+    		}
+    		if (yPlayerDistance < 0) {
+    			yPlayerDistance = (-1) * yPlayerDistance;
+    		}
+    		int heuristics = xPlayerDistance + yPlayerDistance;
     		    		
-    		int lowestDistance = openNodes.get(0).getValue().getValue();
+    		int lowestDistance = openNodes.get(0).getValue().getValue() + heuristics;
     		
     		for (int i = 0; i < openNodes.size(); i++) {
-    			if (openNodes.get(i).getValue().getValue() <= lowestDistance) {
-    				lowestDistanceIndex.add(i);
+    			
+    			xPlayerDistance = (int) (playerLocation.getX() - openNodes.get(i).getKey().getValue().getX());
+    			yPlayerDistance = (int) (playerLocation.getY() - openNodes.get(i).getKey().getValue().getY());
+    			if (xPlayerDistance < 0) {
+        			xPlayerDistance = (-1) * xPlayerDistance;
+        		}
+        		if (yPlayerDistance < 0) {
+        			yPlayerDistance = (-1) * yPlayerDistance;
+        		}
+        		heuristics = xPlayerDistance + yPlayerDistance;
+        		
+    			if ((openNodes.get(i).getValue().getValue() + heuristics) <= lowestDistance) {
+    				lowestDistance = openNodes.get(i).getValue().getValue() + heuristics;
     			}
     		}
     		
-    		if (lowestDistanceIndex.isEmpty()) {
-    			lowestDistanceIndex.add(0);
+    		for (int i = 0; i < openNodes.size(); i++) {
+    			
+    			xPlayerDistance = (int) (playerLocation.getX() - openNodes.get(i).getKey().getValue().getX());
+    			yPlayerDistance = (int) (playerLocation.getY() - openNodes.get(i).getKey().getValue().getY());
+    			if (xPlayerDistance < 0) {
+        			xPlayerDistance = (-1) * xPlayerDistance;
+        		}
+        		if (yPlayerDistance < 0) {
+        			yPlayerDistance = (-1) * yPlayerDistance;
+        		}
+        		heuristics = xPlayerDistance + yPlayerDistance;
+        		
+    			if ((openNodes.get(i).getValue().getValue() + heuristics) == lowestDistance) {
+    				lowestDistanceIndex.add(i);    				
+    			}
     		}
     		
     		for (int i = 0; i < lowestDistanceIndex.size(); i++) {
     			equalFDistanceNodes.add(openNodes.get(lowestDistanceIndex.get(i)));
     		}
     		
-    		Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>> currentNode = findClockWiseDirection(equalFDistanceNodes);
+    		Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>> currentNode = findNextCurrentNode(equalFDistanceNodes, playerLocation);
     		
     		openNodes.remove(currentNode);
     		closedNodes.add(currentNode);
     		
     		List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> newNodes = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>>();
-    		newNodes.addAll(findPossiblePoints(currentNode.getKey().getKey(), (new Point2D(currentNode.getValue().getKey().getX(), currentNode.getValue().getKey().getY())), playerLocation));
+    		newNodes.addAll(findPossiblePoints(currentNode.getKey().getKey(), (new Point2D(currentNode.getValue().getKey().getX(), currentNode.getValue().getKey().getY())), playerLocation, currentNode.getValue().getValue()));
+    		
+    		List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> objectToRemove = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>>();
     		
     		for (int i = 0; i < openNodes.size(); i++) {
+    			
     			for (int j = 0; j < newNodes.size(); j++) {
+    				
     				if ((openNodes.get(i).getValue().getKey().getX() == newNodes.get(j).getValue().getKey().getX()) && (openNodes.get(i).getValue().getKey().getY() == newNodes.get(j).getValue().getKey().getY())) {
-    					if (openNodes.get(i).getValue().getValue() >= newNodes.get(j).getValue().getValue()) {
-    						openNodes.set(i, newNodes.get(j));
-    						newNodes.remove(j);
+    					
+    					int xPlayerDistanceI = (int) (playerLocation.getX() - openNodes.get(i).getKey().getValue().getX());
+    	    			int yPlayerDistanceI = (int) (playerLocation.getY() - openNodes.get(i).getKey().getValue().getY());
+    	    			if (xPlayerDistanceI < 0) {
+    	        			xPlayerDistanceI = (-1) * xPlayerDistanceI;
+    	        		}
+    	        		if (yPlayerDistanceI < 0) {
+    	        			yPlayerDistanceI = (-1) * yPlayerDistanceI;
+    	        		}
+    	        		int heuristicsI = xPlayerDistanceI + yPlayerDistanceI;
+    	        		
+    	        		int xPlayerDistanceJ = (int) (playerLocation.getX() - newNodes.get(j).getKey().getValue().getX());
+    	    			int yPlayerDistanceJ = (int) (playerLocation.getY() - newNodes.get(j).getKey().getValue().getY());
+    	    			if (xPlayerDistanceJ < 0) {
+    	        			xPlayerDistanceJ = (-1) * xPlayerDistanceJ;
+    	        		}
+    	        		if (yPlayerDistanceJ < 0) {
+    	        			yPlayerDistanceJ = (-1) * yPlayerDistanceJ;
+    	        		}
+    	        		int heuristicsJ = xPlayerDistanceJ + yPlayerDistanceJ;
+    					
+    					if ((openNodes.get(i).getValue().getValue() + heuristicsI) >= (newNodes.get(j).getValue().getValue() + heuristicsJ)) {
+    						objectToRemove.add(openNodes.get(i));
     					}
     				}
     			}
+    		}
+    		
+    		for (int i = 0; i < objectToRemove.size(); i++) {
+    			openNodes.remove(objectToRemove.get(i));
     		}
     		
     		openNodes.addAll(newNodes);
@@ -169,17 +203,7 @@ public class EnemyAIModel extends ShipModel{
     	Direction nextDirection;
     	
     	if (reversePath.size() == 0) {
-    		while (true) {
-    			nextDirection = randomDirectionGenerator();
-    			Point2D predictedVelocity = changeVelocity(nextDirection);
-    			Point2D predictedLocation = shipLocation.add(predictedVelocity);
-    			if (predictedLocation.getX() >= 0 && predictedLocation.getX() < 37 && predictedLocation.getY() >= 0 && predictedLocation.getY() < 21) {
-        			if (gameGrid [(int) predictedLocation.getX()] [(int) predictedLocation.getY()] != CellValue.BLOCK) {
-        				break;
-        			}
-    			}
-    		}
-    		
+    		nextDirection = Direction.NONE;
     	} else {
     		nextDirection = reversePath.get(reversePath.size() - 1).getKey();
     	}
@@ -197,7 +221,7 @@ public class EnemyAIModel extends ShipModel{
 	 * @param playerLocation Gets the player location from game grid namely X and Y coordinates.
 	 * @return findPossiblePoints after the node search.
 	 */
-	private List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> findPossiblePoints(Direction direction, Point2D enemyLocation, Point2D playerLocation) {
+	private List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> findPossiblePoints(Direction direction, Point2D enemyLocation, Point2D playerLocation, int gCost) {
     	
     	List<Pair<Direction, Point2D>> possiblePoints = new ArrayList<Pair<Direction, Point2D>>();
     	List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> pointDistance = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>>();
@@ -353,33 +377,9 @@ public class EnemyAIModel extends ShipModel{
     	
     	for (int i = 0; i < possiblePoints.size(); i++) {
     		
-    		int xShipDistance = (int) (shipLocation.getX() - possiblePoints.get(i).getValue().getX());
-    		int yShipDistance = (int) (shipLocation.getY() - possiblePoints.get(i).getValue().getY());
-    		int xPlayerDistance = (int) (playerLocation.getX() - possiblePoints.get(i).getValue().getX());
-    		int yPlayerDistance = (int) (playerLocation.getY() - possiblePoints.get(i).getValue().getY());
-    		
-    		if (xShipDistance < 0) {
-    			xShipDistance = (-1) * xShipDistance;
-    		}
-    		
-    		if (yShipDistance < 0) {
-    			yShipDistance = (-1) * yShipDistance;
-    		}
-    		
-    		if (xPlayerDistance < 0) {
-    			xPlayerDistance = (-1) * xPlayerDistance;
-    		}
-    		
-    		if (yPlayerDistance < 0) {
-    			yPlayerDistance = (-1) * yPlayerDistance;
-    		}
-    		
-    		int shipAndPointDistance = xShipDistance + yShipDistance;
-    		int heuristics = xPlayerDistance + yPlayerDistance;
-    		
-    		Pair<Direction, Point2D> distanceAndPoint = new Pair<Direction, Point2D> (possiblePoints.get(i).getKey(), (new Point2D(enemyLocation.getX(), enemyLocation.getY())));
-    		Pair<Point2D, Integer> fDistance = new Pair<Point2D, Integer> ((new Point2D(possiblePoints.get(i).getValue().getX(), possiblePoints.get(i).getValue().getY())), shipAndPointDistance + heuristics);
-    		pointDistance.add(new Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>> (distanceAndPoint, fDistance));
+    		Pair<Direction, Point2D> directionAndNextPoint = new Pair<Direction, Point2D> (possiblePoints.get(i).getKey(), (new Point2D(enemyLocation.getX(), enemyLocation.getY())));
+    		Pair<Point2D, Integer> PointandGDistance = new Pair<Point2D, Integer> ((new Point2D(possiblePoints.get(i).getValue().getX(), possiblePoints.get(i).getValue().getY())), (gCost + 1));
+    		pointDistance.add(new Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>> (directionAndNextPoint, PointandGDistance));
     		
     	}
     	
@@ -406,28 +406,89 @@ public class EnemyAIModel extends ShipModel{
 	 * @param equalNodes Gets the similar nodes from the search space graph.
 	 * @return findClockWiseDirection for the enemy to traverse the graph.
 	 */
-	private Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>> findClockWiseDirection(List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> equalNodes) {
-    	
-    	for (int i = 0; i < equalNodes.size(); i++) {
-    		if (equalNodes.get(i).getKey().getKey() == Direction.UP) {
-    			return equalNodes.get(i);
-    		}
-    	}
-    	
-    	for (int i = 0; i < equalNodes.size(); i++) {
-    		if (equalNodes.get(i).getKey().getKey() == Direction.RIGHT) {
-    			return equalNodes.get(i);
-    		}
-    	}
-    	
-    	for (int i = 0; i < equalNodes.size(); i++) {
-    		if (equalNodes.get(i).getKey().getKey() == Direction.DOWN) {
-    			return equalNodes.get(i);
-    		}
-    	}
-    	
-    	return equalNodes.get(0);
-    	
+	private Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>> findNextCurrentNode(List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> equalNodes, Point2D playerLocation) {
+		
+		if (equalNodes.size() == 1) {
+			return equalNodes.get(0);
+		}
+		
+		int xPlayerDistance0 = (int) (playerLocation.getX() - equalNodes.get(0).getKey().getValue().getX());
+		int yPlayerDistance0 = (int) (playerLocation.getY() - equalNodes.get(0).getKey().getValue().getY());
+		if (xPlayerDistance0 < 0) {
+			xPlayerDistance0 = (-1) * xPlayerDistance0;
+		}
+		if (yPlayerDistance0 < 0) {
+			yPlayerDistance0 = (-1) * yPlayerDistance0;
+		}
+		int heuristics0 = xPlayerDistance0 + yPlayerDistance0;
+		
+		for (int i = 0; i < equalNodes.size(); i++) {
+			
+			int xPlayerDistance = (int) (playerLocation.getX() - equalNodes.get(i).getKey().getValue().getX());
+			int yPlayerDistance = (int) (playerLocation.getY() - equalNodes.get(i).getKey().getValue().getY());
+			if (xPlayerDistance < 0) {
+				xPlayerDistance = (-1) * xPlayerDistance;
+			}
+			if (yPlayerDistance < 0) {
+				yPlayerDistance = (-1) * yPlayerDistance;
+			}
+			int heuristics = xPlayerDistance + yPlayerDistance;
+			
+			if (heuristics < heuristics0) {
+				heuristics0 = heuristics;
+			}
+			
+		}
+		
+		List<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> equalHeuristicsNodes = new ArrayList<Pair<Pair<Direction, Point2D>, Pair<Point2D, Integer>>> ();
+		
+		for (int i = 0; i < equalNodes.size(); i++) {
+			
+			int xPlayerDistance = (int) (playerLocation.getX() - equalNodes.get(i).getKey().getValue().getX());
+			int yPlayerDistance = (int) (playerLocation.getY() - equalNodes.get(i).getKey().getValue().getY());
+			if (xPlayerDistance < 0) {
+				xPlayerDistance = (-1) * xPlayerDistance;
+			}
+			if (yPlayerDistance < 0) {
+				yPlayerDistance = (-1) * yPlayerDistance;
+			}
+			int heuristics = xPlayerDistance + yPlayerDistance;
+			
+			if (heuristics0 == heuristics) {
+				equalHeuristicsNodes.add(equalNodes.get(i));
+			}
+		}
+		
+		if (equalHeuristicsNodes.size() == 1) {
+			return equalHeuristicsNodes.get(0);
+		} else {
+			
+			for (int i = 0; i < equalHeuristicsNodes.size(); i++) {
+				if (equalHeuristicsNodes.get(i).getKey().getKey() == Direction.UP) {
+					return equalHeuristicsNodes.get(i);
+				}
+			}
+			
+			for (int i = 0; i < equalHeuristicsNodes.size(); i++) {
+				if (equalHeuristicsNodes.get(i).getKey().getKey() == Direction.RIGHT) {
+					return equalHeuristicsNodes.get(i);
+				}
+			}
+			
+			for (int i = 0; i < equalHeuristicsNodes.size(); i++) {
+				if (equalHeuristicsNodes.get(i).getKey().getKey() == Direction.DOWN) {
+					return equalHeuristicsNodes.get(i);
+				}
+			}
+			
+			for (int i = 0; i < equalHeuristicsNodes.size(); i++) {
+				if (equalHeuristicsNodes.get(i).getKey().getKey() == Direction.LEFT) {
+					return equalHeuristicsNodes.get(i);
+				}
+			}
+		}
+		
+		return equalNodes.get(0);
     }
 	
 	/**
@@ -462,143 +523,143 @@ public class EnemyAIModel extends ShipModel{
     	
     }
 	
-	/**
-	 * Implements the simplest AI algorithm.
-	 * Checks for the both enemy and player character if traverses in same row or column.
-	 * If checks are true then enemies chase the player.
-	 * @param playerLocation Location of the player on game grid
-	 * @return Direction that enemy should follow.
-	 */
-    private Direction simplePathFinding(Point2D playerLocation){
-    	
-        Direction direction = currentDirection == Direction.NONE ? Direction.UP : currentDirection;
-        
-        if (shipLocation.getY() == playerLocation.getY()) {
-        	
-            if (shipLocation.getX() > playerLocation.getX()) {
-            	direction = Direction.LEFT;
-            } else {
-            	direction = Direction.RIGHT;
-            }
-            
-            Point2D predictedVelocity = changeVelocity(direction);
-            Point2D predictedLocation = shipLocation.add(predictedVelocity);
-            
-            if (!(predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            	
-            	while (true) {
-            		direction = randomDirectionGenerator();
-            		predictedVelocity = changeVelocity(direction);
-            		predictedLocation = shipLocation.add(predictedVelocity);
-            		if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            			if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
-            				break;            				
-            			}
-            		}
-            	}
-            	
-            } else {
-            	
-            	if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
-            		
-            		while(true) {
-            			direction = randomDirectionGenerator();
-            			predictedVelocity = changeVelocity(direction);
-            			predictedLocation = shipLocation.add(predictedVelocity);
-            			if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            				if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
-            					break;            				
-            				}
-            			}
-            		}
-            		
-            	}
-            	
-            }
-            
-            
-        } else if (shipLocation.getX() == playerLocation.getX()) {
-        	
-            if (shipLocation.getY() > playerLocation.getY()) {
-            	direction = Direction.UP;
-            } else {
-            	direction = Direction.DOWN;
-            }
-            
-            Point2D predictedVelocity = changeVelocity(direction);
-            Point2D predictedLocation = shipLocation.add(predictedVelocity);
-            
-            if (!(predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            	
-            	while (true) {
-            		direction = randomDirectionGenerator();
-            		predictedVelocity = changeVelocity(direction);
-            		predictedLocation = shipLocation.add(predictedVelocity);
-            		if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            			if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
-            				break;            				
-            			}
-            		}
-            	}
-            	
-            } else {
-            	
-            	if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
-            		
-            		while(true) {
-            			direction = randomDirectionGenerator();
-            			predictedVelocity = changeVelocity(direction);
-            			predictedLocation = shipLocation.add(predictedVelocity);
-            			if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            				if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
-            					break;            				
-            				}
-            			}
-            		}
-            		
-            	}
-            	
-            }
-        } else {
-        	
-        	Point2D predictedVelocity = changeVelocity(direction);
-            Point2D predictedLocation = shipLocation.add(predictedVelocity);
-            
-            if (!(predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            	
-            	while (true) {
-            		direction = randomDirectionGenerator();
-            		predictedVelocity = changeVelocity(direction);
-            		predictedLocation = shipLocation.add(predictedVelocity);
-            		if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            			if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
-            				break;            				
-            			}
-            		}
-            	}
-            	
-            } else {
-            	
-            	if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
-            		
-            		while(true) {
-            			direction = randomDirectionGenerator();
-            			predictedVelocity = changeVelocity(direction);
-            			predictedLocation = shipLocation.add(predictedVelocity);
-            			if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
-            				if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
-            					break;            				
-            				}
-            			}
-            		}
-            		
-            	}
-            	
-            }
-        }
-        
-        return direction;
-        
-    }
+//	/**
+//	 * Implements the simplest AI algorithm.
+//	 * Checks for the both enemy and player character if traverses in same row or column.
+//	 * If checks are true then enemies chase the player.
+//	 * @param playerLocation Location of the player on game grid
+//	 * @return Direction that enemy should follow.
+//	 */
+//    private Direction simplePathFinding(Point2D playerLocation){
+//    	
+//        Direction direction = currentDirection == Direction.NONE ? Direction.UP : currentDirection;
+//        
+//        if (shipLocation.getY() == playerLocation.getY()) {
+//        	
+//            if (shipLocation.getX() > playerLocation.getX()) {
+//            	direction = Direction.LEFT;
+//            } else {
+//            	direction = Direction.RIGHT;
+//            }
+//            
+//            Point2D predictedVelocity = changeVelocity(direction);
+//            Point2D predictedLocation = shipLocation.add(predictedVelocity);
+//            
+//            if (!(predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            	
+//            	while (true) {
+//            		direction = randomDirectionGenerator();
+//            		predictedVelocity = changeVelocity(direction);
+//            		predictedLocation = shipLocation.add(predictedVelocity);
+//            		if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            			if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
+//            				break;            				
+//            			}
+//            		}
+//            	}
+//            	
+//            } else {
+//            	
+//            	if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
+//            		
+//            		while(true) {
+//            			direction = randomDirectionGenerator();
+//            			predictedVelocity = changeVelocity(direction);
+//            			predictedLocation = shipLocation.add(predictedVelocity);
+//            			if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            				if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
+//            					break;            				
+//            				}
+//            			}
+//            		}
+//            		
+//            	}
+//            	
+//            }
+//            
+//            
+//        } else if (shipLocation.getX() == playerLocation.getX()) {
+//        	
+//            if (shipLocation.getY() > playerLocation.getY()) {
+//            	direction = Direction.UP;
+//            } else {
+//            	direction = Direction.DOWN;
+//            }
+//            
+//            Point2D predictedVelocity = changeVelocity(direction);
+//            Point2D predictedLocation = shipLocation.add(predictedVelocity);
+//            
+//            if (!(predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            	
+//            	while (true) {
+//            		direction = randomDirectionGenerator();
+//            		predictedVelocity = changeVelocity(direction);
+//            		predictedLocation = shipLocation.add(predictedVelocity);
+//            		if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            			if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
+//            				break;            				
+//            			}
+//            		}
+//            	}
+//            	
+//            } else {
+//            	
+//            	if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
+//            		
+//            		while(true) {
+//            			direction = randomDirectionGenerator();
+//            			predictedVelocity = changeVelocity(direction);
+//            			predictedLocation = shipLocation.add(predictedVelocity);
+//            			if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            				if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
+//            					break;            				
+//            				}
+//            			}
+//            		}
+//            		
+//            	}
+//            	
+//            }
+//        } else {
+//        	
+//        	Point2D predictedVelocity = changeVelocity(direction);
+//            Point2D predictedLocation = shipLocation.add(predictedVelocity);
+//            
+//            if (!(predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            	
+//            	while (true) {
+//            		direction = randomDirectionGenerator();
+//            		predictedVelocity = changeVelocity(direction);
+//            		predictedLocation = shipLocation.add(predictedVelocity);
+//            		if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            			if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
+//            				break;            				
+//            			}
+//            		}
+//            	}
+//            	
+//            } else {
+//            	
+//            	if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] == CellValue.BLOCK) {
+//            		
+//            		while(true) {
+//            			direction = randomDirectionGenerator();
+//            			predictedVelocity = changeVelocity(direction);
+//            			predictedLocation = shipLocation.add(predictedVelocity);
+//            			if ((predictedLocation.getX() > 0 && predictedLocation.getX() < 37 && predictedLocation.getY() > 0 && predictedLocation.getY() < 21)) {
+//            				if (gameGrid[(int) predictedLocation.getX()][(int) predictedLocation.getY()] != CellValue.BLOCK) {
+//            					break;            				
+//            				}
+//            			}
+//            		}
+//            		
+//            	}
+//            	
+//            }
+//        }
+//        
+//        return direction;
+//        
+//    }
     
 }
