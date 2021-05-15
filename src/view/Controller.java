@@ -1088,7 +1088,7 @@ public class Controller implements EventHandler<KeyEvent> {
 				helpSection.setPrefHeight(600);
 				pauseMenuVBox.getChildren().removeAll(pauseMenuVBox.getChildren());
 				
-				BackgroundImage image = new BackgroundImage(new Image("/resources/Images/Panel-Blue-image.png", 600, 500, false, true),
+				BackgroundImage image = new BackgroundImage(new Image("/resources/Images/Panel-Blue-image.png", 600, 550, false, true),
 						BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, null);
 				
 				helpSection.setBackground(new Background(image));
@@ -1105,11 +1105,13 @@ public class Controller implements EventHandler<KeyEvent> {
 				
 				ImageView playerShip = new ImageView(new Image("/resources/Images/PlayerShip-Red-image.png", 80, 80, true, false));
 				ImageView enemyShip = new ImageView(new Image("/resources/Images/EnemyShip-1-image.png", 80, 80, true, false));
+				ImageView coin = new ImageView(new Image("/resources/Images/Coin-image.png", 40, 40, true, false));
 				ImageView laserPowerUp = new ImageView(new Image("/resources/Images/PowerUp-Laser-image.png", 40, 40, true, false));
 				ImageView lifePowerUp = new ImageView(new Image("/resources/Images/PowerUp-Life-image.png", 40, 40, true, false));
 				
 				Label playerShipHelp = new Label("This is your ship. Choose colour from the \nPlay menu. Control it with arrow keys or W/S/A/D keys.");
 				Label enemyShipHelp = new Label("These are enemy ships.\nAvoid them!");
+				Label coinHelp   = new Label("The coins give you points,\nTake them!");
 				Label laserPowerUpHelp = new Label("The laser power-ups gives you the ability to shoot enemies,\nby picking up the darts/bullets!");
 				Label lifePowerUpHelp = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
 				
@@ -1127,14 +1129,17 @@ public class Controller implements EventHandler<KeyEvent> {
 				helpGrid.add(playerShipHelp, 1, 0);
 				helpGrid.add(enemyShip, 0, 1);
 				helpGrid.add(enemyShipHelp, 1, 1);
-				helpGrid.add(laserPowerUp, 0, 2);
-				helpGrid.add(laserPowerUpHelp, 1, 2);
-				helpGrid.add(lifePowerUp, 0, 3);
-				helpGrid.add(lifePowerUpHelp, 1, 3);
+				helpGrid.add(coin, 0, 2);
+				helpGrid.add(coinHelp, 1, 2);
+				helpGrid.add(laserPowerUp, 0, 3);
+				helpGrid.add(laserPowerUpHelp, 1, 3);
+				helpGrid.add(lifePowerUp, 0, 4);
+				helpGrid.add(lifePowerUpHelp, 1, 4);
 				
 				Buttons backButton = new Buttons("BACK");
 				backButton.setLayoutX(530);
-				backButton.setLayoutY(465);
+				backButton.setLayoutY(505);
+//				backButton.setLineSpacing(FPS);
 				backButton.setOnAction(new EventHandler<ActionEvent>() {
 					
 					@Override
