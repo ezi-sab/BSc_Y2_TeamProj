@@ -192,6 +192,7 @@ private void createControlsSubScene() {
 		controlsGrid.add(escKey, 0, 3);
 		controlsGrid.add(escKeyHelp, 1, 3);
 		controlsSubScene.getPane().getChildren().addAll(controls, controlsGrid);
+		
 	}
 	
 	/**
