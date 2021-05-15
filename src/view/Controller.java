@@ -70,7 +70,7 @@ public class Controller implements EventHandler<KeyEvent> {
     private int columnCount;
     private int noEnemies;
     private int playerDeadStep = -20;
-    private int score = 0;
+    public static int score = 0;
     private int level = 0;
     private int smalldot = 0;
     private int step = 0;
@@ -80,7 +80,7 @@ public class Controller implements EventHandler<KeyEvent> {
     private boolean gameRunning = false;
     private boolean gameOver = false;
     private boolean youWon = false;
-    private boolean levelComplete = false;
+    public static boolean levelComplete = false;
     private boolean hidePlayer = false;
     private boolean chasePlayer = true;
     private ShipModel.Direction lastDirection = Direction.NONE;
@@ -795,6 +795,7 @@ public class Controller implements EventHandler<KeyEvent> {
             gameRunning = false;
             gameOver = false;
             score = 0;
+            levelComplete = false;
             delayMainScene(3000);
             
         } else if (youWon) {

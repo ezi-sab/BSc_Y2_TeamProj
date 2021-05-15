@@ -662,14 +662,14 @@ public class SoundManager {
 	 * 
 	 * @param volume  value to be set to pastBGMVolume.
 	 */
-	public void setBGMVolumeBeforeGame(double volume) {
+	public static void setBGMVolumeBeforeGame(double volume) {
 		pastBGMVolume = volume;
 	}
 	
 	/**
 	 * @return pastBGMVolume  Volume of BackGround Music before Game starts.
 	 */
-	public double getBGMVolumeBeforeGame() {
+	public static double getBGMVolumeBeforeGame() {
 		return pastBGMVolume;	
 	}
 	
@@ -724,14 +724,14 @@ public class SoundManager {
 	 * 
 	 * @param volume  value to be set to inGameMusicVolume.
 	 */
-	public void setInGameMusicVolume(double volume) {
+	public static void setInGameMusicVolume(double volume) {
 		inGameMusicVolume = volume;
 	}
 	
 	/**
 	 * @return inGameMusicVolume  volume of In-Game Music.
 	 */
-	public double getInGameMusicVolume() {	
+	public static double getInGameMusicVolume() {
 		return inGameMusicVolume;
 	}
 	
