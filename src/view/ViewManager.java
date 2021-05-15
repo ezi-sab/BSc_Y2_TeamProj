@@ -1,6 +1,7 @@
 package view;
 
 import java.io.FileInputStream;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ViewManager {
 	private static MenuSubScene scoreSubScene;
 	private MenuSubScene settingsSubScene;
 	private MenuSubScene helpSubScene;
-	private MenuSubScene creditsSubScene;
+	private MenuSubScene controlsSubScene;
 	private MenuSubScene musicControls;
 	private MenuSubScene sceneToHide;
 	
@@ -105,8 +106,8 @@ public class ViewManager {
 		
 		createShipSelectSubScene();
 		createScoreSubScene();
-		createCreditsSubScene();
 		createHelpSubScene();
+		createControlsSubScene();
 		createMusicButtons();
 		
 	}
@@ -152,41 +153,46 @@ public class ViewManager {
 	}
 	
 	/**
-	 * Creates the Credits sub scene.
-	 * Contribution towards the game as sections.
+	 * Creates the Controls sub scene.
+	 * provides controls for user to use
 	 * Necessary Font, layout and labels are set.
 	 */
-	private void createCreditsSubScene() {
+private void createControlsSubScene() {
 		
-		creditsSubScene = new MenuSubScene();
-		mainPane.getChildren().add(creditsSubScene);
+		controlsSubScene = new MenuSubScene();
+		mainPane.getChildren().add(controlsSubScene);
 		
-		InfoLabel creditsLabel = new InfoLabel("CREDITS");
-		creditsLabel.setLayoutX(120);
-		creditsLabel.setLayoutY(20);
 		
-		Label credit0 = new Label("Reuben Sidhu: UI/Game Logic");
-		Label credit1 = new Label("Bharath Raj: UI/Game Logic/Level Design/Sound");
-		Label credit2 = new Label("Eunji Kwak: Artificial Intelligence");
-		Label credit3 = new Label("Iniyan Kanmani: Sound Design");
-		Label credit4 = new Label("Alfred: UI");
-		Label credit5 = new Label("Matthew: ");
-		Label credit6 = new Label("Xiaoliang Pu: Shooting Mechanism");
+		InfoLabel controls = new InfoLabel("CONTROLS");
+		controls.setLayoutX(120);
+		controls.setLayoutY(20);
 		
-		credit0.setFont(new Font("Arial", 20));
-		credit1.setFont(new Font("Arial", 20));
-		credit2.setFont(new Font("Arial", 20));
-		credit3.setFont(new Font("Arial", 20));
-		credit4.setFont(new Font("Arial", 20));
-		credit5.setFont(new Font("Arial", 20));
-		credit6.setFont(new Font("Arial", 20));
+		GridPane controlsGrid = new GridPane();
+		controlsGrid.setLayoutX(80);
+		controlsGrid.setLayoutY(100);
+		controlsGrid.setHgap(20);
+		controlsGrid.setVgap(20);
 		
-		VBox creditsBox = new VBox(20, credit0, credit1, credit2, credit3, credit4, credit5, credit6);
+		ImageView arrowKeys = new ImageView(new Image("/resources/Images/arrowKeys.png", 130, 130, true, false));
+		ImageView spaceBar = new ImageView(new Image("/resources/Images/spaceBar.png", 250, 250, true, false));
+		ImageView pKey = new ImageView(new Image("/resources/Images/pKey.png", 40, 40, true, false));
+		ImageView escKey = new ImageView(new Image("/resources/Images/escKey.png", 40, 40, true, false));
 		
-		creditsBox.setLayoutX(50);
-		creditsBox.setLayoutY(80);
-		creditsSubScene.getPane().getChildren().addAll(creditsLabel, creditsBox);				
-				
+
+		Label arrowKeysHelp = new Label("Use to control your ship!\nCan also use WSAD keys");
+		Label spaceBarHelp = new Label("Press to shoot!");
+		Label pKeyHelp = new Label("Press to pause the game!");
+		Label escKeyHelp = new Label("Use to return to the main menu!");
+		
+		controlsGrid.add(arrowKeys, 0, 0);
+		controlsGrid.add(arrowKeysHelp, 1, 0);
+		controlsGrid.add(spaceBar, 0, 1);
+		controlsGrid.add(spaceBarHelp, 1, 1);
+		controlsGrid.add(pKey, 0, 2);
+		controlsGrid.add(pKeyHelp, 1, 2);
+		controlsGrid.add(escKey, 0, 3);
+		controlsGrid.add(escKeyHelp, 1, 3);
+		controlsSubScene.getPane().getChildren().addAll(controls, controlsGrid);
 	}
 	
 	/**
@@ -202,30 +208,34 @@ public class ViewManager {
 		help.setLayoutX(120);
 		help.setLayoutY(20);
 		GridPane helpGrid = new GridPane();
-		helpGrid.setLayoutX(80);
+		helpGrid.setLayoutX(140);
 		helpGrid.setLayoutY(90);
 		helpGrid.setHgap(20);
 		helpGrid.setVgap(20);
 		
-		ImageView playerShip = new ImageView(new Image("/resources/Images/PlayerShip-Red-image.png", 80, 80, true, false));
-		ImageView enemyShip = new ImageView(new Image("/resources/Images/EnemyShip-1-image.png", 80, 80, true, false));
-		ImageView laserPowerUp = new ImageView(new Image("/resources/Images/PowerUp-Laser-image.png", 40, 40, true, false));
-		ImageView lifePowerUp = new ImageView(new Image("/resources/Images/PowerUp-Life-image.png", 40, 40, true, false));
+		ImageView ship = new ImageView(new Image("/resources/Images/PlayerShip-Red-image.png", 50, 50, true, false));
+		ImageView enemy = new ImageView(new Image("/resources/Images/EnemyShip-1-image.png", 50, 50, true, false));
+		ImageView coin = new ImageView(new Image("/resources/Images/Coin-image.png", 30, 30, true, false));
+		ImageView power = new ImageView(new Image("/resources/Images/PowerUp-Laser-image.png", 30, 30, true, false));
+		ImageView life = new ImageView(new Image("/resources/Images/PowerUp-Life-image.png", 30, 30, true, false));
 		
-		Label playerShipHelp = new Label("This is your ship. Choose colour from the \nPlay menu. Control it with arrow keys or W/S/A/D keys.");
-		Label enemyShipHelp = new Label("These are enemy ships.\nAvoid them!");
-		Label laserPowerUpHelp = new Label("The laser power-ups gives you the ability to shoot enemies,\nby picking up the darts/bullets!");
-		Label lifePowerUpHelp = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
+		
+		Label shipHelp 	 = new Label("This is your ship.\nUse it to fly across the galaxy!");
+		Label enemyHelp = new Label("These are enemy ships.\nAvoid them!");
+		Label coinHelp   = new Label("The coins give you points,\nTake them!");
+		Label powerHelp = new Label("Grab some laser bolts with this powerup!");
+		Label lifeHelp   = new Label("Grab to gain an extra life!");
 		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				enemyShip.setRotate(90+now/10000000l);
-				playerShip.setRotate(-now/10000000l);
+				enemy.setRotate(90+now/10000000l);
+				//meteor2.setRotate(180+now/10000000l);
+				ship.setRotate(-now/10000000l);
 			}
 		};
 		timer.start();
-		
+
 		/* gridpane:
 		 * ___0_|__1_|__2_|_3_
 		 * 0|___|____|____|__
@@ -234,14 +244,16 @@ public class ViewManager {
 		 * 3|___|____|____|___
 		 */
 		
-		helpGrid.add(playerShip, 0, 0);
-		helpGrid.add(playerShipHelp, 1, 0);
-		helpGrid.add(enemyShip, 0, 1);
-		helpGrid.add(enemyShipHelp, 1, 1);
-		helpGrid.add(laserPowerUp, 0, 2);
-		helpGrid.add(laserPowerUpHelp, 1, 2);
-		helpGrid.add(lifePowerUp, 0, 3);
-		helpGrid.add(lifePowerUpHelp, 1, 3);
+		helpGrid.add(ship, 0, 0);
+		helpGrid.add(shipHelp, 1, 0);
+		helpGrid.add(enemy, 0, 1);
+		helpGrid.add(enemyHelp, 1, 1);
+		helpGrid.add(coin, 0, 2);
+		helpGrid.add(coinHelp, 1, 2);
+		helpGrid.add(power, 0, 3);
+		helpGrid.add(powerHelp, 1, 3);
+		helpGrid.add(life, 0, 4);
+		helpGrid.add(lifeHelp, 1, 4);
 		helpSubScene.getPane().getChildren().addAll(help, helpGrid);
 		
 	}
@@ -412,7 +424,7 @@ public class ViewManager {
 		createScoresButton();
 		createHelpButton();
 		createSettingsButton();
-		createCreditsButton();
+		createControlsButton();
 		createExitButton();
 		
 	}
@@ -501,19 +513,19 @@ public class ViewManager {
 	}
 	
 	/**
-	 * Creates a credits button on the main stage.
+	 * Creates a controls button on the main stage.
 	 */
-	private void createCreditsButton() {
+	private void createControlsButton() {
 		
-		Buttons creditsButton = new Buttons("CREDITS");
-		addMenuButton(creditsButton);
+		Buttons controlsButton = new Buttons("CONTROLS");
+		addMenuButton(controlsButton);
 		
-		creditsButton.setOnAction(new EventHandler<ActionEvent>() {
+		controlsButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
-				showSubScene(creditsSubScene);
+				showSubScene(controlsSubScene);
 			}
 			
 			
