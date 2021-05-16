@@ -58,7 +58,7 @@ public class ViewManager {
 	List<Buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
-	private static Ship chosenShip = null;
+	public static Ship chosenShip = null;
 	
 	/**
 	 * Constructor for building the Main scene of the game.
@@ -557,7 +557,7 @@ private void createControlsSubScene() {
 	/**
 	 * Gets the chosen ship by the player.
 	 */
-	public Ship getChosenShip() {
+	public static Ship getChosenShip() {
 		
 		return chosenShip;
 		
@@ -613,6 +613,14 @@ private void createControlsSubScene() {
 		
 		mainPane.getChildren().add(logo);
 		
+	}
+
+	/**
+	 * Sets the ship to the chosen ship.
+	 * @param ship Model.
+	 */
+	public static void setChosenShip(Ship ship) {
+		chosenShip = ship;
 	}
 	
 }

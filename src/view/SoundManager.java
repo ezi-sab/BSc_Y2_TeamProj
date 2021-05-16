@@ -694,14 +694,14 @@ public class SoundManager {
 	 * 
 	 * @param val  value to be set to bgmVolumeBeforeReached.
 	 */
-	public void setBGMVolumeBeforeReached(boolean val) {
+	public static void setBGMVolumeBeforeReached(boolean val) {
 		bgmVolumeBeforeReached = val;	
 	}
 	
 	/**
 	 * @return bgmVolumeBeforeReached  boolean used to know whether backGroundMusicVolume is set to pastBGMVolume.
 	 */
-	public boolean getBGMVolumeBeforeReached() {
+	public static boolean getBGMVolumeBeforeReached() {
 		return bgmVolumeBeforeReached;
 	}
 	

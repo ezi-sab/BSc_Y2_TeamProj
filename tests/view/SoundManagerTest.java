@@ -32,4 +32,17 @@ public class SoundManagerTest {
         }
 
     }
+    @Test
+    public void testSetBGMVolumeBeforeReached() {
+        try {
+            boolean bgmBeforeReached = false;
+            SoundManager.setBGMVolumeBeforeReached(false);
+            assertEquals(bgmBeforeReached, SoundManager.getBGMVolumeBeforeReached());
+        } catch (Exception e) {
+            fail("Error: Cant play the BGM Volume");
+            System.out.println("Cant control the BGM volume");
+        }
+
+    }
+
 }

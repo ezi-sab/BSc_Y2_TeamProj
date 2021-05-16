@@ -168,8 +168,16 @@ public class ShipModel {
      * Sets the game grid.
      * @param grid is set to game grid
      */
-    public void setGameGrid(CellValue[][] grid) {
+    public static void setGameGrid(CellValue[][] grid) {
     	gameGrid = grid;
+    }
+
+    /**
+     * Gets the game grid.
+     * @return gameGrid of the game.
+     */
+    public static CellValue [][] getGameGrid() {
+        return gameGrid;
     }
     
 }
