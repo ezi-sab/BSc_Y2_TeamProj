@@ -4,7 +4,7 @@
 
 # RUN TIME COMPONENTS:
 ```
---module-path /Users/bharathrouthu/Downloads/javafx-sdk-15.0.1/lib --add-modules javafx.controls,javafx.media,javafx.fxml
+--module-path /path/to/JavaFX/lib --add-modules javafx.controls,javafx.media,javafx.fxml
 ```
 # JAVAFX LIBRARY
 
