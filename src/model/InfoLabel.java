@@ -1,8 +1,11 @@
 package model;
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -14,13 +17,10 @@ import javafx.scene.text.Font;
 
 public class InfoLabel extends Label{
 	
-	private final static String FONT_PATH = "src/resources/Fonts/Kenvector-Future-font.ttf";
-	private final static String BACKGROUND_IMG = "/resources/Images/Label-BackGround-image.png";
+	public final static String FONT_PATH = "src/model/resources/kenvector_future.ttf";
 	
-	/**
-	 * Constructor that sets the Info label.
-	 * @param text is passed as argument in setText().
-	 */
+	public final static String BACKGROUND_IMG = "view/resources/blue_button13.png";
+	
 	public InfoLabel(String text) {
 		
 		setPrefWidth(350);
@@ -30,15 +30,12 @@ public class InfoLabel extends Label{
 		setLabelFont();
 		setAlignment(Pos.CENTER);
 		
-		BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource(BACKGROUND_IMG).toExternalForm(), 350, 49, false, true), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null); 
+		BackgroundImage backgroundImage = new BackgroundImage(new Image(BACKGROUND_IMG, 350, 49, false, true), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null); 
 		
 		setBackground(new Background(backgroundImage));
 		
 	}
 	
-	/**
-	 * Sets the font style of the label.
-	 */
 	private void setLabelFont() {
 		try {
 			setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 23));
@@ -46,5 +43,5 @@ public class InfoLabel extends Label{
 			setFont(Font.font("Verdana", 23));
 		}
 	}
-	
+
 }

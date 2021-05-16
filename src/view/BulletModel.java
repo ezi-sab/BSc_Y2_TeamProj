@@ -1,51 +1,44 @@
 package view;
 
 import javafx.geometry.Point2D;
-
 /**
  * The BulletModel class defines a bullet and the move action of the bullet
  *
  */
 public class BulletModel extends ShipModel {
-	
-	/**
-	 * Constructor that calls the parent level game grid.
-	 * It gets the location and Cell Value.
-	 * @param grid that is set to the parent level game grid
-	 */
-	public BulletModel(CellValue[][] grid) {
+
+	public BulletModel(CellValue[][] grid, Direction dir) {
 		super(grid);
+		isActive = true;
+		this.currentDirection = dir;
+		this.currentRotation = getDirectionRotation(this.currentDirection);
 	}
 	
-	/**
-	 * Function that enables the velocity of the bullet that should travel and hit.
-	 * Handles the edge cases when the bullet hits the wall and disappears.
-	 *
-	 * @return boolean detects the bullet/ laser hit to enemy or not.
-	 */
-	public boolean flyBullet() {
-		
-		Point2D predictedShipVelocity = changeVelocity(this.currentDirection);
-		Point2D predictedShipLocation = shipLocation.add(predictedShipVelocity);
-		predictedShipLocation = setOffScreenLocation(predictedShipLocation);
-		
+	private boolean isActive;
+	
+	public void flyBullet(int fps, int sps) {
+
+		Point2D predictedBulletVelocity = changeVelocity(this.currentDirection, (double) ((double)sps/fps)*2);
+		Point2D predictedBulletLocation = shipLocation.add(predictedBulletVelocity);
+		predictedBulletLocation = setOffScreenLocation(predictedBulletLocation);
 		// disappear when hit the wall
-		if (gameGrid[(int) predictedShipLocation.getX()][(int) predictedShipLocation.getY()] == CellValue.BLOCK) {
+		if (gameGrid[(int) predictedBulletLocation.getX()][(int) predictedBulletLocation.getY()] == CellValue.BLOCK) {
 			
-			shipVelocity = changeVelocity(Direction.NONE);
-			
-			return false;
+			this.shipVelocity = changeVelocity(Direction.NONE, 0);
+			isActive = false;
 			
 		} else {
 			
-			shipVelocity = predictedShipVelocity;
-			shipLocation = predictedShipLocation;
+			this.shipVelocity = predictedBulletVelocity;
+			this.shipLocation = predictedBulletLocation;
 			setLastDirection(this.currentDirection);
-			
-			return true;
 			
 		}
 		
+	}
+	
+	public boolean getIsActiveBullet() {
+		return isActive;
 	}
 	
 }

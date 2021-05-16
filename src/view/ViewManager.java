@@ -1,7 +1,6 @@
 package view;
 
 import java.io.FileInputStream;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +21,18 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.InfoLabel;
 import model.ScoreBoard;
 import model.Ship;
 import model.ShipPicker;
-import model.Buttons;
-import model.MenuSubScene;
+import model.buttons;
+import model.menuSubScene;
 
-public class ViewManager {	
+public class ViewManager {
+	
 	
 	private static final int width = 1258;
 	private static final int height = 814;
@@ -44,33 +45,29 @@ public class ViewManager {
 	private static TextField name;
 	private static String playerName = "";
 	
-	private MenuSubScene shipSelectSubScene;
-	private static MenuSubScene scoreSubScene;
-	private MenuSubScene settingsSubScene;
-	private MenuSubScene helpSubScene;
-	private MenuSubScene controlsSubScene;
-	private MenuSubScene musicControls;
-	private MenuSubScene sceneToHide;
+	private menuSubScene shipSelectSubScene;
+	private static menuSubScene scoreSubScene;
+	private menuSubScene settingsSubScene;
+	private menuSubScene helpSubScene;
+	private menuSubScene creditsSubScene;
+	private menuSubScene musicControls;
+	private menuSubScene sceneToHide;
 	
 	private static SoundManager soundManager = new SoundManager();
 	private static ScoreBoard scoreBoard = new ScoreBoard();
-	
-	List<Buttons> menuButtons;
+
+	List<buttons> menuButtons;
 	List<ShipPicker> shipsList;
 	
-	public static Ship chosenShip = null;
+	private static Ship chosenShip;
 	
-	/**
-	 * Constructor for building the Main scene of the game.
-	 */
+	
 	public ViewManager() {
 		
 		menuButtons = new ArrayList<>();
 		mainPane = new AnchorPane();
 		mainScene = new Scene(mainPane, width, height);
 		mainStage.setScene(mainScene);
-		mainStage.setMaxWidth(width);
-		mainStage.setMaxHeight(height);
 		mainStage.setTitle("Star Shooter");
 		soundManager.playBackGroundMusic();
 		createSubScene();
@@ -80,11 +77,8 @@ public class ViewManager {
 		
 	}
 	
-	/**
-	 * Shows the selected sub scene.
-	 * @param subScene to show or hide
-	 */
-	private void showSubScene(MenuSubScene subScene) {
+	
+	private void showSubScene(menuSubScene subScene) {
 		
 		if(sceneToHide != null) {
 			sceneToHide.moveSubScene();
@@ -95,30 +89,29 @@ public class ViewManager {
 		
 	}
 	
-	/**
-	 * Creates and calls the sub scenes methods.
-	 */
+	
 	private void createSubScene() {
 		
-		settingsSubScene = new MenuSubScene();
+		settingsSubScene = new menuSubScene();
 		mainPane.getChildren().add(settingsSubScene);
+
 		
 		createShipSelectSubScene();
+		
 		createScoreSubScene();
+		
+		createCreditsSubScene();
+		
 		createHelpSubScene();
-		createControlsSubScene();
+		
 		createMusicButtons();
 		
 	}
 	
-	/**
-	 * Creates Ship select sub scene.
-	 * Player can choose desired ship as their character.
-	 * Necessary Font, layout and labels are set.
-	 */
+	
 	private void createShipSelectSubScene() {
 		
-		shipSelectSubScene = new MenuSubScene();
+		shipSelectSubScene = new menuSubScene();
 		mainPane.getChildren().add(shipSelectSubScene);
 		
 		InfoLabel chooseShipLabel = new InfoLabel("CHOOSE YOUR SHIP");
@@ -131,14 +124,10 @@ public class ViewManager {
 		
 	}
 	
-	/**
-	 * Creates the Score sub scene.
-	 * Player can view their scores.
-	 * Necessary Font, layout and labels are set.
-	 */
+	
 	private void createScoreSubScene() {
 		
-		scoreSubScene = new MenuSubScene();
+		scoreSubScene = new menuSubScene();
 		mainPane.getChildren().add(scoreSubScene);
 		InfoLabel score = new InfoLabel("SCORES");
 		score.setLayoutX(115);
@@ -151,85 +140,70 @@ public class ViewManager {
 		
 	}
 	
-	/**
-	 * Creates the Controls sub scene.
-	 * provides controls for user to use
-	 * Necessary Font, layout and labels are set.
-	 */
-private void createControlsSubScene() {
+	
+	private void createCreditsSubScene() {
 		
-		controlsSubScene = new MenuSubScene();
-		mainPane.getChildren().add(controlsSubScene);
+		creditsSubScene = new menuSubScene();
+		mainPane.getChildren().add(creditsSubScene);
 		
+		InfoLabel creditsLabel = new InfoLabel("CREDITS");
+		creditsLabel.setLayoutX(120);
+		creditsLabel.setLayoutY(20);
 		
-		InfoLabel controls = new InfoLabel("CONTROLS");
-		controls.setLayoutX(120);
-		controls.setLayoutY(20);
+		Label credit0 = new Label("Reuben Sidhu: UI/Game Logic");
+		Label credit1 = new Label("Bharath Raj: UI/Level Design/Sound");
+		Label credit2 = new Label("Eunji Kwak: Artificial Intelligence");
+		Label credit3 = new Label("Iniyan Kanmani: Sound Design");
+		Label credit4 = new Label("Alfred: UI/ Optimisation");
+		Label credit5 = new Label("Matthew: ");
+		Label credit6 = new Label("Xiaoliang Pu: ");
 		
-		GridPane controlsGrid = new GridPane();
-		controlsGrid.setLayoutX(80);
-		controlsGrid.setLayoutY(100);
-		controlsGrid.setHgap(20);
-		controlsGrid.setVgap(20);
+		credit0.setFont(new Font("Arial", 20));
+		credit1.setFont(new Font("Arial", 20));
+		credit2.setFont(new Font("Arial", 20));
+		credit3.setFont(new Font("Arial", 20));
+		credit4.setFont(new Font("Arial", 20));
+		credit5.setFont(new Font("Arial", 20));
+		credit6.setFont(new Font("Arial", 20));
 		
-		ImageView arrowKeys = new ImageView(new Image("/resources/Images/arrowKeys.png", 130, 130, true, false));
-		ImageView spaceBar = new ImageView(new Image("/resources/Images/spaceBar.png", 250, 250, true, false));
-		ImageView pKey = new ImageView(new Image("/resources/Images/pKey.png", 40, 40, true, false));
-		ImageView escKey = new ImageView(new Image("/resources/Images/escKey.png", 40, 40, true, false));
+		VBox creditsBox = new VBox(20, credit0, credit1, credit2, credit3, credit4, credit5, credit6);
 		
-
-		Label arrowKeysHelp = new Label("Use to control your ship!\nCan also use WSAD keys");
-		Label spaceBarHelp = new Label("Press to shoot!");
-		Label pKeyHelp = new Label("Press to pause the game!");
-		Label escKeyHelp = new Label("Use to return to the main menu!");
-		
-		controlsGrid.add(arrowKeys, 0, 0);
-		controlsGrid.add(arrowKeysHelp, 1, 0);
-		controlsGrid.add(spaceBar, 0, 1);
-		controlsGrid.add(spaceBarHelp, 1, 1);
-		controlsGrid.add(pKey, 0, 2);
-		controlsGrid.add(pKeyHelp, 1, 2);
-		controlsGrid.add(escKey, 0, 3);
-		controlsGrid.add(escKeyHelp, 1, 3);
-		controlsSubScene.getPane().getChildren().addAll(controls, controlsGrid);
-		
+		creditsBox.setLayoutX(50);
+		creditsBox.setLayoutY(80);
+		creditsSubScene.getPane().getChildren().addAll(creditsLabel, creditsBox);				
+				
 	}
 	
-	/**
-	 * Creates the Help sub scene.
-	 * Necessary guide for the player to get started.
-	 * Font, layout and labels are set.
-	 */
+	
 	private void createHelpSubScene() {
 		
-		helpSubScene = new MenuSubScene();
+		helpSubScene = new menuSubScene();
 		mainPane.getChildren().add(helpSubScene);
 		InfoLabel help = new InfoLabel("HELP");
 		help.setLayoutX(120);
 		help.setLayoutY(20);
 		GridPane helpGrid = new GridPane();
-		helpGrid.setLayoutX(140);
+		helpGrid.setLayoutX(80);
 		helpGrid.setLayoutY(90);
 		helpGrid.setHgap(20);
 		helpGrid.setVgap(20);
 		
-		ImageView ship = new ImageView(new Image("/resources/Images/PlayerShip-Red-image.png", 50, 50, true, false));
-		ImageView enemy = new ImageView(new Image("/resources/Images/EnemyShip-1-image.png", 50, 50, true, false));
-		ImageView coin = new ImageView(new Image("/resources/Images/Coin-image.png", 30, 30, true, false));
-		ImageView power = new ImageView(new Image("/resources/Images/PowerUp-Laser-image.png", 30, 30, true, false));
-		ImageView life = new ImageView(new Image("/resources/Images/PowerUp-Life-image.png", 30, 30, true, false));
+		ImageView ship = new ImageView(new Image("/res/playerShip3_red.png", 80, 80, true, false));
+		ImageView meteor1 = new ImageView(); //meteor2 = new ImageView();
+		ImageView star = new ImageView(new Image("/res/playerLife3_red.png", 20, 20, true, false));
+		ImageView life = new ImageView(new Image("/res/playerLife3_red.png", 20, 20, true, false));
 		
+		meteor1.setImage(new Image("/res/spaceShips_004.png", 80, 80, true, false));
 		
-		Label shipHelp 	 = new Label("This is your ship.\nUse it to fly across the galaxy!");
-		Label enemyHelp = new Label("These are enemy ships.\nAvoid them!");
-		Label coinHelp   = new Label("The coins give you points,\nTake them!");
-		Label powerHelp = new Label("Grab some laser bolts with this powerup!");
-		Label lifeHelp   = new Label("Grab to gain an extra life!");
+		Label shipHelp 	 = new Label("This is your ship. Choose colour from the \nPlay menu. Control it with arrow keys or W/S/A/D keys.");
+		Label meteorHelp = new Label("These are enemy ships.\nAvoid them!");
+		Label starHelp   = new Label("The coins give you points,\nIF you can grab them!");
+		Label lifeHelp   = new Label("This is extra life.\nGrab it to gain an extra ship\nif you have less than three ships.");
 		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				enemy.setRotate(90+now/10000000l);
+				meteor1.setRotate(90+now/10000000l);
 				//meteor2.setRotate(180+now/10000000l);
 				ship.setRotate(-now/10000000l);
 			}
@@ -246,22 +220,18 @@ private void createControlsSubScene() {
 		
 		helpGrid.add(ship, 0, 0);
 		helpGrid.add(shipHelp, 1, 0);
-		helpGrid.add(enemy, 0, 1);
-		helpGrid.add(enemyHelp, 1, 1);
-		helpGrid.add(coin, 0, 2);
-		helpGrid.add(coinHelp, 1, 2);
-		helpGrid.add(power, 0, 3);
-		helpGrid.add(powerHelp, 1, 3);
-		helpGrid.add(life, 0, 4);
-		helpGrid.add(lifeHelp, 1, 4);
+		helpGrid.add(meteor1, 0, 1);
+		//helpGrid.add(meteor2, 2, 1);
+		helpGrid.add(meteorHelp, 1, 1);
+		helpGrid.add(life, 0, 2);
+		helpGrid.add(lifeHelp, 1, 2);
+		helpGrid.add(star, 0, 3);
+		helpGrid.add(starHelp, 1, 3);
 		helpSubScene.getPane().getChildren().addAll(help, helpGrid);
 		
 	}
 	
-	/**
-	 * Creates a HBox for choosing between ships for the player to pick.
-	 * Necessary Font, layout and labels are set.
-	 */
+	
 	private HBox createShipsToChoose() {
 		
 		HBox box = new HBox();
@@ -272,7 +242,7 @@ private void createControlsSubScene() {
 			shipsList.add(shipToPick);
 			box.getChildren().add(shipToPick);
 			shipToPick.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				
+
 				@Override
 				public void handle(MouseEvent event) {
 					for (ShipPicker ship:shipsList) {
@@ -299,28 +269,23 @@ private void createControlsSubScene() {
 		name.setPrefWidth(190);
     	name.setPrefHeight(49);
     	try {
-			name.setFont(Font.loadFont(new FileInputStream("src/resources/Fonts/Kenvector-Future-font.ttf"), 23));
+			name.setFont(Font.loadFont(new FileInputStream("src/model/resources/kenvector_future.ttf"), 23));
 		} catch (FileNotFoundException e) {
 			name.setFont(Font.font("Verdana", 23));
 		}
-    	name.setStyle("-fx-background-color: transparent; -fx-background-image: url('/resources/Images/Button-NotPressed-Blue-image.png');");
+    	name.setStyle("-fx-background-color: transparent; -fx-background-image: url('/model/resources/blue_button05.png');");
 		return name;
 	}
 	
-	/**
-	 * Implements the start button.
-	 * Calls the game stub and starts everything from cold .
-	 * Checks if Player hasn't chosen a ship and a Text for the ship isn't entered.
-	 * Necessary Font, layout and labels are set.
-	 */
-	private Buttons createButtonToStart() {
+	
+	private buttons createButtonToStart() {
 		
-		Buttons startButton = new Buttons("START");
+		buttons startButton = new buttons("START");
 		startButton.setLayoutX(300-(118*2) + 265);
 		startButton.setLayoutY(300);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				
@@ -328,7 +293,7 @@ private void createControlsSubScene() {
 					
 					soundManager.setStopTimer(true);
 					if (soundManager.getBGMVolumeBeforeReached() == true) {
-						soundManager.setBGMVolumeBeforeGame(soundManager.getBackGroundMusicVolume());
+						soundManager.setBGMVolumeBeforeGame(soundManager.getbackGroundMusicVolume());
 						soundManager.setBGMVolumeBeforeReached(false);
 					}
 					
@@ -346,22 +311,17 @@ private void createControlsSubScene() {
 			}
 			
 		});
-		
+	
 		return startButton;
 		
 	}
 	
-	/**
-	 * Ability to control game sound through this menu.
-	 * Image ships decides the game volume.
-	 * A black ship says deactivated and a bright ship says it's activated.
-	 * Necessary Font, layout and labels are set.
-	 */
+	
 	private void createMusicButtons() {
 		
-		musicControls = new MenuSubScene();
+		musicControls = new menuSubScene();
 		mainPane.getChildren().add(musicControls);
-		
+
 		InfoLabel chooseBGMusicOption = new InfoLabel("BACKGROUND MUSIC");
 		chooseBGMusicOption.setLayoutX(125);
 		chooseBGMusicOption.setLayoutY(25);
@@ -376,36 +336,22 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Gets the main stage of the game.
-	 * @return mainStage
-	 */
+	
 	public Stage getMainStage() {
 		
 		return mainStage;
 		
 	}
 	
-	/**
-	 * Sets the main stage to the main scene.
-	 */
+	
 	public void setToMainScene() {
 		
 		mainStage.setScene(mainScene);
-		if (soundManager.getBackGroundMusicVolume() == 0 && soundManager.getBGMVolumeBeforeGame() != 0) {
-			soundManager.bgmFadeIn();			
-		} else {
-			soundManager.setBgmVolumeShips();
-		}
-		soundManager.setIgmVolumeShips();
-		chosenShip = null;
 		
 	}
 	
-	/**
-	 * Creates a menu button template.
-	 */
-	private void addMenuButton(Buttons button) {
+	
+	private void addMenuButton(buttons button) {
 		
 		button.setLayoutX(MENU_BUTTON_STARTX);
 		button.setLayoutY(MENU_BUTTON_STARTY + menuButtons.size() * 100);
@@ -414,33 +360,26 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Function that calls all the buttons for the scene.
-	 * Displays every button on th main stage and scene.
-	 */
+
 	private void createButtons() {
 		
 		createStartButton();
 		createScoresButton();
 		createHelpButton();
 		createSettingsButton();
-		createControlsButton();
+		createCreditsButton();
 		createExitButton();
 		
 	}
 	
-	/**
-	 * Creates a button to start the game on the main stage.
-	 * This redirects player to the shipSelectSubScene().
-	 * Thereafter start button in sub scene enables the game .
-	 */
+	
 	private void createStartButton() {
 		
-		Buttons startButton = new Buttons("PLAY");
+		buttons startButton = new buttons("PLAY");
 		addMenuButton(startButton);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -451,15 +390,13 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Creates a scores button on the main stage.
-	 */
+	
 	private void createScoresButton() {
 		
-		Buttons scoresButton = new Buttons("SCORES");
+		buttons scoresButton = new buttons("SCORES");
 		addMenuButton(scoresButton);
 		scoresButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -470,16 +407,14 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Creates a settings button on the main stage.
-	 */
+	
 	private void createSettingsButton() {
 		
-		Buttons settingsButton = new Buttons("SETTINGS");
+		buttons settingsButton = new buttons("SETTINGS");
 		addMenuButton(settingsButton);
 		
 		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -491,16 +426,14 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Creates a help button on the main stage..
-	 */
+	
 	private void createHelpButton() {
 		
-		Buttons helpButton = new Buttons("HELP");
+		buttons helpButton = new buttons("HELP");
 		addMenuButton(helpButton);
 		
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
@@ -512,20 +445,18 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Creates a controls button on the main stage.
-	 */
-	private void createControlsButton() {
+	
+	private void createCreditsButton() {
 		
-		Buttons controlsButton = new Buttons("CONTROLS");
-		addMenuButton(controlsButton);
+		buttons creditsButton = new buttons("CREDITS");
+		addMenuButton(creditsButton);
 		
-		controlsButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+		creditsButton.setOnAction(new EventHandler<ActionEvent>() {
+
 			@Override
 			public void handle(ActionEvent event) {
 				soundManager.playMenuOpenMusic();
-				showSubScene(controlsSubScene);
+				showSubScene(creditsSubScene);
 			}
 			
 			
@@ -533,18 +464,14 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Creates a exit button on the main stage.
-	 * On tapped the game exits and game window closes.
-	 * This is the end of the game.
-	 */
+	
 	private void createExitButton() {
 		
-		Buttons exitButton = new Buttons("EXIT");
+		buttons exitButton = new buttons("EXIT");
 		addMenuButton(exitButton);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent arg0) {
 				mainStage.close();				
@@ -554,48 +481,37 @@ private void createControlsSubScene() {
 		
 	}
 	
-	/**
-	 * Gets the chosen ship by the player.
-	 */
-	public static Ship getChosenShip() {
+	
+	public Ship getChosenShip() {
 		
 		return chosenShip;
 		
 	}
 	
-	/**
-	 * Gets the player name.
-	 */
 	public String getPlayerName() {
 		
 		return playerName;
 		
 	}
 	
-	/**
-	 * Creates the background for main stage.
-	 * Adds a Space Theme image.
-	 */
+	
 	private void createBackground() {
 		
-		Image backgroundImage = new Image(getClass().getResourceAsStream("/resources/Images/Space-BackGround-image.png"), 256, 256, false, true);
+		Image backgroundImage = new Image("view/resources/space.png", 256, 256, false, true);
 		BackgroundImage background = new BackgroundImage(backgroundImage,BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
 		mainPane.setBackground(new Background(background));
 		
 	}
 	
-	/**
-	 * Creates and adds the logo of the game "STAR SHOOTER".
-	 * Font Style, Layout are specified accordingly.
-	 */
+	
 	private void createLogo() {
 		
-		ImageView logo = new ImageView("/resources/Images/Title-StarShooter-image.png");
+		ImageView logo = new ImageView("view/resources/StarShooter.png");
 		logo.setLayoutX(255);
 		logo.setLayoutY(35);
 		
 		logo.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			
+
 			@Override
 			public void handle(MouseEvent event) {
 				logo.setEffect(new DropShadow());
@@ -603,7 +519,7 @@ private void createControlsSubScene() {
 		});
 		
 		logo.setOnMouseExited(new EventHandler<MouseEvent>() {
-			
+
 			@Override
 			public void handle(MouseEvent event) {
 				logo.setEffect(null);
@@ -614,13 +530,6 @@ private void createControlsSubScene() {
 		mainPane.getChildren().add(logo);
 		
 	}
-
-	/**
-	 * Sets the ship to the chosen ship.
-	 * @param ship Model.
-	 */
-	public static void setChosenShip(Ship ship) {
-		chosenShip = ship;
-	}
+	
 	
 }
